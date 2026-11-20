@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="th">
 <head>
@@ -7,13 +8,45 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Chart.js สำหรับกราฟสถิติ -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-  <!-- Firebase App & Cloud Firestore SDK (Compat v10) -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- Firebase App & Firestore SDK (v10 Modular via CDN) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc, query, orderBy 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // -------------------------------------------------------------
+    // Firebase Config: ใส่ค่าของโปรเจกต์ peameternsh-aa9cd ครบ 8 ค่า
+    // (กรุณานำ API Key จริงของคุณมาใส่แทน YOUR_API_KEY_HERE)
+    // -------------------------------------------------------------
+    const firebaseConfig = {
+      apiKey: ""AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0",
+      authDomain: "peameternsh-aa9cd.firebaseapp.com",
+      databaseURL: "https://peameternsh-aa9cd-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "peameternsh-aa9cd",
+      storageBucket: "peameternsh-aa9cd.firebasestorage.app",
+      messagingSenderId: "590743438022",
+      appId: "1:590743438022:web:1a9204651a60caee874dc7",
+      measurementId: "G-E9JBF32J0Y"
+    };
+
+    window.__FIREBASE_ENABLED__ = false;
+    try {
+      if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0") {
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.__FIREBASE_DB__ = db;
+        window.__FIREBASE_ENABLED__ = true;
+        window.__FIRESTORE_TOOLS__ = { collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc, query, orderBy };
+        console.log("⚡ Firebase Connected Successfully!");
+      }
+    } catch (e) {
+      console.warn("Firebase Init Error, falling back to LocalStorage:", e);
+    }
+    window.dispatchEvent(new Event('firebase-ready'));
+  </script>
 
   <style>
     :root {
@@ -47,6 +80,7 @@
       --space-3: 12px;
       --space-4: 16px;
       --space-6: 24px;
+      --space-8: 32px;
       --font: "Sarabun", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
@@ -60,121 +94,102 @@
       font-size: 15px;
     }
 
-    /* Cloud Sync Status Badge */
-    .sync-status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: #f1f5f9;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      cursor: pointer;
-    }
-    .sync-status-badge.online {
-      background: #ecfdf5;
-      color: #059669;
-      border-color: #a7f3d0;
-    }
-    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-
-    /* Auth & Setup Containers */
-    .setup-container, .auth-container {
+    .setup-container {
       display: none;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: var(--space-6);
+      background: linear-gradient(135deg, #0369a1 0%, #0f172a 100%);
+    }
+    .setup-container.active { display: flex; }
+
+    .auth-container {
+      display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       padding: var(--space-6);
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     }
-    .setup-container.active, .auth-container.active { display: flex; }
-    .setup-container { background: linear-gradient(135deg, #0369a1 0%, #0f172a 100%); }
-
     .auth-card {
       background: var(--surface);
       border-radius: var(--radius-lg);
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
       width: 100%;
       max-width: 480px;
-      padding: var(--space-6);
+      padding: var(--space-8) var(--space-6);
     }
-    .auth-header { text-align: center; margin-bottom: var(--space-4); }
+    .auth-header { text-align: center; margin-bottom: var(--space-6); }
+    .auth-brand-icon {
+      width: 56px; height: 56px; border-radius: 12px;
+      background: var(--brand-soft); color: var(--brand);
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: var(--space-3);
+    }
     .auth-title { margin: 0; font-size: 22px; font-weight: 700; color: var(--ink); }
-    .auth-subtitle { margin: var(--space-1) 0 0; font-size: 13.5px; color: var(--muted); }
-
+    .auth-subtitle { margin: var(--space-1) 0 0; font-size: 14px; color: var(--muted); }
     .auth-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background: var(--bg);
-      padding: 4px;
-      border-radius: var(--radius-sm);
-      margin-bottom: var(--space-4);
+      display: grid; grid-template-columns: 1fr 1fr;
+      background: var(--bg); padding: 4px; border-radius: var(--radius-sm);
+      margin-bottom: var(--space-6);
     }
     .auth-tab-btn {
-      border: none; background: none; font: inherit; font-size: 14px; font-weight: 600;
-      padding: 8px; border-radius: 6px; cursor: pointer; color: var(--muted);
+      border: none; background: none; font: inherit; font-size: 14px;
+      font-weight: 600; padding: 8px; border-radius: 6px; cursor: pointer;
+      color: var(--muted); transition: all 0.15s ease;
     }
     .auth-tab-btn.active { background: var(--surface); color: var(--brand); box-shadow: var(--shadow); }
     .auth-form-panel { display: none; }
     .auth-form-panel.active { display: block; }
 
-    /* Main App Layout */
     .app-layout { display: none; }
     .app-layout.active { display: block; }
 
     .app-header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 20;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 20;
     }
     .header-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: var(--space-3) var(--space-6);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-3);
+      max-width: 1200px; margin: 0 auto; padding: var(--space-4) var(--space-6);
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4);
     }
     .brand-group { display: flex; align-items: center; gap: var(--space-3); }
-    .brand-title { margin: 0; font-size: 19px; font-weight: 700; color: var(--ink); }
-    .brand-subtitle { margin: 2px 0 0; font-size: 12.5px; color: var(--muted); }
+    .brand-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: var(--brand-soft); color: var(--brand);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .brand-title { margin: 0; font-size: 20px; font-weight: 700; color: var(--ink); line-height: 1.25; }
+    .brand-subtitle { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
 
     .user-badge-wrap { display: flex; align-items: center; gap: var(--space-3); }
     .user-profile-badge {
-      background: var(--brand-soft);
-      border: 1px solid #bae6fd;
-      padding: 5px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      color: #0369a1;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      cursor: pointer;
+      background: var(--brand-soft); border: 1px solid #bae6fd;
+      padding: 6px 12px; border-radius: var(--radius-sm);
+      font-size: 13.5px; color: #0369a1; font-weight: 600;
+      display: flex; align-items: center; gap: var(--space-2); cursor: pointer;
     }
     .user-role-tag {
-      background: var(--brand);
-      color: var(--brand-ink);
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
+      background: var(--brand); color: var(--brand-ink);
+      font-size: 11px; font-weight: 700; padding: 2px 6px;
+      border-radius: 4px; text-transform: uppercase;
     }
     .user-role-tag.admin { background: #7c3aed; }
 
+    .cloud-pill {
+      font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .cloud-pill.online { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .cloud-pill.offline { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
     .nav-tabs { display: flex; flex-wrap: wrap; gap: var(--space-2); }
     .tab-btn {
-      font: inherit; font-size: 14px; font-weight: 600; padding: 8px 16px;
+      font: inherit; font-size: 14px; font-weight: 600; padding: 9px 16px;
       border-radius: var(--radius-sm); border: 1px solid var(--border);
       background: var(--surface); color: var(--ink-secondary); cursor: pointer;
+      display: inline-flex; align-items: center; gap: var(--space-2);
     }
     .tab-btn.active { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
 
@@ -183,39 +198,25 @@
     .view-panel.active { display: block; }
 
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: var(--space-6);
-      margin-bottom: var(--space-6);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: var(--space-6); margin-bottom: var(--space-6);
     }
     .section-header {
-      margin-bottom: var(--space-4);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: var(--space-2);
+      margin-bottom: var(--space-4); display: flex; flex-wrap: wrap;
+      align-items: baseline; justify-content: space-between; gap: var(--space-2);
     }
     .section-title { margin: 0; font-size: 18px; font-weight: 700; color: var(--ink); }
-    .section-desc { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+    .section-desc { margin: 4px 0 0; font-size: 13.5px; color: var(--muted); }
 
-    /* KPI Grid */
     .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--space-4);
-      margin-bottom: var(--space-6);
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4); margin-bottom: var(--space-6);
     }
     .kpi-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: var(--space-4);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: var(--space-4) var(--space-6);
+      box-shadow: var(--shadow); display: flex; flex-direction: column; gap: var(--space-1);
     }
     .kpi-card.kpi-import { border-left: 4px solid var(--import-color); }
     .kpi-card.kpi-withdraw { border-left: 4px solid var(--withdraw-color); }
@@ -227,52 +228,32 @@
     .kpi-caption { font-size: 12px; color: var(--muted); }
 
     .dashboard-mid-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: var(--space-6);
-      margin-bottom: var(--space-6);
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-6); margin-bottom: var(--space-6);
     }
-    .chart-box { position: relative; height: 230px; width: 100%; display: flex; align-items: center; justify-content: center; }
+    .chart-box { position: relative; height: 240px; width: 100%; display: flex; align-items: center; justify-content: center; }
 
-    /* Filters */
     .filter-panel {
-      background: var(--surface-subtle);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: var(--space-4);
-      margin-bottom: var(--space-4);
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: var(--space-3);
-      align-items: end;
+      background: var(--surface-subtle); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: var(--space-4); margin-bottom: var(--space-4);
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4); align-items: end;
     }
     .user-id-search-highlight {
-      background: var(--brand-soft);
-      border: 1px solid #bae6fd;
-      padding: var(--space-2) var(--space-3);
-      border-radius: var(--radius-sm);
+      background: var(--brand-soft); border: 1px solid #bae6fd;
+      padding: var(--space-3); border-radius: var(--radius-sm);
     }
 
-    /* Form & Quick Parse */
-    .quick-parse-box {
-      background: var(--surface-subtle);
-      border: 1px dashed var(--brand);
-      border-radius: var(--radius);
-      padding: var(--space-4);
-      margin-bottom: var(--space-6);
-    }
     .two-col-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: var(--space-6);
-      align-items: start;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-6); align-items: start;
     }
     .form-group { margin-bottom: var(--space-4); }
-    label { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink-secondary); margin-bottom: 5px; }
+    label { display: block; font-size: 14px; font-weight: 600; color: var(--ink-secondary); margin-bottom: 6px; }
     .req-star { color: var(--damage-color); margin-left: 2px; }
 
     .input, .select, .textarea {
-      width: 100%; font: inherit; font-size: 14.5px; padding: 9px 12px;
+      width: 100%; font: inherit; font-size: 14.5px; padding: 10px 12px;
       border-radius: var(--radius-sm); border: 1px solid var(--border-strong);
       background: var(--surface); color: var(--ink);
     }
@@ -281,51 +262,64 @@
       box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18);
     }
     .textarea { min-height: 80px; resize: vertical; }
-    .field-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
-    .field-error { font-size: 12.5px; color: var(--damage-color); margin-top: 5px; font-weight: 500; display: none; }
+    .field-hint { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+    .field-error { font-size: 13px; color: var(--damage-color); margin-top: 6px; font-weight: 500; display: none; }
     .field-error.visible { display: block; }
 
-    .sign-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
-    .sign-type-option input { position: absolute; opacity: 0; pointer-events: none; }
+    .quick-parse-box {
+      background: #f8fafc; border: 1px dashed var(--brand);
+      border-radius: var(--radius); padding: var(--space-4); margin-bottom: var(--space-6);
+    }
+    .quick-parse-title { font-size: 15px; font-weight: 700; color: #0369a1; margin: 0 0 var(--space-2); }
+
+    .sign-type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-3); }
+    .sign-type-option { position: relative; }
+    .sign-type-option input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
     .sign-type-label {
-      display: flex; flex-direction: column; gap: 2px; padding: 10px;
-      border: 2px solid var(--border); border-radius: var(--radius-sm);
-      cursor: pointer; background: var(--surface); text-align: center;
+      display: flex; flex-direction: column; gap: 2px; padding: var(--space-3) var(--space-4);
+      border: 2px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; background: var(--surface);
     }
     .sign-type-title { font-weight: 700; font-size: 14.5px; color: var(--ink); }
-    .sign-type-sub { font-size: 11.5px; color: var(--muted); }
-
+    .sign-type-sub { font-size: 12px; color: var(--muted); }
     .sign-type-option input[value="withdraw"]:checked + .sign-type-label { border-color: var(--withdraw-color); background: var(--withdraw-bg); }
     .sign-type-option input[value="import"]:checked + .sign-type-label { border-color: var(--import-color); background: var(--import-bg); }
     .sign-type-option input[value="damage"]:checked + .sign-type-label { border-color: var(--damage-color); background: var(--damage-bg); }
 
-    /* Buttons */
+    .user-profile-highlight {
+      background: var(--surface-subtle); border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); padding: var(--space-4); display: flex; align-items: center; gap: var(--space-4);
+    }
+    .user-profile-avatar {
+      width: 44px; height: 44px; border-radius: 50%; background: var(--brand);
+      color: var(--brand-ink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;
+    }
+    .user-profile-name { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .user-profile-id-phone { font-size: 13px; color: var(--muted); }
+
     .btn {
       font: inherit; font-size: 14px; font-weight: 600; padding: 9px 16px;
       border-radius: var(--radius-sm); border: 1px solid transparent; cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
     }
     .btn-primary { background: var(--brand); color: var(--brand-ink); }
     .btn-primary:hover { background: var(--brand-hover); }
     .btn-secondary { background: var(--surface); color: var(--ink-secondary); border-color: var(--border-strong); }
-    .btn-secondary:hover { background: var(--surface-subtle); }
     .btn-danger { background: var(--damage-color); color: white; }
     .btn-sm { padding: 5px 10px; font-size: 12.5px; }
 
     .inline-feedback {
-      margin-top: var(--space-3); padding: 8px 12px; border-radius: var(--radius-sm);
-      font-size: 13px; font-weight: 600; display: none;
+      margin-top: var(--space-3); padding: 10px 14px; border-radius: var(--radius-sm);
+      font-size: 13.5px; font-weight: 600; display: none;
     }
     .inline-feedback.success { display: block; background: var(--import-bg); color: var(--import-color); border: 1px solid var(--import-border); }
 
-    /* Tables */
     .table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; }
-    th { background: var(--surface-subtle); color: var(--ink-secondary); font-weight: 700; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    th { background: var(--surface-subtle); color: var(--ink-secondary); font-weight: 700; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
     td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
     tbody tr:hover { background: #f8fafc; }
 
-    .status-chip { display: inline-flex; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .status-chip { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
     .status-chip.import { background: var(--import-bg); color: var(--import-color); border: 1px solid var(--import-border); }
     .status-chip.withdraw { background: var(--withdraw-bg); color: var(--withdraw-color); border: 1px solid var(--withdraw-border); }
     .status-chip.damage { background: var(--damage-bg); color: var(--damage-color); border: 1px solid var(--damage-border); }
@@ -333,7 +327,7 @@
     .code-pill {
       font-family: ui-monospace, monospace; font-size: 12.5px; font-weight: 700;
       background: var(--surface-subtle); border: 1px solid var(--border-strong);
-      padding: 1px 6px; border-radius: 4px;
+      padding: 2px 6px; border-radius: 4px; display: inline-block;
     }
 
     .modal-backdrop {
@@ -341,129 +335,134 @@
       display: none; align-items: center; justify-content: center; padding: var(--space-4); z-index: 50;
     }
     .modal-backdrop.open { display: flex; }
-    .modal-card {
-      background: var(--surface); border-radius: var(--radius);
-      max-width: 580px; width: 100%; padding: var(--space-6); max-height: 90vh; overflow-y: auto;
-    }
-    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .modal-card { background: var(--surface); border-radius: var(--radius); max-width: 580px; width: 100%; padding: var(--space-6); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border); }
+    .modal-title { margin: 0; font-size: 16px; font-weight: 700; }
+    .empty-state { text-align: center; padding: var(--space-6) var(--space-4); color: var(--muted); }
   </style>
 </head>
 <body>
 
-  <!-- VIEW 0: FIRST TIME SETUP -->
+  <!-- VIEW STEP 0: FIRST-TIME SETUP SYSTEM (เปิดเฉพาะเมื่อคลาวด์ยังไม่มีการตั้งค่าใดๆ เลย) -->
   <div id="setup-view" class="setup-container">
     <div class="auth-card" style="max-width: 500px;">
       <div class="auth-header">
-        <h2 class="auth-title">🔑 เปิดใช้งานระบบครั้งแรก</h2>
-        <p class="auth-subtitle">ตั้งค่าบัญชีผู้ดูแลระบบสูงสุด (Super Admin) และกำหนดรหัสยืนยันสิทธิ์</p>
+        <div class="auth-brand-icon" style="background: #f0fdf4; color: #15803d;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h2 class="auth-title">เปิดใช้งานระบบครั้งแรก</h2>
+        <p class="auth-subtitle">ตั้งค่าสร้างบัญชีผู้ดูแลระบบสูงสุด (Super Admin) และกำหนดรหัสยืนยันสิทธิ์</p>
       </div>
+
       <form id="systemSetupForm" novalidate>
+        <div style="padding: var(--space-3); background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); margin-bottom: var(--space-4); font-size: 13px; color: #166534;">
+          ⚡ <strong>ตั้งค่าเริ่มต้น Cloud Firestore:</strong> ระบบจะบันทึกบัญชีนี้ขึ้นฐานข้อมูลคลาวด์ เมื่อเปิดบนเครื่องอื่นจะเข้าสู่หน้าล็อกอินได้ทันทีโดยไม่ต้องสร้างซ้ำค่ะ
+        </div>
         <div class="form-group">
           <label for="setupAdminName">ชื่อ - นามสกุล ผู้ดูแลระบบสูงสุด <span class="req-star">*</span></label>
           <input type="text" id="setupAdminName" class="input" placeholder="เช่น นายปรีชา ใจดี" required>
-          <div id="errSetupName" class="field-error">กรุณากรอกชื่อผู้ดูแลระบบ</div>
         </div>
         <div class="form-group">
           <label for="setupAdminPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
           <input type="tel" id="setupAdminPhone" class="input" placeholder="เช่น 089-999-9999" required>
-          <div id="errSetupPhone" class="field-error">กรุณากรอกเบอร์โทรศัพท์อย่างน้อย 9 หลัก</div>
         </div>
         <div class="form-group">
-          <label for="setupAdminPasscode">กำหนดรหัสยืนยันสิทธิ์ Admin (Passcode) <span class="req-star">*</span></label>
-          <input type="text" id="setupAdminPasscode" class="input" placeholder="ตั้งรหัสลับ เช่น 1234 หรือ 9999" required>
-          <div id="errSetupPasscode" class="field-error">รหัสผ่านต้องมีความยาวอย่างน้อย 4 ตัวอักษร</div>
+          <label for="setupAdminPasscode">กำหนดรหัสผ่านยืนยันสิทธิ์ Admin (Admin Passcode) <span class="req-star">*</span></label>
+          <input type="text" id="setupAdminPasscode" class="input" placeholder="เช่น 1234 หรือ 9999" required>
+          <div class="field-hint">ใช้ยืนยันเมื่อต้องการลงทะเบียนเป็น Admin คนต่อไป</div>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; background: #16a34a; margin-top: 8px;">
-          บันทึกและเปิดใช้งานระบบ
+        <button type="submit" class="btn btn-primary" style="width: 100%; background: #16a34a; margin-top: var(--space-3);">
+          🔑 สร้างบัญชีและเปิดใช้งานระบบคลาวด์
         </button>
       </form>
     </div>
   </div>
 
-  <!-- VIEW A: AUTH (LOGIN & REGISTER) -->
+  <!-- VIEW A: LOGIN & REGISTRATION -->
   <div id="auth-view" class="auth-container">
     <div class="auth-card">
       <div class="auth-header">
+        <div class="auth-brand-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
         <h2 class="auth-title">ระบบจัดการมิเตอร์ไฟฟ้า</h2>
         <p class="auth-subtitle">เข้าสู่ระบบล็อกอินส่วนตัวเพื่อทำการลงบันทึกข้อมูลมิเตอร์</p>
       </div>
+
       <div class="auth-tabs">
         <button type="button" class="auth-tab-btn active" id="authTabLoginBtn">ลงชื่อเข้าใช้งาน</button>
         <button type="button" class="auth-tab-btn" id="authTabRegisterBtn">ลงทะเบียนผู้ใช้ใหม่</button>
       </div>
 
+      <!-- PANEL 1: LOGIN -->
       <div id="authPanelLogin" class="auth-form-panel active">
         <form id="authLoginForm" novalidate>
           <div class="form-group">
             <label for="loginQuery">รหัสผู้ใช้ หรือเบอร์โทรศัพท์ <span class="req-star">*</span></label>
-            <input type="text" id="loginQuery" class="input" placeholder="ระบุ ADMIN-01, USR-001 หรือเบอร์โทรศัพท์" required>
-            <div id="errLoginQuery" class="field-error">กรุณากรอกรหัสผู้ใช้หรือเบอร์โทรศัพท์</div>
+            <input type="text" id="loginQuery" class="input" placeholder="ระบุ เช่น ADMIN-01, USR-001 หรือเบอร์โทร" required>
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">เข้าสู่ระบบ</button>
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--space-2);">
+            เข้าสู่ระบบและเริ่มใช้งาน
+          </button>
         </form>
       </div>
 
+      <!-- PANEL 2: REGISTER -->
       <div id="authPanelRegister" class="auth-form-panel">
         <form id="authRegisterForm" novalidate>
           <div class="form-group">
-            <label for="regUserName">ชื่อ - นามสกุล <span class="req-star">*</span></label>
+            <label for="regUserName">ชื่อ - นามสกุล ผู้บันทึก <span class="req-star">*</span></label>
             <input type="text" id="regUserName" class="input" placeholder="เช่น สมชาย สายฟ้า" required>
-            <div id="errRegName" class="field-error">กรุณากรอกชื่อผู้บันทึก</div>
           </div>
           <div class="form-group">
             <label for="regUserPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
             <input type="tel" id="regUserPhone" class="input" placeholder="เช่น 081-234-5678" required>
-            <div id="errRegPhone" class="field-error">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง</div>
           </div>
           <div class="form-group">
-            <label for="regUserRole">ระดับสิทธิ์ <span class="req-star">*</span></label>
+            <label for="regUserRole">สิทธิ์การใช้งานของระบบ <span class="req-star">*</span></label>
             <select id="regUserRole" class="select" required>
               <option value="staff" selected>ผู้ใช้ทั่วไป (Staff - ลงบันทึกได้อย่างเดียว)</option>
               <option value="admin">ผู้ดูแลระบบ (Admin - สามารถแก้ไข/ลบข้อมูลได้)</option>
             </select>
           </div>
           <div class="form-group" id="regAdminPasscodeGroup" style="display: none;">
-            <label for="regAdminPasscode">รหัสผ่านยืนยันสิทธิ์ Admin <span class="req-star">*</span></label>
-            <input type="password" id="regAdminPasscode" class="input" placeholder="ระบุ Admin Passcode">
-            <div id="errRegAdminPasscode" class="field-error">รหัสยืนยันสิทธิ์ Admin ไม่ถูกต้อง</div>
+            <label for="regAdminPasscode">รหัสผ่านยืนยันสิทธิ์ผู้ดูแลระบบ <span class="req-star">*</span></label>
+            <input type="password" id="regAdminPasscode" class="input" placeholder="ระบุรหัสผ่านลับ Admin">
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">สร้างบัญชีผู้ใช้</button>
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--space-2);">
+            สร้างบัญชีและเข้าสู่ระบบทันที
+          </button>
         </form>
       </div>
-      <div id="authFeedback" class="inline-feedback"></div>
+      <div id="authFeedback" class="inline-feedback" role="status"></div>
     </div>
   </div>
 
-  <!-- VIEW B: MAIN PORTAL -->
+  <!-- VIEW B: MAIN APP PORTAL -->
   <div id="app-portal" class="app-layout">
     <header class="app-header">
       <div class="header-inner">
         <div class="brand-group">
+          <div class="brand-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
           <div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <h1 class="brand-title">ระบบจัดการมิเตอร์ไฟฟ้า</h1>
-              <span id="cloudStatusBadge" class="sync-status-badge" title="คลิกเพื่อตั้งค่าการเชื่อมต่อ Firebase">
-                <span class="sync-dot"></span>
-                <span id="cloudStatusText">Local Storage (Offline)</span>
-              </span>
+              <span id="cloudStatusBadge" class="cloud-pill offline">⚡ Local Mode</span>
             </div>
             <p class="brand-subtitle">บันทึกการเบิกใช้ นำเข้า แจ้งมิเตอร์ชำรุด และตรวจสอบผู้บันทึก</p>
           </div>
         </div>
 
-        <nav class="nav-tabs">
+        <nav class="nav-tabs" aria-label="เมนูหลัก">
           <button type="button" class="tab-btn active" data-tab="dashboard">แดชบอร์ดภาพรวม</button>
           <button type="button" class="tab-btn" data-tab="record">ลงบันทึกมิเตอร์</button>
-          <button type="button" class="tab-btn admin-only-col" data-tab="employees" id="tabBtnEmployees" style="display: none;">
-            จัดการรายชื่อพนักงาน
-          </button>
+          <button type="button" class="tab-btn admin-only-col" data-tab="employees" style="display: none;">จัดการรายชื่อพนักงาน</button>
         </nav>
 
         <div class="user-badge-wrap">
-          <button type="button" class="btn btn-secondary btn-sm admin-only-col" id="firebaseConfigBtn" style="display: none; border-color: #0284c7; color: #0284c7; font-weight:700;">
-            ⚙️ ตั้งค่า Firebase
-          </button>
-          <div class="user-profile-badge" id="headerUserBadge" title="คลิกเพื่อเปลี่ยน Admin Passcode">
+          <div class="user-profile-badge" id="headerUserBadge" title="จัดการรหัสผ่านความปลอดภัย">
             <span id="headerUserText">กำลังโหลด...</span>
             <span id="headerUserRoleBadge" class="user-role-tag">STAFF</span>
           </div>
@@ -473,55 +472,61 @@
     </header>
 
     <main class="container">
-      <!-- 1. DASHBOARD -->
+      <!-- VIEW 1: DASHBOARD -->
       <section id="view-dashboard" class="view-panel active">
         <div class="kpi-grid">
           <div class="kpi-card kpi-total">
-            <span class="kpi-label">รายการทั้งหมด</span>
+            <span class="kpi-label">รายการบันทึกทั้งหมด</span>
             <span class="kpi-value" id="kpiTotal">0</span>
-            <span class="kpi-caption">รวมทุกประเภท</span>
+            <span class="kpi-caption">รวมทุกประเภทรายการ</span>
           </div>
           <div class="kpi-card kpi-import">
             <span class="kpi-label">นำเข้ามิเตอร์</span>
             <span class="kpi-value" id="kpiImport">0</span>
-            <span class="kpi-caption">รายการนำเข้า</span>
+            <span class="kpi-caption">รายการนำเข้ามิเตอร์</span>
           </div>
           <div class="kpi-card kpi-withdraw">
             <span class="kpi-label">เบิกใช้มิเตอร์</span>
             <span class="kpi-value" id="kpiWithdraw">0</span>
-            <span class="kpi-caption">รายการเบิกใช้</span>
+            <span class="kpi-caption">รายการเบิกใช้งาน</span>
           </div>
           <div class="kpi-card kpi-damage">
             <span class="kpi-label">แจ้งชำรุด</span>
             <span class="kpi-value" id="kpiDamage">0</span>
-            <span class="kpi-caption">มิเตอร์ชำรุด</span>
+            <span class="kpi-caption">มิเตอร์ชำรุดเสียหาย</span>
           </div>
           <div class="kpi-card kpi-stock">
             <span class="kpi-label">มิเตอร์คงคลังพร้อมใช้</span>
             <span class="kpi-value" id="kpiStock">0</span>
-            <span class="kpi-caption">ยอดคงเหลือพร้อมเบิก</span>
+            <span class="kpi-caption">มิเตอร์ปัจจุบันในคลัง</span>
           </div>
         </div>
 
         <div class="dashboard-mid-grid">
           <div class="card" style="margin-bottom: 0;">
-            <h2 class="section-title">สัดส่วนรายการบันทึก</h2>
+            <div class="section-header">
+              <h2 class="section-title">สัดส่วนรายการบันทึกมิเตอร์</h2>
+            </div>
             <div class="chart-box">
               <canvas id="overviewChart"></canvas>
-              <div id="chartEmptyNotice" style="display:none; color:var(--muted); font-size:13px;">ยังไม่มีข้อมูลบันทึก</div>
+              <div id="chartEmptyNotice" class="empty-state">ยังไม่มีข้อมูลสำหรับแสดงกราฟ</div>
             </div>
           </div>
+
           <div class="card" style="margin-bottom: 0;">
-            <h2 class="section-title">สถานะล่าสุดของมิเตอร์แต่ละรหัส</h2>
-            <div class="table-wrap" style="max-height: 240px; overflow-y: auto;">
+            <div class="section-header">
+              <h2 class="section-title">สถานะล่าสุดของมิเตอร์แต่ละรหัส</h2>
+            </div>
+            <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
                     <th>PEA มิเตอร์</th>
                     <th>เลขอ่าน</th>
-                    <th>ผู้ใช้ไฟ</th>
-                    <th>สถานะ</th>
+                    <th>หมายเลขผู้ใช้ไฟ</th>
+                    <th>สถานะล่าสุด</th>
                     <th>ผู้บันทึก</th>
+                    <th>วันที่ล่าสุด</th>
                   </tr>
                 </thead>
                 <tbody id="latestMeterTableBody"></tbody>
@@ -530,16 +535,16 @@
           </div>
         </div>
 
-        <!-- QUICK WITHDRAW INVENTORY -->
+        <!-- Real-Time Stock & Quick Withdraw -->
         <div class="card" style="margin-top: var(--space-6);">
           <div class="section-header">
             <div>
               <h2 class="section-title">📦 ตรวจสอบมิเตอร์คงคลังและทำรายการเบิกด่วน</h2>
-              <p class="section-desc">ค้นหามิเตอร์ที่มีอยู่ในคลังปัจจุบัน และคลิกปุ่มเบิกใช้งานเครื่องดังกล่าวได้ทันที</p>
+              <p class="section-desc">ค้นหามิเตอร์ที่มีอยู่ในคลัง และคลิกปุ่มเบิกใช้งานเครื่องดังกล่าวได้ทันที</p>
             </div>
           </div>
-          <div style="margin-bottom: var(--space-3); max-width: 400px;">
-            <input type="text" id="searchStockMeter" class="input" placeholder="🔎 พิมพ์หมายเลข PEA มิเตอร์คงคลัง...">
+          <div style="margin-bottom: var(--space-4); max-width: 420px;">
+            <input type="text" id="searchStockMeter" class="input" placeholder="🔎 พิมพ์ค้นหา PEA มิเตอร์ในคลัง..." autocomplete="off">
           </div>
           <div class="table-wrap">
             <table>
@@ -548,7 +553,7 @@
                   <th>PEA มิเตอร์คงคลัง</th>
                   <th>เลขอ่านตอนนำเข้า</th>
                   <th>วันที่นำเข้า</th>
-                  <th>ผู้รับเรื่อง</th>
+                  <th>ผู้รับเรื่องนำเข้า</th>
                   <th>ดำเนินการ</th>
                 </tr>
               </thead>
@@ -557,33 +562,28 @@
           </div>
         </div>
 
-        <!-- RECORDS TABLE -->
+        <!-- Records Table -->
         <div class="card">
           <div class="section-header">
             <div>
               <h2 class="section-title">ประวัติการลงบันทึกมิเตอร์ทั้งหมด</h2>
-              <p class="section-desc">ตรวจสอบรายการเบิกใช้ นำเข้า และแจ้งชำรุด พร้อมรูปภาพและหมายเหตุ</p>
+              <p class="section-desc">ตรวจสอบรายการเบิกใช้ นำเข้า และแจ้งชำรุด</p>
             </div>
-            <div style="display: flex; gap: 8px;">
-              <button type="button" class="btn btn-primary btn-sm" id="goToRecordBtn">+ ลงบันทึกมิเตอร์ใหม่</button>
-              <button type="button" class="btn btn-secondary btn-sm admin-only-col" id="adminRegisterUserBtn" style="display: none; color: var(--brand); font-weight:700;">
-                👤 สมัครบัญชีพนักงาน
-              </button>
-            </div>
+            <button type="button" class="btn btn-primary btn-sm" id="goToRecordBtn">+ ลงบันทึกมิเตอร์ใหม่</button>
           </div>
 
           <div class="filter-panel">
             <div class="user-id-search-highlight">
               <label for="filterUserId">ค้นหาเฉพาะรหัสผู้ใช้ (User ID)</label>
-              <input type="text" id="filterUserId" class="input" list="registeredUserIdList" placeholder="เช่น USR-001">
+              <input type="text" id="filterUserId" class="input" list="registeredUserIdList" placeholder="เช่น USR-001" autocomplete="off">
               <datalist id="registeredUserIdList"></datalist>
             </div>
             <div>
               <label for="filterKeyword">ค้นหา PEA มิเตอร์ / เลขอ่าน / ผู้ใช้ไฟ</label>
-              <input type="text" id="filterKeyword" class="input" placeholder="พิมพ์คำค้นหา...">
+              <input type="text" id="filterKeyword" class="input" placeholder="พิมพ์คำค้นหา..." autocomplete="off">
             </div>
             <div>
-              <label for="filterType">ประเภท</label>
+              <label for="filterType">ประเภทรายการ</label>
               <select id="filterType" class="select">
                 <option value="all">ทั้งหมด</option>
                 <option value="import">นำเข้า</option>
@@ -592,7 +592,7 @@
               </select>
             </div>
             <div>
-              <label for="filterDate">วันที่</label>
+              <label for="filterDate">กรองตามวันที่</label>
               <input type="date" id="filterDate" class="input">
             </div>
             <div>
@@ -608,11 +608,11 @@
                   <th>ประเภท</th>
                   <th>PEA มิเตอร์</th>
                   <th>เลขอ่าน</th>
-                  <th>ผู้ใช้ไฟ</th>
+                  <th>หมายเลขผู้ใช้ไฟ</th>
+                  <th>รหัสผู้ใช้</th>
                   <th>ผู้บันทึก</th>
                   <th>หมายเหตุ</th>
-                  <th>รูปภาพ</th>
-                  <th class="admin-only-col" style="display: none;">จัดการ</th>
+                  <th class="admin-only-col" style="display: none;">การจัดการ</th>
                 </tr>
               </thead>
               <tbody id="recordsTableBody"></tbody>
@@ -621,29 +621,26 @@
         </div>
       </section>
 
-      <!-- 2. RECORD FORM -->
+      <!-- VIEW 2: RECORD FORM -->
       <section id="view-record" class="view-panel">
         <div class="card">
           <div class="section-header">
-            <div>
-              <h2 class="section-title">แบบฟอร์มลงบันทึกมิเตอร์ไฟฟ้า</h2>
-              <p class="section-desc">เลือกประเภทรายการ ระบุรหัสมิเตอร์ วันที่ และแนบรูปภาพ</p>
-            </div>
+            <h2 class="section-title">แบบฟอร์มลงบันทึกมิเตอร์ไฟฟ้า</h2>
           </div>
 
           <form id="meterRecordForm" novalidate>
-            <!-- QUICK PARSE BOX -->
+            <!-- Smart Parser -->
             <div class="quick-parse-box">
-              <h3 style="margin: 0 0 6px; font-size: 15px; color: #0369a1;">กรอกหรือวางข้อมูลยาวๆ เพื่อแยกข้อมูลลงฟอร์มอัตโนมัติ</h3>
-              <textarea id="rawLongTextInput" class="textarea" placeholder="เช่น PEA525112,001245.5,CA551223 หรือวางข้อความหลายบรรทัด"></textarea>
-              <div style="margin-top: 8px; display: flex; gap: 8px;">
-                <button type="button" class="btn btn-primary btn-sm" id="parseRawDataBtn">⚡ แยกข้อมูลลงช่องกรอก</button>
-                <button type="button" class="btn btn-secondary btn-sm" id="clearRawDataBtn">🗑️ ล้างข้อความที่วาง</button>
+              <h3 class="quick-parse-title">⚡ กรอกหรือวางข้อมูลยาวๆ เพื่อแยกข้อมูลลงฟอร์มอัตโนมัติ</h3>
+              <textarea id="rawLongTextInput" class="textarea" placeholder="เช่น PEA525112,001245.5,CA551223,เปลี่ยนมิเตอร์หน้างาน"></textarea>
+              <div style="margin-top: var(--space-2); display: flex; gap: var(--space-2);">
+                <button type="button" class="btn btn-primary btn-sm" id="parseRawDataBtn">แยกข้อมูลลงช่องกรอก</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="clearRawDataBtn">ล้างข้อความที่วาง</button>
               </div>
               <div id="parseRawFeedback" class="inline-feedback"></div>
             </div>
 
-            <!-- TYPE SELECTOR -->
+            <!-- 1. Type -->
             <div class="form-group">
               <label>ประเภทรายการ <span class="req-star">*</span></label>
               <div class="sign-type-grid">
@@ -651,118 +648,114 @@
                   <input type="radio" name="recordType" id="typeWithdraw" value="withdraw" checked>
                   <label class="sign-type-label" for="typeWithdraw">
                     <span class="sign-type-title">เบิกใช้</span>
-                    <span class="sign-type-sub">นำไปติดตั้ง</span>
+                    <span class="sign-type-sub">เบิกไปติดตั้ง/ใช้งาน</span>
                   </label>
                 </div>
                 <div class="sign-type-option">
                   <input type="radio" name="recordType" id="typeImport" value="import">
                   <label class="sign-type-label" for="typeImport">
                     <span class="sign-type-title">นำเข้า</span>
-                    <span class="sign-type-sub">รับเข้าคลัง</span>
+                    <span class="sign-type-sub">รับมิเตอร์เข้าคลัง</span>
                   </label>
                 </div>
                 <div class="sign-type-option">
                   <input type="radio" name="recordType" id="typeDamage" value="damage">
                   <label class="sign-type-label" for="typeDamage">
                     <span class="sign-type-title">แจ้งชำรุด</span>
-                    <span class="sign-type-sub">บันทึกเสียหาย</span>
+                    <span class="sign-type-sub">มิเตอร์เสียหาย/ชำรุด</span>
                   </label>
                 </div>
               </div>
             </div>
 
             <div class="two-col-grid">
-              <div>
-                <label>ผู้บันทึกทำรายการ (ล็อกเฉพาะบัญชีคุณ)</label>
-                <div class="card" style="padding: 12px; background: var(--surface-subtle); margin-bottom: 12px;">
-                  <strong id="formUserName">-</strong><br>
-                  <span id="formUserIdAndPhone" style="font-size: 12.5px; color: var(--muted);">-</span>
-                </div>
-                <div class="form-group">
-                  <label for="recordDate">วันที่ลงบันทึก <span class="req-star">*</span></label>
-                  <input type="date" id="recordDate" class="input" required>
+              <div class="form-group">
+                <label>ผู้บันทึกทำรายการ (ล็อคเฉพาะบัญชีคุณ)</label>
+                <div class="user-profile-highlight">
+                  <div class="user-profile-avatar" id="formAvatarIcon">U</div>
+                  <div>
+                    <div class="user-profile-name" id="formUserName">สมชาย สายฟ้า</div>
+                    <div class="user-profile-id-phone" id="formUserIdAndPhone">รหัส: USR-001 | 081-234-5678</div>
+                  </div>
                 </div>
               </div>
 
               <div>
                 <div class="form-group">
                   <label for="recordMeterCode">PEA มิเตอร์ <span class="req-star">*</span></label>
-                  <input type="text" id="recordMeterCode" class="input" placeholder="เช่น PEA525112" required>
+                  <input type="text" id="recordMeterCode" class="input" placeholder="เช่น PEA-67001234" required>
                   <div id="errMeterCode" class="field-error">กรุณากรอกหมายเลข PEA มิเตอร์</div>
                 </div>
                 <div class="form-group">
                   <label for="recordMeterReading">เลขอ่าน <span class="req-star">*</span></label>
                   <input type="text" id="recordMeterReading" class="input" placeholder="เช่น 001245.5" required>
-                  <div id="errMeterReading" class="field-error">กรุณาระบุเลขอ่าน</div>
                 </div>
                 <div class="form-group">
-                  <label for="recordCustomerNumber" id="recordCustomerNumberLabel">หมายเลขผู้ใช้ไฟ (ติดตั้งให้) <span class="req-star">*</span></label>
-                  <input type="text" id="recordCustomerNumber" class="input" placeholder="เช่น CA551223" required>
-                  <div id="errCustomerNumber" class="field-error">กรุณาระบุหมายเลขผู้ใช้ไฟ</div>
+                  <label for="recordCustomerNumber" id="recordCustomerNumberLabel">หมายเลขผู้ใช้ไฟ (นำไปติดตั้งให้ผู้ใช้ไฟหมายเลข) <span class="req-star">*</span></label>
+                  <input type="text" id="recordCustomerNumber" class="input" placeholder="เช่น CA-0200123456" required>
+                </div>
+                <div class="form-group">
+                  <label for="recordDate">วันที่ลงบันทึก <span class="req-star">*</span></label>
+                  <input type="date" id="recordDate" class="input" required>
                 </div>
               </div>
             </div>
 
             <div class="form-group">
-              <label for="recordNote" id="recordNoteLabel">หมายเหตุ / อาการชำรุด</label>
-              <textarea id="recordNote" class="textarea" placeholder="ระบุรายละเอียดเพิ่มเติม..."></textarea>
-              <div id="errRecordNote" class="field-error">กรุณาระบุอาการชำรุด</div>
+              <label for="recordNote" id="recordNoteLabel">หมายเหตุ / รายละเอียดหากมิเตอร์ชำรุด</label>
+              <textarea id="recordNote" class="textarea" placeholder="ระบุหมายเหตุ..."></textarea>
             </div>
 
-            <div class="form-group">
-              <label for="recordPhoto">แนบรูปภาพมิเตอร์</label>
-              <input type="file" id="recordPhoto" accept="image/*" class="input">
-              <div id="photoPreviewWrap" style="display:none; margin-top:8px; gap:8px; align-items:center;">
-                <img id="photoPreviewImg" src="" alt="preview" style="width:50px; height:50px; object-fit:cover; border-radius:4px;">
-                <button type="button" class="btn btn-secondary btn-sm" id="removePhotoBtn">ลบรูป</button>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 8px;">
+            <div style="display: flex; gap: var(--space-2); margin-top: var(--space-4);">
               <button type="submit" class="btn btn-primary" id="submitRecordBtn">บันทึกข้อมูลมิเตอร์</button>
-              <button type="button" class="btn btn-secondary" id="resetRecordFormBtn">ล้างข้อมูลฟอร์ม</button>
+              <button type="button" class="btn btn-secondary" id="resetRecordFormBtn">ล้างฟอร์ม</button>
             </div>
             <div id="recordFeedback" class="inline-feedback"></div>
           </form>
         </div>
       </section>
 
-      <!-- 3. EMPLOYEE MANAGEMENT (ADMIN ONLY) -->
+      <!-- VIEW 3: MANAGE EMPLOYEES (ADMIN ONLY) -->
       <section id="view-employees" class="view-panel">
         <div class="two-col-grid">
           <div class="card">
-            <h2 class="section-title">👤 เพิ่มพนักงานใหม่</h2>
-            <form id="employeesAddForm" novalidate style="margin-top: 12px;">
+            <div class="section-header">
+              <h2 class="section-title">👤 เพิ่มพนักงานใหม่</h2>
+            </div>
+            <form id="employeesAddForm" novalidate>
               <div class="form-group">
-                <label for="empAddName">ชื่อ - นามสกุล <span class="req-star">*</span></label>
-                <input type="text" id="empAddName" class="input" required>
+                <label for="empAddName">ชื่อ - นามสกุล พนักงาน <span class="req-star">*</span></label>
+                <input type="text" id="empAddName" class="input" placeholder="เช่น สมเกียรติ รักดี" required>
               </div>
               <div class="form-group">
                 <label for="empAddPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
-                <input type="tel" id="empAddPhone" class="input" required>
+                <input type="tel" id="empAddPhone" class="input" placeholder="เช่น 082-999-8888" required>
               </div>
               <div class="form-group">
-                <label for="empAddRole">สิทธิ์ใช้งาน <span class="req-star">*</span></label>
-                <select id="empAddRole" class="select">
-                  <option value="staff">Staff (บันทึกได้อย่างเดียว)</option>
-                  <option value="admin">Admin (แก้ไข/ลบข้อมูลได้)</option>
+                <label for="empAddRole">สิทธิ์การใช้งานระบบ <span class="req-star">*</span></label>
+                <select id="empAddRole" class="select" required>
+                  <option value="staff" selected>ผู้ใช้ทั่วไป (Staff)</option>
+                  <option value="admin">ผู้ดูแลระบบ (Admin)</option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-primary" style="width: 100%;">เพิ่มพนักงาน</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">👤 เพิ่มพนักงานเข้าระบบคลาวด์</button>
               <div id="employeesAddFeedback" class="inline-feedback"></div>
             </form>
           </div>
+
           <div class="card">
-            <h2 class="section-title">📋 รายชื่อพนักงานทั้งหมด</h2>
-            <div class="table-wrap" style="margin-top: 12px;">
+            <div class="section-header">
+              <h2 class="section-title">📋 รายชื่อพนักงานทั้งหมด (Cloud Sync)</h2>
+            </div>
+            <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th>รหัส</th>
-                    <th>ชื่อ</th>
-                    <th>เบอร์โทร</th>
-                    <th>สิทธิ์</th>
-                    <th>จัดการ</th>
+                    <th>รหัสผู้ใช้</th>
+                    <th>ชื่อผู้ใช้งาน</th>
+                    <th>เบอร์โทรศัพท์</th>
+                    <th>ระดับสิทธิ์</th>
+                    <th>การจัดการ</th>
                   </tr>
                 </thead>
                 <tbody id="employeesTableBody"></tbody>
@@ -774,468 +767,177 @@
     </main>
   </div>
 
-  <!-- MODALS -->
-  <div id="imageModal" class="modal-backdrop">
-    <div class="modal-card" style="text-align: center;">
-      <div class="modal-header">
-        <h3 id="modalTitle" style="margin: 0; font-size: 16px;">รูปภาพมิเตอร์</h3>
-        <button type="button" class="btn btn-secondary btn-sm" id="closeModalBtn">ปิด</button>
-      </div>
-      <img id="modalImageEl" src="" style="max-width: 100%; max-height: 70vh; border-radius: 6px;">
-    </div>
-  </div>
-
-  <div id="securitySettingsModal" class="modal-backdrop">
+  <!-- EDIT EMPLOYEE MODAL -->
+  <div id="editEmployeeModal" class="modal-backdrop">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 style="margin: 0; font-size: 16px;">🔐 เปลี่ยน Admin Passcode</h3>
-        <button type="button" class="btn btn-secondary btn-sm" id="closeSecurityModalBtn">ปิด</button>
+        <h3 class="modal-title">✏️ แก้ไขข้อมูลพนักงาน (Admin)</h3>
+        <button type="button" class="btn btn-secondary btn-sm" id="closeEditEmpModalBtn">ยกเลิก</button>
       </div>
-      <form id="changePasscodeForm" novalidate style="margin-top: 12px;">
+      <form id="editEmployeeForm" novalidate>
+        <input type="hidden" id="editEmployeeId">
         <div class="form-group">
-          <label for="currentAdminPasscode">รหัสผ่านปัจจุบัน</label>
-          <input type="password" id="currentAdminPasscode" class="input" required>
+          <label for="editEmpName">ชื่อ - นามสกุล <span class="req-star">*</span></label>
+          <input type="text" id="editEmpName" class="input" required>
         </div>
         <div class="form-group">
-          <label for="newAdminPasscode">รหัสผ่านใหม่</label>
-          <input type="text" id="newAdminPasscode" class="input" required>
+          <label for="editEmpPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
+          <input type="tel" id="editEmpPhone" class="input" required>
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">บันทึกรหัสผ่านใหม่</button>
-        <div id="passcodeFeedback" class="inline-feedback"></div>
-      </form>
-    </div>
-  </div>
-
-  <!-- FIREBASE CONFIG MODAL (ADMIN ONLY) -->
-  <div id="firebaseConfigModal" class="modal-backdrop">
-    <div class="modal-card" style="max-width: 520px;">
-      <div class="modal-header">
-        <h3 style="margin: 0; font-size: 16px;">⚙️ ตั้งค่าการเชื่อมต่อ Firebase Cloud Firestore</h3>
-        <button type="button" class="btn btn-secondary btn-sm" id="closeFirebaseModalBtn">ปิด</button>
-      </div>
-      <div style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
-        คัดลอกค่าจาก Firebase Console &gt; Project Settings &gt; General &gt; Your apps &gt; SDK setup and configuration มากรอกที่นี่ เพื่อเปิดใช้งานฐานข้อมูลออนไลน์ทันทีค่ะ
-      </div>
-      <form id="firebaseConfigForm" novalidate>
-        <div class="form-group" style="margin-bottom: 8px;">
-          <label for="fbApiKey">API Key <span class="req-star">*</span></label>
-          <input type="text" id="fbApiKey" class="input" placeholder="AIzaSy..." required>
+        <div class="form-group">
+          <label for="editEmpRole">ระดับสิทธิ์ <span class="req-star">*</span></label>
+          <select id="editEmpRole" class="select" required>
+            <option value="staff">ผู้ใช้ทั่วไป (Staff)</option>
+            <option value="admin">ผู้ดูแลระบบ (Admin)</option>
+          </select>
         </div>
-        <div class="form-group" style="margin-bottom: 8px;">
-          <label for="fbProjectId">Project ID <span class="req-star">*</span></label>
-          <input type="text" id="fbProjectId" class="input" placeholder="เช่น pea-meter-app" required>
+        <div style="display: flex; gap: var(--space-2); justify-content: flex-end; margin-top: var(--space-3);">
+          <button type="button" class="btn btn-secondary" id="cancelEditEmpBtn">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary">บันทึกข้อมูลขึ้นคลาวด์</button>
         </div>
-        <div class="form-group" style="margin-bottom: 8px;">
-          <label for="fbAuthDomain">Auth Domain</label>
-          <input type="text" id="fbAuthDomain" class="input" placeholder="เช่น pea-meter-app.firebaseapp.com">
-        </div>
-        <div class="form-group" style="margin-bottom: 8px;">
-          <label for="fbAppId">App ID</label>
-          <input type="text" id="fbAppId" class="input" placeholder="1:123456789:web:abcdef">
-        </div>
-        <div style="display: flex; gap: 8px; margin-top: 14px;">
-          <button type="submit" class="btn btn-primary" style="flex: 1;">💾 บันทึกและเชื่อมต่อ</button>
-          <button type="button" class="btn btn-danger btn-sm" id="clearFirebaseConfigBtn">ตัดการเชื่อมต่อ</button>
-        </div>
-        <div id="fbConfigFeedback" class="inline-feedback"></div>
       </form>
     </div>
   </div>
 
   <script>
     (function () {
-      /* ====================================================================
-       * 1. FIREBASE CONFIGURATION (จุดใส่ API KEY สำหรับใช้งานจริง)
-       * ====================================================================
-       * ท่านสามารถนำค่า API Key และ Project ID จาก Firebase Console มาแทนที่ด้านล่างนี้ได้เลยค่ะ:
-       */
-      const DEFAULT_FIREBASE_CONFIG = {
-        apiKey: "YOUR_ACTUAL_FIREBASE_API_KEY",        // << ใส่ Firebase API Key ของคุณที่นี่
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com", // << ใส่ Auth Domain ของคุณ
-        projectId: "YOUR_PROJECT_ID",                  // << ใส่ Project ID ของคุณ
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "123456789012",
-        appId: "1:123456789012:web:abcdef1234567890"
-      };
-
-      const STORAGE_KEYS = {
-        USERS: 'meter_app_users',
-        RECORDS: 'meter_app_records',
-        CURRENT_USER: 'meter_app_current_user',
-        ADMIN_PASSCODE: 'meter_app_admin_passcode',
-        INITIALIZED: 'meter_app_initialized',
-        FIREBASE_CONFIG: 'meter_app_firebase_config'
-      };
-
-      let db = null;
-      let isCloudOnline = false;
-
-      // โหลดการตั้งค่า Firebase (จาก LocalStorage หรือจาก DEFAULT_FIREBASE_CONFIG)
-      let activeFirebaseConfig = null;
-      try {
-        const savedFb = localStorage.getItem(STORAGE_KEYS.FIREBASE_CONFIG);
-        if (savedFb) {
-          activeFirebaseConfig = JSON.parse(savedFb);
-        } else if (DEFAULT_FIREBASE_CONFIG.apiKey && !DEFAULT_FIREBASE_CONFIG.apiKey.includes("YOUR_")) {
-          activeFirebaseConfig = DEFAULT_FIREBASE_CONFIG;
-        }
-      } catch (e) {}
-
-      // ฟังก์ชันเริ่มเชื่อมต่อ Firebase
-      function initFirebaseConnection(config) {
-        if (!config || !config.apiKey || config.apiKey.includes("YOUR_")) {
-          document.getElementById('cloudStatusBadge').className = 'sync-status-badge';
-          document.getElementById('cloudStatusText').textContent = 'Local Storage (Offline)';
-          isCloudOnline = false;
-          return;
-        }
-        try {
-          if (!firebase.apps.length) {
-            firebase.initializeApp(config);
-          }
-          db = firebase.firestore();
-          isCloudOnline = true;
-          document.getElementById('cloudStatusBadge').className = 'sync-status-badge online';
-          document.getElementById('cloudStatusText').textContent = 'Cloud Firestore (Online)';
-
-          // ติดตั้ง Real-time Listener ดึงข้อมูลอัตโนมัติ
-          db.collection('meter_records').orderBy('date', 'desc').onSnapshot((snapshot) => {
-            if (!snapshot.empty) {
-              const cloudRecords = [];
-              snapshot.forEach((doc) => cloudRecords.push(doc.data()));
-              records = cloudRecords;
-              localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(records));
-              renderDashboard();
-            }
-          }, (err) => {
-            console.warn("Firestore sync notice:", err);
-          });
-        } catch (err) {
-          console.warn("Firebase Init Error:", err);
-          document.getElementById('cloudStatusBadge').className = 'sync-status-badge';
-          document.getElementById('cloudStatusText').textContent = 'Firebase Error (Offline)';
-          isCloudOnline = false;
-        }
-      }
-
-      // เริ่มต้นเชื่อมต่อ Firebase ครั้งแรก
-      initFirebaseConnection(activeFirebaseConfig);
-
       let users = [];
       let records = [];
       let currentUser = null;
       let adminPasscode = '';
       let systemInitialized = false;
-      let currentPhotoDataUrl = '';
       let overviewChartInstance = null;
 
-      function loadLocalState() {
-        try {
-          users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
-          records = JSON.parse(localStorage.getItem(STORAGE_KEYS.RECORDS) || '[]');
-          currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER) || 'null');
-          adminPasscode = localStorage.getItem(STORAGE_KEYS.ADMIN_PASSCODE) || '';
-          systemInitialized = localStorage.getItem(STORAGE_KEYS.INITIALIZED) === 'true';
-        } catch (e) {}
-      }
-
-      function saveLocalState() {
-        try {
-          localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
-          localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(records));
-          localStorage.setItem(STORAGE_KEYS.ADMIN_PASSCODE, adminPasscode);
-          localStorage.setItem(STORAGE_KEYS.INITIALIZED, systemInitialized ? 'true' : 'false');
-          if (currentUser) localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
-          else localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
-        } catch (e) {}
-      }
-
       function escapeHtml(str) {
-        return String(str || '').replace(/[&<>"']/g, function (m) {
-          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
-        });
+        return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
-
+      function getTodayIso() {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      }
+      function formatThaiDate(isoStr) {
+        if (!isoStr) return '-';
+        const p = isoStr.split('-');
+        if (p.length !== 3) return isoStr;
+        const thM = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+        return `${Number(p[2])} ${thM[Number(p[1]) - 1]} ${Number(p[0]) + 543}`;
+      }
       function getSignTypeLabel(t) {
-        return t === 'import' ? 'นำเข้า' : t === 'withdraw' ? 'เบิกใช้' : 'แจ้งชำรุด';
+        return t === 'import' ? 'นำเข้า' : t === 'withdraw' ? 'เบิกใช้' : t === 'damage' ? 'แจ้งชำรุด' : t;
       }
 
-      // --- SMART PARSER & CLEAR BUTTON LOGIC ---
-      const rawLongTextInput = document.getElementById('rawLongTextInput');
-      const parseRawDataBtn = document.getElementById('parseRawDataBtn');
-      const clearRawDataBtn = document.getElementById('clearRawDataBtn');
-      const parseRawFeedback = document.getElementById('parseRawFeedback');
-
-      if (clearRawDataBtn) {
-        clearRawDataBtn.addEventListener('click', () => {
-          rawLongTextInput.value = '';
-          parseRawFeedback.style.display = 'none';
-          rawLongTextInput.focus();
-        });
-      }
-
-      if (parseRawDataBtn) {
-        parseRawDataBtn.addEventListener('click', () => {
-          const raw = rawLongTextInput.value.trim();
-          if (!raw) {
-            alert('กรุณากรอกหรือวางข้อความก่อนกดแยกข้อมูลค่ะ');
-            return;
-          }
-
-          let meterVal = '', readingVal = '', custVal = '', noteVal = '';
-
-          // 1. ตรวจจับคีย์เวิร์ด
-          const peaMatch = raw.match(/(?:PEA|มิเตอร์|เลขมิเตอร์)[:\s\-]*([A-Za-z0-9\-]+)/i);
-          const readMatch = raw.match(/(?:เลขอ่าน|หน่วยไฟ|kWh|kW)[:\s\-]*([0-9\.]+)/i);
-          const custMatch = raw.match(/(?:ผู้ใช้ไฟ|CA|หมายเลขผู้ใช้ไฟ)[:\s\-]*([A-Za-z0-9\-]+)/i);
-          const noteMatch = raw.match(/(?:หมายเหตุ|อาการ)[:\s\-]*([^\n,]+)/i);
-
-          if (peaMatch) meterVal = peaMatch[1];
-          if (readMatch) readingVal = readMatch[1];
-          if (custMatch) custVal = custMatch[1];
-          if (noteMatch) noteVal = noteMatch[1];
-
-          // 2. ถ้าไม่พบคีย์เวิร์ด ให้แยกด้วยตัวคั่น เช่น จุลภาค (,) ทับ (/) ขีด (|) หรือบรรทัดใหม่
-          if (!meterVal && !readingVal) {
-            const tokens = raw.split(/[\n,\|\/]+/).map(s => s.trim()).filter(Boolean);
-            if (tokens.length >= 1) meterVal = tokens[0];
-            if (tokens.length >= 2) readingVal = tokens[1];
-            if (tokens.length >= 3) custVal = tokens[2];
-            if (tokens.length >= 4) noteVal = tokens.slice(3).join(' ');
-          }
-
-          // 3. ตรวจสอบประเภทรายการ
-          if (/ชำรุด|เสีย|แตก|ไหม้/i.test(raw)) {
-            document.getElementById('typeDamage').checked = true;
-          } else if (/นำเข้า|ส่งคืน|ถอด/i.test(raw)) {
-            document.getElementById('typeImport').checked = true;
-          } else if (/เบิก|ติดตั้ง/i.test(raw)) {
-            document.getElementById('typeWithdraw').checked = true;
-          }
-          updateNoteRequirement();
-
-          // เติมข้อมูลลงช่องกรอก
-          if (meterVal) document.getElementById('recordMeterCode').value = meterVal;
-          if (readingVal) document.getElementById('recordMeterReading').value = readingVal;
-          if (custVal) document.getElementById('recordCustomerNumber').value = custVal;
-          if (noteVal) document.getElementById('recordNote').value = noteVal;
-
-          parseRawFeedback.textContent = `แยกข้อมูลสำเร็จ: PEA: ${meterVal || '-'} | เลขอ่าน: ${readingVal || '-'} | ผู้ใช้ไฟ: ${custVal || '-'}`;
-          parseRawFeedback.className = 'inline-feedback success';
-          parseRawFeedback.style.display = 'block';
-        });
-      }
-
-      function updateNoteRequirement() {
-        const type = document.querySelector('input[name="recordType"]:checked').value;
-        const noteLabel = document.getElementById('recordNoteLabel');
-        const custLabel = document.getElementById('recordCustomerNumberLabel');
-        if (type === 'damage') {
-          noteLabel.innerHTML = 'หมายเหตุ / อาการชำรุด <span class="req-star">*</span>';
+      // -------------------------------------------------------------
+      // 1. CLOUD FIRESTORE SYNCHRONIZATION CONTROLLER
+      // -------------------------------------------------------------
+      window.addEventListener('firebase-ready', () => {
+        const isOnline = window.__FIREBASE_ENABLED__;
+        const cloudBadge = document.getElementById('cloudStatusBadge');
+        if (isOnline) {
+          cloudBadge.textContent = '☁️ Cloud Firestore (Online)';
+          cloudBadge.className = 'cloud-pill online';
+          initCloudSync();
         } else {
-          noteLabel.innerHTML = 'หมายเหตุ / รายละเอียด';
+          cloudBadge.textContent = '⚡ Local Mode (Offline)';
+          cloudBadge.className = 'cloud-pill offline';
+          loadLocalFallback();
         }
-        if (type === 'withdraw') {
-          custLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ติดตั้งให้) <span class="req-star">*</span>';
-        } else if (type === 'import') {
-          custLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถอดมาจาก) <span class="req-star">*</span>';
-        } else {
-          custLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถ้ามี)';
-        }
-      }
-
-      document.querySelectorAll('input[name="recordType"]').forEach(r => {
-        r.addEventListener('change', updateNoteRequirement);
       });
 
-      // --- RECORD FORM SUBMISSION ---
-      const meterRecordForm = document.getElementById('meterRecordForm');
-      meterRecordForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const type = document.querySelector('input[name="recordType"]:checked').value;
-        const meterCode = document.getElementById('recordMeterCode').value.trim();
-        const meterReading = document.getElementById('recordMeterReading').value.trim();
-        const customerNumber = document.getElementById('recordCustomerNumber').value.trim();
-        const date = document.getElementById('recordDate').value;
-        const note = document.getElementById('recordNote').value.trim();
+      async function initCloudSync() {
+        const db = window.__FIREBASE_DB__;
+        const { doc, getDoc, collection, onSnapshot, query, orderBy } = window.__FIRESTORE_TOOLS__;
 
-        if (!meterCode || !meterReading || !date) {
-          alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน');
+        try {
+          // ตรวจสอบการตั้งค่าระบบจาก Cloud Firestore โดยตรง (แก้ปัญหาเครื่องอื่นให้เริ่มระบบใหม่)
+          const configDoc = await getDoc(doc(db, "system_config", "security"));
+          if (configDoc.exists()) {
+            const data = configDoc.data();
+            systemInitialized = data.initialized === true;
+            adminPasscode = data.adminPasscode || '';
+          } else {
+            systemInitialized = false;
+          }
+        } catch (err) {
+          console.warn("Could not fetch system_config from Firestore:", err);
+          systemInitialized = localStorage.getItem('system_init') === 'true';
+        }
+
+        // Real-time Users Listener (แก้ปัญหาแอดมินมองไม่เห็นพนักงาน)
+        onSnapshot(collection(db, "users"), (snapshot) => {
+          users = [];
+          snapshot.forEach((d) => users.push(d.data()));
+          renderEmployeesTable();
+          updateUserDatalist();
+        });
+
+        // Real-time Records Listener
+        const qRecords = query(collection(db, "meter_records"), orderBy("date", "desc"));
+        onSnapshot(qRecords, (snapshot) => {
+          records = [];
+          snapshot.forEach((d) => records.push(d.data()));
+          renderDashboard();
+        });
+
+        checkInitialRouting();
+      }
+
+      function loadLocalFallback() {
+        systemInitialized = localStorage.getItem('system_init') === 'true';
+        adminPasscode = localStorage.getItem('admin_passcode') || '';
+        try {
+          users = JSON.parse(localStorage.getItem('users') || '[]');
+          records = JSON.parse(localStorage.getItem('records') || '[]');
+        } catch (e) {}
+        checkInitialRouting();
+      }
+
+      function checkInitialRouting() {
+        if (!systemInitialized) {
+          document.getElementById('setup-view').classList.add('active');
+          document.getElementById('auth-view').style.display = 'none';
+          document.getElementById('app-portal').classList.remove('active');
+        } else {
+          document.getElementById('setup-view').classList.remove('active');
+          document.getElementById('auth-view').style.display = 'flex';
+        }
+      }
+
+      // -------------------------------------------------------------
+      // 2. FIRST-TIME SETUP & AUTH
+      // -------------------------------------------------------------
+      const systemSetupForm = document.getElementById('systemSetupForm');
+      systemSetupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nameVal = document.getElementById('setupAdminName').value.trim();
+        const phoneVal = document.getElementById('setupAdminPhone').value.trim();
+        const passcodeVal = document.getElementById('setupAdminPasscode').value.trim();
+
+        if (!nameVal || phoneVal.replace(/\D/g, '').length < 9 || passcodeVal.length < 4) {
+          alert('กรุณากรอกข้อมูลให้ครบถ้วนถูกต้อง');
           return;
         }
 
-        // ระบบตรวจสอบคลังสินค้า: ป้องกันเบิกใช้มิเตอร์ที่ไม่อยู่ในคลัง
-        if (type === 'withdraw') {
-          const latest = records.find(r => r.meterCode.toUpperCase() === meterCode.toUpperCase());
-          if (!latest || latest.type !== 'import') {
-            alert(`ไม่สามารถเบิกใช้ได้ เนื่องจากมิเตอร์ ${meterCode} ไม่อยู่ในคลังพร้อมใช้ (สถานะล่าสุด: ${latest ? getSignTypeLabel(latest.type) : 'ไม่มีการนำเข้า'})`);
-            return;
-          }
+        const superAdmin = { userId: 'ADMIN-01', name: nameVal, phone: phoneVal, role: 'admin' };
+
+        if (window.__FIREBASE_ENABLED__) {
+          const db = window.__FIREBASE_DB__;
+          const { doc, setDoc } = window.__FIRESTORE_TOOLS__;
+          await setDoc(doc(db, "system_config", "security"), { initialized: true, adminPasscode: passcodeVal });
+          await setDoc(doc(db, "users", superAdmin.userId), superAdmin);
+        } else {
+          localStorage.setItem('system_init', 'true');
+          localStorage.setItem('admin_passcode', passcodeVal);
+          localStorage.setItem('users', JSON.stringify([superAdmin]));
         }
 
-        const newRec = {
-          id: 'REC-' + Date.now(),
-          type,
-          meterCode,
-          meterReading,
-          customerNumber,
-          userId: currentUser.userId,
-          userName: currentUser.name,
-          userPhone: currentUser.phone,
-          date,
-          note,
-          photo: currentPhotoDataUrl
-        };
-
-        if (isCloudOnline && db) {
-          db.collection('meter_records').doc(newRec.id).set(newRec);
-        }
-
-        records.unshift(newRec);
-        saveLocalState();
-
-        document.getElementById('recordMeterCode').value = '';
-        document.getElementById('recordMeterReading').value = '';
-        document.getElementById('recordCustomerNumber').value = '';
-        document.getElementById('recordNote').value = '';
-        currentPhotoDataUrl = '';
-        document.getElementById('photoPreviewWrap').style.display = 'none';
-
-        const fb = document.getElementById('recordFeedback');
-        fb.textContent = `บันทึกรายการ "${getSignTypeLabel(type)}" มิเตอร์ ${meterCode} สำเร็จ!`;
-        fb.className = 'inline-feedback success';
-        fb.style.display = 'block';
-
-        renderDashboard();
+        systemInitialized = true;
+        adminPasscode = passcodeVal;
+        currentUser = superAdmin;
+        document.getElementById('setup-view').classList.remove('active');
+        enterAppView();
       });
 
-      // Quick Withdraw Action
-      function wireQuickWithdraw() {
-        document.querySelectorAll('.quick-withdraw-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const m = btn.dataset.meter;
-            const r = btn.dataset.reading;
-            switchTab('record');
-            document.getElementById('typeWithdraw').checked = true;
-            updateNoteRequirement();
-            document.getElementById('recordMeterCode').value = m;
-            document.getElementById('recordMeterReading').value = '';
-            document.getElementById('recordMeterReading').placeholder = `เลขอ่านนำเข้าคือ ${r}`;
-            document.getElementById('recordCustomerNumber').focus();
-          });
-        });
-      }
-
-      function renderDashboard() {
-        const total = records.length;
-        const imp = records.filter(r => r.type === 'import').length;
-        const wtd = records.filter(r => r.type === 'withdraw').length;
-        const dmg = records.filter(r => r.type === 'damage').length;
-
-        // คำนวณมิเตอร์คงคลัง
-        const seen = new Map();
-        records.forEach(r => {
-          const k = r.meterCode.toUpperCase();
-          if (!seen.has(k)) seen.set(k, r);
-        });
-        let stock = 0;
-        seen.forEach(r => { if (r.type === 'import') stock++; });
-
-        document.getElementById('kpiTotal').textContent = total;
-        document.getElementById('kpiImport').textContent = imp;
-        document.getElementById('kpiWithdraw').textContent = wtd;
-        document.getElementById('kpiDamage').textContent = dmg;
-        document.getElementById('kpiStock').textContent = stock;
-
-        // Render Quick Stock Table
-        const stockTbody = document.getElementById('stockMeterTableBody');
-        const inStock = Array.from(seen.values()).filter(r => r.type === 'import');
-        stockTbody.innerHTML = inStock.map(r => `
-          <tr>
-            <td><span class="code-pill">${escapeHtml(r.meterCode)}</span></td>
-            <td>${escapeHtml(r.meterReading)}</td>
-            <td>${escapeHtml(r.date)}</td>
-            <td>${escapeHtml(r.userName)}</td>
-            <td>
-              <button type="button" class="btn btn-primary btn-sm quick-withdraw-btn" data-meter="${escapeHtml(r.meterCode)}" data-reading="${escapeHtml(r.meterReading)}" style="background:var(--withdraw-color);">
-                ⚡ เบิกใช้ด่วน
-              </button>
-            </td>
-          </tr>
-        `).join('') || '<tr><td colspan="5" style="text-align:center; color:var(--muted);">ไม่มีมิเตอร์คงคลัง</td></tr>';
-        wireQuickWithdraw();
-
-        // Render Latest Table
-        document.getElementById('latestMeterTableBody').innerHTML = Array.from(seen.values()).map(r => `
-          <tr>
-            <td><span class="code-pill">${escapeHtml(r.meterCode)}</span></td>
-            <td>${escapeHtml(r.meterReading)}</td>
-            <td>${escapeHtml(r.customerNumber || '-')}</td>
-            <td><span class="status-chip ${r.type}">${getSignTypeLabel(r.type)}</span></td>
-            <td>${escapeHtml(r.userName)}</td>
-          </tr>
-        `).join('') || '<tr><td colspan="5" style="text-align:center; color:var(--muted);">ไม่มีข้อมูล</td></tr>';
-
-        renderRecordsTable();
-      }
-
-      function renderRecordsTable() {
-        const tbody = document.getElementById('recordsTableBody');
-        const filterU = document.getElementById('filterUserId').value.trim().toLowerCase();
-        const filterK = document.getElementById('filterKeyword').value.trim().toLowerCase();
-        const filterT = document.getElementById('filterType').value;
-        const filterD = document.getElementById('filterDate').value;
-        const isAdmin = currentUser && currentUser.role === 'admin';
-
-        const filtered = records.filter(r => {
-          if (filterU && !r.userId.toLowerCase().includes(filterU)) return false;
-          if (filterT !== 'all' && r.type !== filterT) return false;
-          if (filterD && r.date !== filterD) return false;
-          if (filterK && !`${r.meterCode} ${r.customerNumber} ${r.userName}`.toLowerCase().includes(filterK)) return false;
-          return true;
-        });
-
-        tbody.innerHTML = filtered.map(r => `
-          <tr>
-            <td>${escapeHtml(r.date)}</td>
-            <td><span class="status-chip ${r.type}">${getSignTypeLabel(r.type)}</span></td>
-            <td><span class="code-pill">${escapeHtml(r.meterCode)}</span></td>
-            <td>${escapeHtml(r.meterReading)}</td>
-            <td>${escapeHtml(r.customerNumber || '-')}</td>
-            <td><span class="code-pill">${escapeHtml(r.userId)}</span></td>
-            <td>${escapeHtml(r.note || '-')}</td>
-            <td>${r.photo ? `<button class="btn btn-secondary btn-sm" onclick="showImg('${r.photo}')">ดูรูป</button>` : '-'}</td>
-            ${isAdmin ? `<td><button class="btn btn-danger btn-sm" onclick="delRec('${r.id}')">ลบ</button></td>` : ''}
-          </tr>
-        `).join('') || '<tr><td colspan="9" style="text-align:center; color:var(--muted);">ไม่พบรายการ</td></tr>';
-      }
-
-      window.showImg = function(src) {
-        document.getElementById('modalImageEl').src = src;
-        document.getElementById('imageModal').classList.add('open');
-      };
-      document.getElementById('closeModalBtn').addEventListener('click', () => {
-        document.getElementById('imageModal').classList.remove('open');
-      });
-
-      window.delRec = function(id) {
-        if (!confirm('ยืนยันลบรายการนี้?')) return;
-        records = records.filter(r => r.id !== id);
-        if (isCloudOnline && db) db.collection('meter_records').doc(id).delete();
-        saveLocalState();
-        renderDashboard();
-      };
-
-      // Tab switching
-      function switchTab(tabId) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
-        document.querySelectorAll('.view-panel').forEach(p => p.classList.toggle('active', p.id === 'view-' + tabId));
-        if (tabId === 'dashboard') renderDashboard();
-      }
-      document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
-      document.getElementById('goToRecordBtn').addEventListener('click', () => switchTab('record'));
-
-      // Auth Tabs & Handlers
+      // Login / Register Tabs
       document.getElementById('authTabLoginBtn').addEventListener('click', () => {
         document.getElementById('authTabLoginBtn').classList.add('active');
         document.getElementById('authTabRegisterBtn').classList.remove('active');
@@ -1249,159 +951,495 @@
         document.getElementById('authPanelLogin').classList.remove('active');
       });
 
-      document.getElementById('authLoginForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const q = document.getElementById('loginQuery').value.trim();
-        const u = users.find(x => x.userId.toLowerCase() === q.toLowerCase() || x.phone === q);
-        if (!u) {
-          alert('ไม่พบผู้ใช้งานนี้ในระบบ');
-          return;
-        }
-        currentUser = u;
-        saveLocalState();
-        enterApp();
+      document.getElementById('regUserRole').addEventListener('change', (e) => {
+        document.getElementById('regAdminPasscodeGroup').style.display = e.target.value === 'admin' ? 'block' : 'none';
       });
 
-      function enterApp() {
-        document.getElementById('auth-view').classList.remove('active');
-        document.getElementById('setup-view').classList.remove('active');
+      document.getElementById('authLoginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const queryVal = document.getElementById('loginQuery').value.trim();
+        const digits = queryVal.replace(/\D/g, '');
+
+        const matched = users.find(u => u.userId.toLowerCase() === queryVal.toLowerCase() || (digits && u.phone.replace(/\D/g, '') === digits));
+        if (!matched) {
+          alert('ไม่พบรหัสผู้ใช้หรือเบอร์โทรนี้ในระบบ');
+          return;
+        }
+        currentUser = matched;
+        enterAppView();
+      });
+
+      document.getElementById('authRegisterForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nameVal = document.getElementById('regUserName').value.trim();
+        const phoneVal = document.getElementById('regUserPhone').value.trim();
+        const roleVal = document.getElementById('regUserRole').value;
+        const passVal = document.getElementById('regAdminPasscode').value.trim();
+
+        if (roleVal === 'admin' && passVal !== adminPasscode) {
+          alert('รหัสผ่านยืนยันสิทธิ์ Admin ไม่ถูกต้อง');
+          return;
+        }
+
+        const genId = roleVal === 'admin'
+          ? `ADM-${String(users.filter(u => u.userId.startsWith('ADM')).length + 1).padStart(2, '0')}`
+          : `USR-${String(users.filter(u => u.userId.startsWith('USR')).length + 1).padStart(3, '0')}`;
+
+        const newUser = { userId: genId, name: nameVal, phone: phoneVal, role: roleVal };
+
+        if (window.__FIREBASE_ENABLED__) {
+          const db = window.__FIREBASE_DB__;
+          const { doc, setDoc } = window.__FIRESTORE_TOOLS__;
+          await setDoc(doc(db, "users", newUser.userId), newUser);
+        } else {
+          users.push(newUser);
+          localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        currentUser = newUser;
+        enterAppView();
+      });
+
+      function enterAppView() {
+        document.getElementById('auth-view').style.display = 'none';
         document.getElementById('app-portal').classList.add('active');
 
         document.getElementById('headerUserText').textContent = `${currentUser.userId} - ${currentUser.name}`;
-        document.getElementById('formUserName').textContent = currentUser.name;
-        document.getElementById('formUserIdAndPhone').textContent = `รหัส: ${currentUser.userId} | โทร: ${currentUser.phone}`;
-        document.getElementById('recordDate').value = new Date().toISOString().split('T')[0];
-
         const isAdmin = currentUser.role === 'admin';
         document.getElementById('headerUserRoleBadge').textContent = isAdmin ? 'ADMIN' : 'STAFF';
-        document.getElementById('tabBtnEmployees').style.display = isAdmin ? 'inline-flex' : 'none';
-        document.getElementById('adminRegisterUserBtn').style.display = isAdmin ? 'inline-flex' : 'none';
-        document.getElementById('firebaseConfigBtn').style.display = isAdmin ? 'inline-flex' : 'none';
+        document.getElementById('headerUserRoleBadge').className = `user-role-tag ${isAdmin ? 'admin' : ''}`;
+
+        document.getElementById('formAvatarIcon').textContent = currentUser.name.charAt(0).toUpperCase();
+        document.getElementById('formUserName').textContent = currentUser.name;
+        document.getElementById('formUserIdAndPhone').textContent = `รหัส: ${currentUser.userId} | ${currentUser.phone}`;
+
+        document.querySelectorAll('.admin-only-col').forEach(el => {
+          el.style.display = isAdmin ? (el.tagName === 'TH' || el.tagName === 'TD' ? 'table-cell' : 'inline-flex') : 'none';
+        });
 
         renderDashboard();
+        renderEmployeesTable();
+        switchTab('dashboard');
       }
 
       document.getElementById('logoutBtn').addEventListener('click', () => {
         currentUser = null;
-        saveLocalState();
-        location.reload();
+        document.getElementById('app-portal').classList.remove('active');
+        document.getElementById('auth-view').style.display = 'flex';
       });
 
-      // Photo handling
-      document.getElementById('recordPhoto').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          currentPhotoDataUrl = ev.target.result;
-          document.getElementById('photoPreviewImg').src = currentPhotoDataUrl;
-          document.getElementById('photoPreviewWrap').style.display = 'flex';
-        };
-        reader.readAsDataURL(file);
-      });
-      document.getElementById('removePhotoBtn').addEventListener('click', () => {
-        currentPhotoDataUrl = '';
-        document.getElementById('recordPhoto').value = '';
-        document.getElementById('photoPreviewWrap').style.display = 'none';
-      });
+      // -------------------------------------------------------------
+      // 3. SMART TEXT PARSER & FORM HELPERS
+      // -------------------------------------------------------------
+      const rawLongTextInput = document.getElementById('rawLongTextInput');
+      const parseRawDataBtn = document.getElementById('parseRawDataBtn');
+      const clearRawDataBtn = document.getElementById('clearRawDataBtn');
+      const parseRawFeedback = document.getElementById('parseRawFeedback');
 
-      // First-time setup
-      loadLocalState();
-      if (!systemInitialized) {
-        document.getElementById('setup-view').classList.add('active');
-      } else if (currentUser) {
-        enterApp();
-      } else {
-        document.getElementById('auth-view').classList.add('active');
-      }
-
-      document.getElementById('systemSetupForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('setupAdminName').value.trim();
-        const phone = document.getElementById('setupAdminPhone').value.trim();
-        const pass = document.getElementById('setupAdminPasscode').value.trim();
-        if (!name || phone.length < 9 || pass.length < 4) {
-          alert('กรุณากรอกข้อมูลให้ถูกต้อง');
+      parseRawDataBtn.addEventListener('click', () => {
+        const text = rawLongTextInput.value.trim();
+        if (!text) {
+          alert('กรุณาวางข้อความก่อนกดแยกข้อมูล');
           return;
         }
-        const adminUser = { userId: 'ADMIN-01', name, phone, role: 'admin' };
-        users = [adminUser];
-        adminPasscode = pass;
-        systemInitialized = true;
-        currentUser = adminUser;
-        saveLocalState();
-        enterApp();
+
+        const tokens = text.split(/[,|\/\n\t]+/).map(t => t.trim()).filter(Boolean);
+        let extracted = { meter: '', reading: '', customer: '', note: '' };
+
+        tokens.forEach(tok => {
+          if (!extracted.meter && /(PEA|\b\d{6,10}\b)/i.test(tok)) {
+            extracted.meter = tok.replace(/^(PEA\s*มิเตอร์|มิเตอร์|PEA)[:\s-]*/i, '').trim();
+          } else if (!extracted.reading && /\b\d+(\.\d+)?\b/.test(tok) && !tok.startsWith('CA')) {
+            extracted.reading = tok.replace(/^(เลขอ่าน|หน่วยไฟ)[:\s-]*/i, '').trim();
+          } else if (!extracted.customer && /(CA|\b\d{8,12}\b)/i.test(tok)) {
+            extracted.customer = tok.replace(/^(หมายเลขผู้ใช้ไฟ|ผู้ใช้ไฟ|CA)[:\s-]*/i, '').trim();
+          } else {
+            extracted.note += (extracted.note ? ' ' : '') + tok;
+          }
+        });
+
+        if (extracted.meter) document.getElementById('recordMeterCode').value = extracted.meter;
+        if (extracted.reading) document.getElementById('recordMeterReading').value = extracted.reading;
+        if (extracted.customer) document.getElementById('recordCustomerNumber').value = extracted.customer;
+        if (extracted.note) document.getElementById('recordNote').value = extracted.note;
+
+        parseRawFeedback.textContent = `แยกข้อมูลสำเร็จ: PEA ${extracted.meter || '-'} | เลขอ่าน ${extracted.reading || '-'} | ผู้ใช้ไฟ ${extracted.customer || '-'}`;
+        parseRawFeedback.className = 'inline-feedback success';
       });
 
-      // --- FIREBASE CONFIG MODAL CONTROLLER ---
-      const firebaseConfigModal = document.getElementById('firebaseConfigModal');
-      const firebaseConfigBtn = document.getElementById('firebaseConfigBtn');
-      const closeFirebaseModalBtn = document.getElementById('closeFirebaseModalBtn');
-      const firebaseConfigForm = document.getElementById('firebaseConfigForm');
-      const clearFirebaseConfigBtn = document.getElementById('clearFirebaseConfigBtn');
-      const fbConfigFeedback = document.getElementById('fbConfigFeedback');
+      clearRawDataBtn.addEventListener('click', () => {
+        rawLongTextInput.value = '';
+        parseRawFeedback.className = 'inline-feedback';
+      });
 
-      const fbApiKey = document.getElementById('fbApiKey');
-      const fbProjectId = document.getElementById('fbProjectId');
-      const fbAuthDomain = document.getElementById('fbAuthDomain');
-      const fbAppId = document.getElementById('fbAppId');
+      document.querySelectorAll('input[name="recordType"]').forEach(r => {
+        r.addEventListener('change', () => {
+          const val = document.querySelector('input[name="recordType"]:checked').value;
+          const lbl = document.getElementById('recordCustomerNumberLabel');
+          if (val === 'withdraw') lbl.innerHTML = 'หมายเลขผู้ใช้ไฟ (นำไปติดตั้งให้) <span class="req-star">*</span>';
+          else if (val === 'import') lbl.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถอดมาจาก) <span class="req-star">*</span>';
+          else lbl.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถ้ามี)';
+        });
+      });
 
-      if (firebaseConfigBtn) {
-        firebaseConfigBtn.addEventListener('click', () => {
-          const cfg = activeFirebaseConfig || {};
-          fbApiKey.value = cfg.apiKey && !cfg.apiKey.includes("YOUR_") ? cfg.apiKey : '';
-          fbProjectId.value = cfg.projectId && !cfg.projectId.includes("YOUR_") ? cfg.projectId : '';
-          fbAuthDomain.value = cfg.authDomain && !cfg.authDomain.includes("YOUR_") ? cfg.authDomain : '';
-          fbAppId.value = cfg.appId && !cfg.appId.includes("123456") ? cfg.appId : '';
-          fbConfigFeedback.style.display = 'none';
-          firebaseConfigModal.classList.add('open');
+      document.getElementById('recordDate').value = getTodayIso();
+
+      // Record Submission
+      document.getElementById('meterRecordForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const typeVal = document.querySelector('input[name="recordType"]:checked').value;
+        const meterVal = document.getElementById('recordMeterCode').value.trim();
+        const readingVal = document.getElementById('recordMeterReading').value.trim();
+        const custVal = document.getElementById('recordCustomerNumber').value.trim();
+        const dateVal = document.getElementById('recordDate').value;
+        const noteVal = document.getElementById('recordNote').value.trim();
+
+        if (!meterVal || !readingVal || !dateVal) {
+          alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน');
+          return;
+        }
+
+        // Inventory Check: เบิกใช้ได้เฉพาะเมื่อมีมิเตอร์ในคลัง
+        if (typeVal === 'withdraw') {
+          const latest = records.find(r => r.meterCode.toUpperCase() === meterVal.toUpperCase());
+          if (!latest || latest.type !== 'import') {
+            alert(`ไม่สามารถเบิกใช้ได้ เนื่องจากมิเตอร์ ${meterVal} ไม่อยู่ในคลังพร้อมใช้`);
+            return;
+          }
+        }
+
+        const newRec = {
+          id: 'REC-' + Date.now(),
+          type: typeVal,
+          meterCode: meterVal,
+          meterReading: readingVal,
+          customerNumber: custVal,
+          userId: currentUser.userId,
+          userName: currentUser.name,
+          userPhone: currentUser.phone,
+          date: dateVal,
+          note: noteVal
+        };
+
+        if (window.__FIREBASE_ENABLED__) {
+          const db = window.__FIREBASE_DB__;
+          const { doc, setDoc } = window.__FIRESTORE_TOOLS__;
+          await setDoc(doc(db, "meter_records", newRec.id), newRec);
+        } else {
+          records.unshift(newRec);
+          localStorage.setItem('records', JSON.stringify(records));
+          renderDashboard();
+        }
+
+        document.getElementById('recordMeterCode').value = '';
+        document.getElementById('recordMeterReading').value = '';
+        document.getElementById('recordCustomerNumber').value = '';
+        document.getElementById('recordNote').value = '';
+        alert('บันทึกข้อมูลมิเตอร์เรียบร้อยแล้วค่ะ');
+        switchTab('dashboard');
+      });
+
+      // -------------------------------------------------------------
+      // 4. EMPLOYEE MANAGEMENT (ADMIN ONLY - CLOUD SYNC)
+      // -------------------------------------------------------------
+      const employeesAddForm = document.getElementById('employeesAddForm');
+      employeesAddForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nameVal = document.getElementById('empAddName').value.trim();
+        const phoneVal = document.getElementById('empAddPhone').value.trim();
+        const roleVal = document.getElementById('empAddRole').value;
+
+        if (!nameVal || phoneVal.replace(/\D/g, '').length < 9) {
+          alert('กรุณากรอกชื่อและเบอร์โทรให้ถูกต้อง');
+          return;
+        }
+
+        const genId = roleVal === 'admin'
+          ? `ADM-${String(users.filter(u => u.userId.startsWith('ADM')).length + 1).padStart(2, '0')}`
+          : `USR-${String(users.filter(u => u.userId.startsWith('USR')).length + 1).padStart(3, '0')}`;
+
+        const newEmp = { userId: genId, name: nameVal, phone: phoneVal, role: roleVal };
+
+        if (window.__FIREBASE_ENABLED__) {
+          const db = window.__FIREBASE_DB__;
+          const { doc, setDoc } = window.__FIRESTORE_TOOLS__;
+          await setDoc(doc(db, "users", newEmp.userId), newEmp);
+        } else {
+          users.push(newEmp);
+          localStorage.setItem('users', JSON.stringify(users));
+          renderEmployeesTable();
+        }
+
+        document.getElementById('empAddName').value = '';
+        document.getElementById('empAddPhone').value = '';
+        alert(`เพิ่มพนักงานสำเร็จ! รหัสคือ ${genId}`);
+      });
+
+      function renderEmployeesTable() {
+        const tbody = document.getElementById('employeesTableBody');
+        if (!tbody) return;
+
+        if (users.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="empty-state">ไม่พบรายชื่อพนักงาน</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = users.map(u => {
+          const isSelf = currentUser && currentUser.userId === u.userId;
+          return `
+            <tr>
+              <td><span class="code-pill">${escapeHtml(u.userId)}</span></td>
+              <td><strong>${escapeHtml(u.name)}</strong> ${isSelf ? '<span style="color:var(--brand);font-size:11px;">(คุณ)</span>' : ''}</td>
+              <td>${escapeHtml(u.phone)}</td>
+              <td><span class="user-role-tag ${u.role === 'admin' ? 'admin' : ''}">${u.role.toUpperCase()}</span></td>
+              <td>
+                <button type="button" class="btn btn-secondary btn-sm edit-emp-btn" data-id="${escapeHtml(u.userId)}">✏️ แก้ไข</button>
+                <button type="button" class="btn btn-danger btn-sm delete-emp-btn" data-id="${escapeHtml(u.userId)}" ${isSelf ? 'disabled' : ''}>🗑️ ลบ</button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        tbody.querySelectorAll('.edit-emp-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const emp = users.find(u => u.userId === btn.dataset.id);
+            if (emp) {
+              document.getElementById('editEmployeeId').value = emp.userId;
+              document.getElementById('editEmpName').value = emp.name;
+              document.getElementById('editEmpPhone').value = emp.phone;
+              document.getElementById('editEmpRole').value = emp.role;
+              document.getElementById('editEmployeeModal').classList.add('open');
+            }
+          });
+        });
+
+        tbody.querySelectorAll('.delete-emp-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const empId = btn.dataset.id;
+            if (!confirm(`คุณต้องการลบพนักงานรหัส ${empId} ใช่หรือไม่?`)) return;
+
+            if (window.__FIREBASE_ENABLED__) {
+              const db = window.__FIREBASE_DB__;
+              const { doc, deleteDoc } = window.__FIRESTORE_TOOLS__;
+              await deleteDoc(doc(db, "users", empId));
+            } else {
+              users = users.filter(u => u.userId !== empId);
+              localStorage.setItem('users', JSON.stringify(users));
+              renderEmployeesTable();
+            }
+          });
         });
       }
 
-      closeFirebaseModalBtn.addEventListener('click', () => {
-        firebaseConfigModal.classList.remove('open');
+      document.getElementById('closeEditEmpModalBtn').addEventListener('click', () => document.getElementById('editEmployeeModal').classList.remove('open'));
+      document.getElementById('cancelEditEmpBtn').addEventListener('click', () => document.getElementById('editEmployeeModal').classList.remove('open'));
+
+      document.getElementById('editEmployeeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('editEmployeeId').value;
+        const nameVal = document.getElementById('editEmpName').value.trim();
+        const phoneVal = document.getElementById('editEmpPhone').value.trim();
+        const roleVal = document.getElementById('editEmpRole').value;
+
+        if (window.__FIREBASE_ENABLED__) {
+          const db = window.__FIREBASE_DB__;
+          const { doc, updateDoc } = window.__FIRESTORE_TOOLS__;
+          await updateDoc(doc(db, "users", id), { name: nameVal, phone: phoneVal, role: roleVal });
+        } else {
+          const idx = users.findIndex(u => u.userId === id);
+          if (idx !== -1) {
+            users[idx] = { ...users[idx], name: nameVal, phone: phoneVal, role: roleVal };
+            localStorage.setItem('users', JSON.stringify(users));
+            renderEmployeesTable();
+          }
+        }
+        document.getElementById('editEmployeeModal').classList.remove('open');
       });
 
-      firebaseConfigForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const key = fbApiKey.value.trim();
-        const proj = fbProjectId.value.trim();
-        if (!key || !proj) {
-          alert('กรุณากรอก API Key และ Project ID ให้ครบถ้วน');
+      function updateUserDatalist() {
+        const dl = document.getElementById('registeredUserIdList');
+        if (dl) {
+          dl.innerHTML = users.map(u => `<option value="${escapeHtml(u.userId)}">${escapeHtml(u.name)} (${escapeHtml(u.phone)})</option>`).join('');
+        }
+      }
+
+      // -------------------------------------------------------------
+      // 5. DASHBOARD & RENDER
+      // -------------------------------------------------------------
+      function renderDashboard() {
+        const total = records.length;
+        const imp = records.filter(r => r.type === 'import').length;
+        const wdr = records.filter(r => r.type === 'withdraw').length;
+        const dmg = records.filter(r => r.type === 'damage').length;
+
+        // คำนวณสต็อกคงคลัง (มิเตอร์ลูกที่สถานะล่าสุดคือ 'import')
+        const latestMeters = new Map();
+        records.forEach(r => {
+          const k = r.meterCode.toUpperCase();
+          if (!latestMeters.has(k)) latestMeters.set(k, r);
+        });
+        let stock = 0;
+        latestMeters.forEach(r => { if (r.type === 'import') stock++; });
+
+        document.getElementById('kpiTotal').textContent = total.toLocaleString();
+        document.getElementById('kpiImport').textContent = imp.toLocaleString();
+        document.getElementById('kpiWithdraw').textContent = wdr.toLocaleString();
+        document.getElementById('kpiDamage').textContent = dmg.toLocaleString();
+        document.getElementById('kpiStock').textContent = stock.toLocaleString();
+
+        renderChart(imp, wdr, dmg);
+        renderLatestTable(latestMeters);
+        renderStockTable(latestMeters);
+        renderRecordsTable();
+      }
+
+      function renderChart(imp, wdr, dmg) {
+        const cv = document.getElementById('overviewChart');
+        const empty = document.getElementById('chartEmptyNotice');
+        if (imp + wdr + dmg === 0) {
+          cv.style.display = 'none'; empty.style.display = 'block'; return;
+        }
+        cv.style.display = 'block'; empty.style.display = 'none';
+        if (overviewChartInstance) {
+          overviewChartInstance.data.datasets[0].data = [imp, wdr, dmg];
+          overviewChartInstance.update();
           return;
         }
+        overviewChartInstance = new Chart(cv, {
+          type: 'bar',
+          data: {
+            labels: ['นำเข้า', 'เบิกใช้', 'แจ้งชำรุด'],
+            datasets: [{ data: [imp, wdr, dmg], backgroundColor: ['#059669', '#2563eb', '#dc2626'], borderRadius: 6 }]
+          },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+      }
 
-        const newConfig = {
-          apiKey: key,
-          projectId: proj,
-          authDomain: fbAuthDomain.value.trim() || `${proj}.firebaseapp.com`,
-          appId: fbAppId.value.trim() || ''
-        };
+      function renderLatestTable(latestMap) {
+        const tb = document.getElementById('latestMeterTableBody');
+        if (latestMap.size === 0) {
+          tb.innerHTML = `<tr><td colspan="6" class="empty-state">ยังไม่มีรายการมิเตอร์</td></tr>`; return;
+        }
+        tb.innerHTML = Array.from(latestMap.values()).map(r => `
+          <tr>
+            <td><span class="code-pill">${escapeHtml(r.meterCode)}</span></td>
+            <td><span class="code-pill">${escapeHtml(r.meterReading)}</span></td>
+            <td>${escapeHtml(r.customerNumber || '-')}</td>
+            <td><span class="status-chip ${r.type}">${getSignTypeLabel(r.type)}</span></td>
+            <td>${escapeHtml(r.userName)} (${escapeHtml(r.userId)})</td>
+            <td>${formatThaiDate(r.date)}</td>
+          </tr>
+        `).join('');
+      }
 
-        localStorage.setItem(STORAGE_KEYS.FIREBASE_CONFIG, JSON.stringify(newConfig));
-        activeFirebaseConfig = newConfig;
+      function renderStockTable(latestMap) {
+        const tb = document.getElementById('stockMeterTableBody');
+        const q = document.getElementById('searchStockMeter').value.trim().toLowerCase();
+        let inStock = Array.from(latestMap.values()).filter(r => r.type === 'import');
+        if (q) inStock = inStock.filter(r => r.meterCode.toLowerCase().includes(q));
 
-        initFirebaseConnection(newConfig);
+        if (inStock.length === 0) {
+          tb.innerHTML = `<tr><td colspan="5" class="empty-state">ไม่พบมิเตอร์คงคลังพร้อมใช้</td></tr>`; return;
+        }
+        tb.innerHTML = inStock.map(r => `
+          <tr>
+            <td><span class="code-pill" style="color:#065f46;background:#f0fdf4;">${escapeHtml(r.meterCode)}</span></td>
+            <td><span class="code-pill">${escapeHtml(r.meterReading)}</span></td>
+            <td>${formatThaiDate(r.date)}</td>
+            <td>${escapeHtml(r.userName)}</td>
+            <td>
+              <button type="button" class="btn btn-primary btn-sm quick-wdr-btn" data-meter="${escapeHtml(r.meterCode)}">⚡ เบิกใช้ด่วน</button>
+            </td>
+          </tr>
+        `).join('');
 
-        fbConfigFeedback.textContent = 'บันทึกการตั้งค่าและเชื่อมต่อ Firebase สำเร็จ!';
-        fbConfigFeedback.className = 'inline-feedback success';
-        fbConfigFeedback.style.display = 'block';
+        tb.querySelectorAll('.quick-wdr-btn').forEach(b => {
+          b.addEventListener('click', () => {
+            document.getElementById('typeWithdraw').checked = true;
+            document.getElementById('recordMeterCode').value = b.dataset.meter;
+            switchTab('record');
+          });
+        });
+      }
 
-        setTimeout(() => {
-          firebaseConfigModal.classList.remove('open');
-        }, 1200);
+      function renderRecordsTable() {
+        const tb = document.getElementById('recordsTableBody');
+        const uQ = document.getElementById('filterUserId').value.trim().toLowerCase();
+        const kw = document.getElementById('filterKeyword').value.trim().toLowerCase();
+        const tF = document.getElementById('filterType').value;
+        const dF = document.getElementById('filterDate').value;
+        const isAdmin = currentUser && currentUser.role === 'admin';
+
+        const filtered = records.filter(r => {
+          if (uQ && !r.userId.toLowerCase().includes(uQ)) return false;
+          if (tF !== 'all' && r.type !== tF) return false;
+          if (dF && r.date !== dF) return false;
+          if (kw) {
+            const str = `${r.meterCode} ${r.meterReading} ${r.customerNumber} ${r.userName}`.toLowerCase();
+            if (!str.includes(kw)) return false;
+          }
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          tb.innerHTML = `<tr><td colspan="${isAdmin ? 9 : 8}" class="empty-state">ไม่พบรายการบันทึก</td></tr>`; return;
+        }
+
+        tb.innerHTML = filtered.map(r => `
+          <tr>
+            <td>${formatThaiDate(r.date)}</td>
+            <td><span class="status-chip ${r.type}">${getSignTypeLabel(r.type)}</span></td>
+            <td><span class="code-pill">${escapeHtml(r.meterCode)}</span></td>
+            <td><span class="code-pill">${escapeHtml(r.meterReading)}</span></td>
+            <td>${escapeHtml(r.customerNumber || '-')}</td>
+            <td><span class="code-pill">${escapeHtml(r.userId)}</span></td>
+            <td>${escapeHtml(r.userName)}</td>
+            <td>${escapeHtml(r.note || '-')}</td>
+            ${isAdmin ? `<td><button type="button" class="btn btn-danger btn-sm del-rec-btn" data-id="${escapeHtml(r.id)}">🗑️ ลบ</button></td>` : ''}
+          </tr>
+        `).join('');
+
+        if (isAdmin) {
+          tb.querySelectorAll('.del-rec-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              if (!confirm('ต้องการลบรายการนี้ใช่หรือไม่?')) return;
+              const id = btn.dataset.id;
+              if (window.__FIREBASE_ENABLED__) {
+                const db = window.__FIREBASE_DB__;
+                const { doc, deleteDoc } = window.__FIRESTORE_TOOLS__;
+                await deleteDoc(doc(db, "meter_records", id));
+              } else {
+                records = records.filter(r => r.id !== id);
+                localStorage.setItem('records', JSON.stringify(records));
+                renderDashboard();
+              }
+            });
+          });
+        }
+      }
+
+      document.getElementById('searchStockMeter').addEventListener('input', () => renderDashboard());
+      document.getElementById('filterUserId').addEventListener('input', renderRecordsTable);
+      document.getElementById('filterKeyword').addEventListener('input', renderRecordsTable);
+      document.getElementById('filterType').addEventListener('change', renderRecordsTable);
+      document.getElementById('filterDate').addEventListener('change', renderRecordsTable);
+      document.getElementById('clearFilterBtn').addEventListener('click', () => {
+        document.getElementById('filterUserId').value = '';
+        document.getElementById('filterKeyword').value = '';
+        document.getElementById('filterType').value = 'all';
+        document.getElementById('filterDate').value = '';
+        renderRecordsTable();
       });
 
-      clearFirebaseConfigBtn.addEventListener('click', () => {
-        if (!confirm('คุณต้องการตัดการเชื่อมต่อ Firebase และกลับไปใช้ LocalStorage หรือไม่?')) return;
-        localStorage.removeItem(STORAGE_KEYS.FIREBASE_CONFIG);
-        activeFirebaseConfig = null;
-        isCloudOnline = false;
-        document.getElementById('cloudStatusBadge').className = 'sync-status-badge';
-        document.getElementById('cloudStatusText').textContent = 'Local Storage (Offline)';
-        firebaseConfigModal.classList.remove('open');
-      });
+      function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+        document.getElementById('view-dashboard').classList.toggle('active', tab === 'dashboard');
+        document.getElementById('view-record').classList.toggle('active', tab === 'record');
+        document.getElementById('view-employees').classList.toggle('active', tab === 'employees');
+      }
 
+      document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+      document.getElementById('goToRecordBtn').addEventListener('click', () => switchTab('record'));
     })();
   </script>
 </body>
