@@ -772,7 +772,7 @@
       // 1. FIREBASE CONFIGURATION (ใส่ API KEY จริงของคุณที่นี่)
       // -------------------------------------------------------------
       const firebaseConfig = {
-        apiKey: "YOUR_API_KEY_HERE",
+        apiKey: "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0",
         authDomain: "peameternsh-aa9cd.firebaseapp.com",
         databaseURL: "https://peameternsh-aa9cd-default-rtdb.asia-southeast1.firebasedatabase.app",
         projectId: "peameternsh-aa9cd",
@@ -787,7 +787,7 @@
 
       // เริ่มต้นระบบ Firebase ทันทีแบบ Synchronous
       try {
-        if (typeof firebase !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.apiKey.trim() !== "YOUR_API_KEY_HERE") {
+        if (typeof firebase !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.apiKey.trim() !== "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0") {
           firebase.initializeApp(firebaseConfig);
           db = firebase.firestore();
           isOnline = true;
