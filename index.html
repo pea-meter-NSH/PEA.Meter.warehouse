@@ -9,43 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-  <!-- Firebase App & Firestore SDK (v10 Modular via CDN) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc, query, orderBy 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    // -------------------------------------------------------------
-    // Firebase Config: ใส่ค่าของโปรเจกต์ peameternsh-aa9cd ครบ 8 ค่า
-    // (กรุณานำ API Key จริงของคุณมาใส่แทน YOUR_API_KEY_HERE)
-    // -------------------------------------------------------------
-    const firebaseConfig = {
-      apiKey: "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0",
-      authDomain: "peameternsh-aa9cd.firebaseapp.com",
-      databaseURL: "https://peameternsh-aa9cd-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "peameternsh-aa9cd",
-      storageBucket: "peameternsh-aa9cd.firebasestorage.app",
-      messagingSenderId: "590743438022",
-      appId: "1:590743438022:web:1a9204651a60caee874dc7",
-      measurementId: "G-E9JBF32J0Y"
-    };
-
-    window.__FIREBASE_ENABLED__ = false;
-    try {
-      if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0") {
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        window.__FIREBASE_DB__ = db;
-        window.__FIREBASE_ENABLED__ = true;
-        window.__FIRESTORE_TOOLS__ = { collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc, query, orderBy };
-        console.log("⚡ Firebase Connected Successfully!");
-      }
-    } catch (e) {
-      console.warn("Firebase Init Error, falling back to LocalStorage:", e);
-    }
-    window.dispatchEvent(new Event('firebase-ready'));
-  </script>
+  <!-- Firebase v10 Compat SDK (เสถียรสูงสุดสำหรับไฟล์เดี่ยว ไม่ติดปัญหา Module / CORS / file://) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <style>
     :root {
@@ -104,17 +70,19 @@
     .setup-container.active { display: flex; }
 
     .auth-container {
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       padding: var(--space-6);
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     }
+    .auth-container.active { display: flex; }
+
     .auth-card {
       background: var(--surface);
       border-radius: var(--radius-lg);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
       width: 100%;
       max-width: 480px;
       padding: var(--space-8) var(--space-6);
@@ -181,7 +149,7 @@
       display: inline-flex; align-items: center; gap: 4px;
     }
     .cloud-pill.online { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
-    .cloud-pill.offline { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .cloud-pill.offline { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
 
     .nav-tabs { display: flex; flex-wrap: wrap; gap: var(--space-2); }
     .tab-btn {
@@ -334,7 +302,7 @@
       display: none; align-items: center; justify-content: center; padding: var(--space-4); z-index: 50;
     }
     .modal-backdrop.open { display: flex; }
-    .modal-card { background: var(--surface); border-radius: var(--radius); max-width: 580px; width: 100%; padding: var(--space-6); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); }
+    .modal-card { background: var(--surface); border-radius: var(--radius); max-width: 540px; width: 100%; padding: var(--space-6); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); }
     .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border); }
     .modal-title { margin: 0; font-size: 16px; font-weight: 700; }
     .empty-state { text-align: center; padding: var(--space-6) var(--space-4); color: var(--muted); }
@@ -342,7 +310,7 @@
 </head>
 <body>
 
-  <!-- VIEW STEP 0: FIRST-TIME SETUP SYSTEM (เปิดเฉพาะเมื่อคลาวด์ยังไม่มีการตั้งค่าใดๆ เลย) -->
+  <!-- VIEW STEP 0: FIRST-TIME SETUP SYSTEM -->
   <div id="setup-view" class="setup-container">
     <div class="auth-card" style="max-width: 500px;">
       <div class="auth-header">
@@ -355,7 +323,7 @@
 
       <form id="systemSetupForm" novalidate>
         <div style="padding: var(--space-3); background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); margin-bottom: var(--space-4); font-size: 13px; color: #166534;">
-          ⚡ <strong>ตั้งค่าเริ่มต้น Cloud Firestore:</strong> ระบบจะบันทึกบัญชีนี้ขึ้นฐานข้อมูลคลาวด์ เมื่อเปิดบนเครื่องอื่นจะเข้าสู่หน้าล็อกอินได้ทันทีโดยไม่ต้องสร้างซ้ำค่ะ
+          ⚡ <strong>ยินดีต้อนรับ!</strong> ระบบจะสร้างรหัสบัญชี <strong>ADMIN-01</strong> ขึ้นสู่ Cloud Firestore (พร้อมสำรองในเครื่อง) ทำให้อุปกรณ์อื่นสามารถล็อกอินได้ทันทีค่ะ
         </div>
         <div class="form-group">
           <label for="setupAdminName">ชื่อ - นามสกุล ผู้ดูแลระบบสูงสุด <span class="req-star">*</span></label>
@@ -368,10 +336,10 @@
         <div class="form-group">
           <label for="setupAdminPasscode">กำหนดรหัสผ่านยืนยันสิทธิ์ Admin (Admin Passcode) <span class="req-star">*</span></label>
           <input type="text" id="setupAdminPasscode" class="input" placeholder="เช่น 1234 หรือ 9999" required>
-          <div class="field-hint">ใช้ยืนยันเมื่อต้องการลงทะเบียนเป็น Admin คนต่อไป</div>
+          <div class="field-hint">ใช้ยืนยันสิทธิ์เมื่อต้องการเพิ่ม Admin ในอนาคต</div>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; background: #16a34a; margin-top: var(--space-3);">
-          🔑 สร้างบัญชีและเปิดใช้งานระบบคลาวด์
+          🔑 สร้างบัญชี Super Admin และเริ่มใช้งาน
         </button>
       </form>
     </div>
@@ -385,7 +353,7 @@
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
         <h2 class="auth-title">ระบบจัดการมิเตอร์ไฟฟ้า</h2>
-        <p class="auth-subtitle">เข้าสู่ระบบล็อกอินส่วนตัวเพื่อทำการลงบันทึกข้อมูลมิเตอร์</p>
+        <p class="auth-subtitle">เข้าสู่ระบบล็อกอินส่วนตัวเพื่อลงบันทึกข้อมูลมิเตอร์</p>
       </div>
 
       <div class="auth-tabs">
@@ -398,7 +366,7 @@
         <form id="authLoginForm" novalidate>
           <div class="form-group">
             <label for="loginQuery">รหัสผู้ใช้ หรือเบอร์โทรศัพท์ <span class="req-star">*</span></label>
-            <input type="text" id="loginQuery" class="input" placeholder="ระบุ เช่น ADMIN-01, USR-001 หรือเบอร์โทร" required>
+            <input type="text" id="loginQuery" class="input" placeholder="ระบุ เช่น ADMIN-01, USR-001 หรือเบอร์โทรศัพท์" required>
           </div>
           <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--space-2);">
             เข้าสู่ระบบและเริ่มใช้งาน
@@ -448,7 +416,7 @@
           <div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <h1 class="brand-title">ระบบจัดการมิเตอร์ไฟฟ้า</h1>
-              <span id="cloudStatusBadge" class="cloud-pill offline">⚡ Local Mode</span>
+              <span id="cloudStatusBadge" class="cloud-pill offline">ตรวจสอบการเชื่อมต่อ...</span>
             </div>
             <p class="brand-subtitle">บันทึกการเบิกใช้ นำเข้า แจ้งมิเตอร์ชำรุด และตรวจสอบผู้บันทึก</p>
           </div>
@@ -461,7 +429,7 @@
         </nav>
 
         <div class="user-badge-wrap">
-          <div class="user-profile-badge" id="headerUserBadge" title="จัดการรหัสผ่านความปลอดภัย">
+          <div class="user-profile-badge" id="headerUserBadge" title="คลิกเพื่อดูข้อมูลผู้ใช้งาน">
             <span id="headerUserText">กำลังโหลด...</span>
             <span id="headerUserRoleBadge" class="user-role-tag">STAFF</span>
           </div>
@@ -737,14 +705,14 @@
                   <option value="admin">ผู้ดูแลระบบ (Admin)</option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-primary" style="width: 100%;">👤 เพิ่มพนักงานเข้าระบบคลาวด์</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">👤 เพิ่มพนักงานเข้าระบบ</button>
               <div id="employeesAddFeedback" class="inline-feedback"></div>
             </form>
           </div>
 
           <div class="card">
             <div class="section-header">
-              <h2 class="section-title">📋 รายชื่อพนักงานทั้งหมด (Cloud Sync)</h2>
+              <h2 class="section-title">📋 รายชื่อพนักงานทั้งหมด</h2>
             </div>
             <div class="table-wrap">
               <table>
@@ -792,7 +760,7 @@
         </div>
         <div style="display: flex; gap: var(--space-2); justify-content: flex-end; margin-top: var(--space-3);">
           <button type="button" class="btn btn-secondary" id="cancelEditEmpBtn">ยกเลิก</button>
-          <button type="submit" class="btn btn-primary">บันทึกข้อมูลขึ้นคลาวด์</button>
+          <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
         </div>
       </form>
     </div>
@@ -800,6 +768,39 @@
 
   <script>
     (function () {
+      // -------------------------------------------------------------
+      // 1. FIREBASE CONFIGURATION (ใส่ API KEY จริงของคุณที่นี่)
+      // -------------------------------------------------------------
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY_HERE",
+        authDomain: "peameternsh-aa9cd.firebaseapp.com",
+        databaseURL: "https://peameternsh-aa9cd-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "peameternsh-aa9cd",
+        storageBucket: "peameternsh-aa9cd.firebasestorage.app",
+        messagingSenderId: "590743438022",
+        appId: "1:590743438022:web:1a9204651a60caee874dc7",
+        measurementId: "G-E9JBF32J0Y"
+      };
+
+      let db = null;
+      let isOnline = false;
+
+      // เริ่มต้นระบบ Firebase ทันทีแบบ Synchronous
+      try {
+        if (typeof firebase !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.apiKey.trim() !== "YOUR_API_KEY_HERE") {
+          firebase.initializeApp(firebaseConfig);
+          db = firebase.firestore();
+          isOnline = true;
+          console.log("⚡ Firebase Initialized Successfully!");
+        }
+      } catch (err) {
+        console.warn("Firebase Init Error:", err);
+        isOnline = false;
+      }
+
+      // -------------------------------------------------------------
+      // 2. STATE MANAGEMENT (Dual-Store: Memory + LocalStorage Backup)
+      // -------------------------------------------------------------
       let users = [];
       let records = [];
       let currentUser = null;
@@ -807,102 +808,117 @@
       let systemInitialized = false;
       let overviewChartInstance = null;
 
-      function escapeHtml(str) {
-        return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-      }
-      function getTodayIso() {
-        const d = new Date();
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-      }
-      function formatThaiDate(isoStr) {
-        if (!isoStr) return '-';
-        const p = isoStr.split('-');
-        if (p.length !== 3) return isoStr;
-        const thM = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-        return `${Number(p[2])} ${thM[Number(p[1]) - 1]} ${Number(p[0]) + 543}`;
-      }
-      function getSignTypeLabel(t) {
-        return t === 'import' ? 'นำเข้า' : t === 'withdraw' ? 'เบิกใช้' : t === 'damage' ? 'แจ้งชำรุด' : t;
+      // โหลดข้อมูลสำรองจาก LocalStorage เสมอเพื่อความรวดเร็วและกันข้อมูลสูญหาย
+      function loadLocalStorageBackup() {
+        try {
+          systemInitialized = localStorage.getItem('system_init') === 'true';
+          adminPasscode = localStorage.getItem('admin_passcode') || '';
+          const savedUsers = localStorage.getItem('users');
+          if (savedUsers) users = JSON.parse(savedUsers);
+          const savedRecords = localStorage.getItem('records');
+          if (savedRecords) records = JSON.parse(savedRecords);
+        } catch (e) {
+          console.warn("LocalStorage load error:", e);
+        }
       }
 
-      // -------------------------------------------------------------
-      // 1. CLOUD FIRESTORE SYNCHRONIZATION CONTROLLER
-      // -------------------------------------------------------------
-      window.addEventListener('firebase-ready', () => {
-        const isOnline = window.__FIREBASE_ENABLED__;
+      function saveLocalStorageBackup() {
+        try {
+          localStorage.setItem('system_init', systemInitialized ? 'true' : 'false');
+          localStorage.setItem('admin_passcode', adminPasscode);
+          localStorage.setItem('users', JSON.stringify(users));
+          localStorage.setItem('records', JSON.stringify(records));
+        } catch (e) {}
+      }
+
+      loadLocalStorageBackup();
+
+      function updateStatusBadge() {
         const cloudBadge = document.getElementById('cloudStatusBadge');
+        if (!cloudBadge) return;
         if (isOnline) {
           cloudBadge.textContent = '☁️ Cloud Firestore (Online)';
           cloudBadge.className = 'cloud-pill online';
-          initCloudSync();
         } else {
-          cloudBadge.textContent = '⚡ Local Mode (Offline)';
+          cloudBadge.textContent = '⚡ Local Mode (Offline/ตรวจพบ API Key แล้ว)';
           cloudBadge.className = 'cloud-pill offline';
-          loadLocalFallback();
-        }
-      });
-
-      async function initCloudSync() {
-        const db = window.__FIREBASE_DB__;
-        const { doc, getDoc, collection, onSnapshot, query, orderBy } = window.__FIRESTORE_TOOLS__;
-
-        try {
-          // ตรวจสอบการตั้งค่าระบบจาก Cloud Firestore โดยตรง (แก้ปัญหาเครื่องอื่นให้เริ่มระบบใหม่)
-          const configDoc = await getDoc(doc(db, "system_config", "security"));
-          if (configDoc.exists()) {
-            const data = configDoc.data();
-            systemInitialized = data.initialized === true;
-            adminPasscode = data.adminPasscode || '';
-          } else {
-            systemInitialized = false;
-          }
-        } catch (err) {
-          console.warn("Could not fetch system_config from Firestore:", err);
-          systemInitialized = localStorage.getItem('system_init') === 'true';
-        }
-
-        // Real-time Users Listener (แก้ปัญหาแอดมินมองไม่เห็นพนักงาน)
-        onSnapshot(collection(db, "users"), (snapshot) => {
-          users = [];
-          snapshot.forEach((d) => users.push(d.data()));
-          renderEmployeesTable();
-          updateUserDatalist();
-        });
-
-        // Real-time Records Listener
-        const qRecords = query(collection(db, "meter_records"), orderBy("date", "desc"));
-        onSnapshot(qRecords, (snapshot) => {
-          records = [];
-          snapshot.forEach((d) => records.push(d.data()));
-          renderDashboard();
-        });
-
-        checkInitialRouting();
-      }
-
-      function loadLocalFallback() {
-        systemInitialized = localStorage.getItem('system_init') === 'true';
-        adminPasscode = localStorage.getItem('admin_passcode') || '';
-        try {
-          users = JSON.parse(localStorage.getItem('users') || '[]');
-          records = JSON.parse(localStorage.getItem('records') || '[]');
-        } catch (e) {}
-        checkInitialRouting();
-      }
-
-      function checkInitialRouting() {
-        if (!systemInitialized) {
-          document.getElementById('setup-view').classList.add('active');
-          document.getElementById('auth-view').style.display = 'none';
-          document.getElementById('app-portal').classList.remove('active');
-        } else {
-          document.getElementById('setup-view').classList.remove('active');
-          document.getElementById('auth-view').style.display = 'flex';
         }
       }
 
       // -------------------------------------------------------------
-      // 2. FIRST-TIME SETUP & AUTH
+      // 3. INITIALIZATION & ROUTING
+      // -------------------------------------------------------------
+      async function initializeApp() {
+        updateStatusBadge();
+
+        if (isOnline && db) {
+          try {
+            // ตรวจสอบสถานะการเปิดระบบจาก Cloud Firestore
+            const configDoc = await db.collection("system_config").doc("security").get();
+            if (configDoc.exists) {
+              const data = configDoc.data();
+              systemInitialized = data.initialized === true;
+              adminPasscode = data.adminPasscode || adminPasscode;
+              saveLocalStorageBackup();
+            }
+
+            // Real-time Users Listener (อัปเดตรายชื่อพนักงานอัตโนมัติ)
+            db.collection("users").onSnapshot((snapshot) => {
+              if (!snapshot.empty) {
+                const cloudUsers = [];
+                snapshot.forEach((d) => cloudUsers.push(d.data()));
+                users = cloudUsers;
+                saveLocalStorageBackup();
+                renderEmployeesTable();
+                updateUserDatalist();
+              }
+            }, (err) => {
+              console.warn("Firestore Users Snapshot Error (โปรดตรวจสอบ Firestore Rules):", err);
+            });
+
+            // Real-time Records Listener (อัปเดตรายการมิเตอร์อัตโนมัติ)
+            db.collection("meter_records").orderBy("date", "desc").onSnapshot((snapshot) => {
+              if (!snapshot.empty) {
+                const cloudRecords = [];
+                snapshot.forEach((d) => cloudRecords.push(d.data()));
+                records = cloudRecords;
+                saveLocalStorageBackup();
+                renderDashboard();
+              }
+            }, (err) => {
+              console.warn("Firestore Records Snapshot Error:", err);
+            });
+
+          } catch (err) {
+            console.warn("Firestore connection check failed, using Local Backup:", err);
+          }
+        }
+
+        checkRouting();
+      }
+
+      function checkRouting() {
+        const setupView = document.getElementById('setup-view');
+        const authView = document.getElementById('auth-view');
+        const appPortal = document.getElementById('app-portal');
+
+        if (!systemInitialized) {
+          setupView.classList.add('active');
+          authView.classList.remove('active');
+          appPortal.classList.remove('active');
+        } else if (!currentUser) {
+          setupView.classList.remove('active');
+          authView.classList.add('active');
+          appPortal.classList.remove('active');
+        } else {
+          setupView.classList.remove('active');
+          authView.classList.remove('active');
+          appPortal.classList.add('active');
+        }
+      }
+
+      // -------------------------------------------------------------
+      // 4. SUPER ADMIN SETUP & AUTHENTICATION
       // -------------------------------------------------------------
       const systemSetupForm = document.getElementById('systemSetupForm');
       systemSetupForm.addEventListener('submit', async (e) => {
@@ -918,25 +934,28 @@
 
         const superAdmin = { userId: 'ADMIN-01', name: nameVal, phone: phoneVal, role: 'admin' };
 
-        if (window.__FIREBASE_ENABLED__) {
-          const db = window.__FIREBASE_DB__;
-          const { doc, setDoc } = window.__FIRESTORE_TOOLS__;
-          await setDoc(doc(db, "system_config", "security"), { initialized: true, adminPasscode: passcodeVal });
-          await setDoc(doc(db, "users", superAdmin.userId), superAdmin);
-        } else {
-          localStorage.setItem('system_init', 'true');
-          localStorage.setItem('admin_passcode', passcodeVal);
-          localStorage.setItem('users', JSON.stringify([superAdmin]));
+        // บันทึกเข้า Memory และ LocalStorage ทันที (ป้องกันปัญหากลับเข้าระบบไม่ได้)
+        users = [superAdmin];
+        adminPasscode = passcodeVal;
+        systemInitialized = true;
+        currentUser = superAdmin;
+        saveLocalStorageBackup();
+
+        // บันทึกขึ้น Cloud Firestore
+        if (isOnline && db) {
+          try {
+            await db.collection("system_config").doc("security").set({ initialized: true, adminPasscode: passcodeVal });
+            await db.collection("users").doc(superAdmin.userId).set(superAdmin);
+          } catch (err) {
+            console.warn("Saved to local, Cloud Firestore write failed (ตรวจ Rules):", err);
+          }
         }
 
-        systemInitialized = true;
-        adminPasscode = passcodeVal;
-        currentUser = superAdmin;
         document.getElementById('setup-view').classList.remove('active');
         enterAppView();
       });
 
-      // Login / Register Tabs
+      // Tabs: Login / Register
       document.getElementById('authTabLoginBtn').addEventListener('click', () => {
         document.getElementById('authTabLoginBtn').classList.add('active');
         document.getElementById('authTabRegisterBtn').classList.remove('active');
@@ -954,16 +973,39 @@
         document.getElementById('regAdminPasscodeGroup').style.display = e.target.value === 'admin' ? 'block' : 'none';
       });
 
+      // ระบบล็อกอิน: ค้นหาทั้ง Memory และ LocalStorage อย่างแม่นยำ
       document.getElementById('authLoginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const queryVal = document.getElementById('loginQuery').value.trim();
         const digits = queryVal.replace(/\D/g, '');
+        const cleanQuery = queryVal.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-        const matched = users.find(u => u.userId.toLowerCase() === queryVal.toLowerCase() || (digits && u.phone.replace(/\D/g, '') === digits));
+        let matched = users.find(u => {
+          const uId = (u.userId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          const uPh = (u.phone || '').replace(/\D/g, '');
+          return (cleanQuery && uId === cleanQuery) || (digits && uPh === digits);
+        });
+
+        // หากไม่พบ ให้ค้นหาซ้ำใน LocalStorage สำรอง
         if (!matched) {
-          alert('ไม่พบรหัสผู้ใช้หรือเบอร์โทรนี้ในระบบ');
+          try {
+            const localUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            matched = localUsers.find(u => {
+              const uId = (u.userId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+              const uPh = (u.phone || '').replace(/\D/g, '');
+              return (cleanQuery && uId === cleanQuery) || (digits && uPh === digits);
+            });
+            if (matched && !users.some(u => u.userId === matched.userId)) {
+              users.push(matched);
+            }
+          } catch (err) {}
+        }
+
+        if (!matched) {
+          alert('ไม่พบรหัสผู้ใช้หรือเบอร์โทรศัพท์นี้ในระบบ กรุณาตรวจสอบหรือลงทะเบียนใหม่');
           return;
         }
+
         currentUser = matched;
         enterAppView();
       });
@@ -981,18 +1023,20 @@
         }
 
         const genId = roleVal === 'admin'
-          ? `ADM-${String(users.filter(u => u.userId.startsWith('ADM')).length + 1).padStart(2, '0')}`
-          : `USR-${String(users.filter(u => u.userId.startsWith('USR')).length + 1).padStart(3, '0')}`;
+          ? `ADM-${String(users.filter(u => (u.userId||'').startsWith('ADM')).length + 1).padStart(2, '0')}`
+          : `USR-${String(users.filter(u => (u.userId||'').startsWith('USR')).length + 1).padStart(3, '0')}`;
 
         const newUser = { userId: genId, name: nameVal, phone: phoneVal, role: roleVal };
 
-        if (window.__FIREBASE_ENABLED__) {
-          const db = window.__FIREBASE_DB__;
-          const { doc, setDoc } = window.__FIRESTORE_TOOLS__;
-          await setDoc(doc(db, "users", newUser.userId), newUser);
-        } else {
-          users.push(newUser);
-          localStorage.setItem('users', JSON.stringify(users));
+        users.push(newUser);
+        saveLocalStorageBackup();
+
+        if (isOnline && db) {
+          try {
+            await db.collection("users").doc(newUser.userId).set(newUser);
+          } catch (err) {
+            console.warn("Cloud save error:", err);
+          }
         }
 
         currentUser = newUser;
@@ -1000,7 +1044,7 @@
       });
 
       function enterAppView() {
-        document.getElementById('auth-view').style.display = 'none';
+        document.getElementById('auth-view').classList.remove('active');
         document.getElementById('app-portal').classList.add('active');
 
         document.getElementById('headerUserText').textContent = `${currentUser.userId} - ${currentUser.name}`;
@@ -1008,7 +1052,7 @@
         document.getElementById('headerUserRoleBadge').textContent = isAdmin ? 'ADMIN' : 'STAFF';
         document.getElementById('headerUserRoleBadge').className = `user-role-tag ${isAdmin ? 'admin' : ''}`;
 
-        document.getElementById('formAvatarIcon').textContent = currentUser.name.charAt(0).toUpperCase();
+        document.getElementById('formAvatarIcon').textContent = (currentUser.name || 'U').charAt(0).toUpperCase();
         document.getElementById('formUserName').textContent = currentUser.name;
         document.getElementById('formUserIdAndPhone').textContent = `รหัส: ${currentUser.userId} | ${currentUser.phone}`;
 
@@ -1018,17 +1062,19 @@
 
         renderDashboard();
         renderEmployeesTable();
+        updateUserDatalist();
         switchTab('dashboard');
       }
 
       document.getElementById('logoutBtn').addEventListener('click', () => {
         currentUser = null;
         document.getElementById('app-portal').classList.remove('active');
-        document.getElementById('auth-view').style.display = 'flex';
+        document.getElementById('auth-view').classList.add('active');
+        document.getElementById('loginQuery').value = '';
       });
 
       // -------------------------------------------------------------
-      // 3. SMART TEXT PARSER & FORM HELPERS
+      // 5. SMART TEXT PARSER
       // -------------------------------------------------------------
       const rawLongTextInput = document.getElementById('rawLongTextInput');
       const parseRawDataBtn = document.getElementById('parseRawDataBtn');
@@ -1081,9 +1127,9 @@
         });
       });
 
-      document.getElementById('recordDate').value = getTodayIso();
+      document.getElementById('recordDate').value = new Date().toISOString().split('T')[0];
 
-      // Record Submission
+      // บันทึกข้อมูลมิเตอร์
       document.getElementById('meterRecordForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const typeVal = document.querySelector('input[name="recordType"]:checked').value;
@@ -1098,11 +1144,11 @@
           return;
         }
 
-        // Inventory Check: เบิกใช้ได้เฉพาะเมื่อมีมิเตอร์ในคลัง
+        // ตรวจสอบมิเตอร์คงคลัง: เบิกใช้ได้เฉพาะเมื่อมีมิเตอร์ในคลัง
         if (typeVal === 'withdraw') {
-          const latest = records.find(r => r.meterCode.toUpperCase() === meterVal.toUpperCase());
+          const latest = records.find(r => (r.meterCode||'').toUpperCase() === meterVal.toUpperCase());
           if (!latest || latest.type !== 'import') {
-            alert(`ไม่สามารถเบิกใช้ได้ เนื่องจากมิเตอร์ ${meterVal} ไม่อยู่ในคลังพร้อมใช้`);
+            alert(`ไม่สามารถเบิกใช้ได้ เนื่องจากมิเตอร์ ${meterVal} ไม่อยู่ในคลังพร้อมใช้ (ต้องมีรายการนำเข้ามาก่อน)`);
             return;
           }
         }
@@ -1120,14 +1166,15 @@
           note: noteVal
         };
 
-        if (window.__FIREBASE_ENABLED__) {
-          const db = window.__FIREBASE_DB__;
-          const { doc, setDoc } = window.__FIRESTORE_TOOLS__;
-          await setDoc(doc(db, "meter_records", newRec.id), newRec);
-        } else {
-          records.unshift(newRec);
-          localStorage.setItem('records', JSON.stringify(records));
-          renderDashboard();
+        records.unshift(newRec);
+        saveLocalStorageBackup();
+
+        if (isOnline && db) {
+          try {
+            await db.collection("meter_records").doc(newRec.id).set(newRec);
+          } catch (err) {
+            console.warn("Cloud save error:", err);
+          }
         }
 
         document.getElementById('recordMeterCode').value = '';
@@ -1135,11 +1182,12 @@
         document.getElementById('recordCustomerNumber').value = '';
         document.getElementById('recordNote').value = '';
         alert('บันทึกข้อมูลมิเตอร์เรียบร้อยแล้วค่ะ');
+        renderDashboard();
         switchTab('dashboard');
       });
 
       // -------------------------------------------------------------
-      // 4. EMPLOYEE MANAGEMENT (ADMIN ONLY - CLOUD SYNC)
+      // 6. EMPLOYEE MANAGEMENT (ADMIN ONLY)
       // -------------------------------------------------------------
       const employeesAddForm = document.getElementById('employeesAddForm');
       employeesAddForm.addEventListener('submit', async (e) => {
@@ -1154,24 +1202,27 @@
         }
 
         const genId = roleVal === 'admin'
-          ? `ADM-${String(users.filter(u => u.userId.startsWith('ADM')).length + 1).padStart(2, '0')}`
-          : `USR-${String(users.filter(u => u.userId.startsWith('USR')).length + 1).padStart(3, '0')}`;
+          ? `ADM-${String(users.filter(u => (u.userId||'').startsWith('ADM')).length + 1).padStart(2, '0')}`
+          : `USR-${String(users.filter(u => (u.userId||'').startsWith('USR')).length + 1).padStart(3, '0')}`;
 
         const newEmp = { userId: genId, name: nameVal, phone: phoneVal, role: roleVal };
 
-        if (window.__FIREBASE_ENABLED__) {
-          const db = window.__FIREBASE_DB__;
-          const { doc, setDoc } = window.__FIRESTORE_TOOLS__;
-          await setDoc(doc(db, "users", newEmp.userId), newEmp);
-        } else {
-          users.push(newEmp);
-          localStorage.setItem('users', JSON.stringify(users));
-          renderEmployeesTable();
+        users.push(newEmp);
+        saveLocalStorageBackup();
+
+        if (isOnline && db) {
+          try {
+            await db.collection("users").doc(newEmp.userId).set(newEmp);
+          } catch (err) {
+            console.warn("Cloud save error:", err);
+          }
         }
 
         document.getElementById('empAddName').value = '';
         document.getElementById('empAddPhone').value = '';
         alert(`เพิ่มพนักงานสำเร็จ! รหัสคือ ${genId}`);
+        renderEmployeesTable();
+        updateUserDatalist();
       });
 
       function renderEmployeesTable() {
@@ -1190,10 +1241,10 @@
               <td><span class="code-pill">${escapeHtml(u.userId)}</span></td>
               <td><strong>${escapeHtml(u.name)}</strong> ${isSelf ? '<span style="color:var(--brand);font-size:11px;">(คุณ)</span>' : ''}</td>
               <td>${escapeHtml(u.phone)}</td>
-              <td><span class="user-role-tag ${u.role === 'admin' ? 'admin' : ''}">${u.role.toUpperCase()}</span></td>
+              <td><span class="user-role-tag ${u.role === 'admin' ? 'admin' : ''}">${(u.role||'staff').toUpperCase()}</span></td>
               <td>
                 <button type="button" class="btn btn-secondary btn-sm edit-emp-btn" data-id="${escapeHtml(u.userId)}">✏️ แก้ไข</button>
-                <button type="button" class="btn btn-danger btn-sm delete-emp-btn" data-id="${escapeHtml(u.userId)}" ${isSelf ? 'disabled' : ''}>🗑️ ลบ</button>
+                <button type="button" class="btn btn-danger btn-sm delete-emp-btn" data-id="${escapeHtml(u.userId)}" ${isSelf ? 'disabled title="ไม่สามารถลบบัญชีที่กำลังล็อกอินได้"' : ''}>🗑️ ลบ</button>
               </td>
             </tr>
           `;
@@ -1217,15 +1268,18 @@
             const empId = btn.dataset.id;
             if (!confirm(`คุณต้องการลบพนักงานรหัส ${empId} ใช่หรือไม่?`)) return;
 
-            if (window.__FIREBASE_ENABLED__) {
-              const db = window.__FIREBASE_DB__;
-              const { doc, deleteDoc } = window.__FIRESTORE_TOOLS__;
-              await deleteDoc(doc(db, "users", empId));
-            } else {
-              users = users.filter(u => u.userId !== empId);
-              localStorage.setItem('users', JSON.stringify(users));
-              renderEmployeesTable();
+            users = users.filter(u => u.userId !== empId);
+            saveLocalStorageBackup();
+
+            if (isOnline && db) {
+              try {
+                await db.collection("users").doc(empId).delete();
+              } catch (err) {
+                console.warn("Cloud delete error:", err);
+              }
             }
+            renderEmployeesTable();
+            updateUserDatalist();
           });
         });
       }
@@ -1240,19 +1294,23 @@
         const phoneVal = document.getElementById('editEmpPhone').value.trim();
         const roleVal = document.getElementById('editEmpRole').value;
 
-        if (window.__FIREBASE_ENABLED__) {
-          const db = window.__FIREBASE_DB__;
-          const { doc, updateDoc } = window.__FIRESTORE_TOOLS__;
-          await updateDoc(doc(db, "users", id), { name: nameVal, phone: phoneVal, role: roleVal });
-        } else {
-          const idx = users.findIndex(u => u.userId === id);
-          if (idx !== -1) {
-            users[idx] = { ...users[idx], name: nameVal, phone: phoneVal, role: roleVal };
-            localStorage.setItem('users', JSON.stringify(users));
-            renderEmployeesTable();
+        const idx = users.findIndex(u => u.userId === id);
+        if (idx !== -1) {
+          users[idx] = { ...users[idx], name: nameVal, phone: phoneVal, role: roleVal };
+          saveLocalStorageBackup();
+        }
+
+        if (isOnline && db) {
+          try {
+            await db.collection("users").doc(id).update({ name: nameVal, phone: phoneVal, role: roleVal });
+          } catch (err) {
+            console.warn("Cloud update error:", err);
           }
         }
+
         document.getElementById('editEmployeeModal').classList.remove('open');
+        renderEmployeesTable();
+        updateUserDatalist();
       });
 
       function updateUserDatalist() {
@@ -1263,7 +1321,7 @@
       }
 
       // -------------------------------------------------------------
-      // 5. DASHBOARD & RENDER
+      // 7. DASHBOARD & RENDER
       // -------------------------------------------------------------
       function renderDashboard() {
         const total = records.length;
@@ -1274,7 +1332,7 @@
         // คำนวณสต็อกคงคลัง (มิเตอร์ลูกที่สถานะล่าสุดคือ 'import')
         const latestMeters = new Map();
         records.forEach(r => {
-          const k = r.meterCode.toUpperCase();
+          const k = (r.meterCode || '').toUpperCase();
           if (!latestMeters.has(k)) latestMeters.set(k, r);
         });
         let stock = 0;
@@ -1326,7 +1384,7 @@
             <td>${escapeHtml(r.customerNumber || '-')}</td>
             <td><span class="status-chip ${r.type}">${getSignTypeLabel(r.type)}</span></td>
             <td>${escapeHtml(r.userName)} (${escapeHtml(r.userId)})</td>
-            <td>${formatThaiDate(r.date)}</td>
+            <td>${escapeHtml(r.date)}</td>
           </tr>
         `).join('');
       }
@@ -1335,7 +1393,7 @@
         const tb = document.getElementById('stockMeterTableBody');
         const q = document.getElementById('searchStockMeter').value.trim().toLowerCase();
         let inStock = Array.from(latestMap.values()).filter(r => r.type === 'import');
-        if (q) inStock = inStock.filter(r => r.meterCode.toLowerCase().includes(q));
+        if (q) inStock = inStock.filter(r => (r.meterCode || '').toLowerCase().includes(q));
 
         if (inStock.length === 0) {
           tb.innerHTML = `<tr><td colspan="5" class="empty-state">ไม่พบมิเตอร์คงคลังพร้อมใช้</td></tr>`; return;
@@ -1344,7 +1402,7 @@
           <tr>
             <td><span class="code-pill" style="color:#065f46;background:#f0fdf4;">${escapeHtml(r.meterCode)}</span></td>
             <td><span class="code-pill">${escapeHtml(r.meterReading)}</span></td>
-            <td>${formatThaiDate(r.date)}</td>
+            <td>${escapeHtml(r.date)}</td>
             <td>${escapeHtml(r.userName)}</td>
             <td>
               <button type="button" class="btn btn-primary btn-sm quick-wdr-btn" data-meter="${escapeHtml(r.meterCode)}">⚡ เบิกใช้ด่วน</button>
@@ -1370,7 +1428,7 @@
         const isAdmin = currentUser && currentUser.role === 'admin';
 
         const filtered = records.filter(r => {
-          if (uQ && !r.userId.toLowerCase().includes(uQ)) return false;
+          if (uQ && !(r.userId || '').toLowerCase().includes(uQ)) return false;
           if (tF !== 'all' && r.type !== tF) return false;
           if (dF && r.date !== dF) return false;
           if (kw) {
@@ -1386,7 +1444,7 @@
 
         tb.innerHTML = filtered.map(r => `
           <tr>
-            <td>${formatThaiDate(r.date)}</td>
+            <td>${escapeHtml(r.date)}</td>
             <td><span class="status-chip ${r.type}">${getSignTypeLabel(r.type)}</span></td>
             <td><span class="code-pill">${escapeHtml(r.meterCode)}</span></td>
             <td><span class="code-pill">${escapeHtml(r.meterReading)}</span></td>
@@ -1403,18 +1461,28 @@
             btn.addEventListener('click', async () => {
               if (!confirm('ต้องการลบรายการนี้ใช่หรือไม่?')) return;
               const id = btn.dataset.id;
-              if (window.__FIREBASE_ENABLED__) {
-                const db = window.__FIREBASE_DB__;
-                const { doc, deleteDoc } = window.__FIRESTORE_TOOLS__;
-                await deleteDoc(doc(db, "meter_records", id));
-              } else {
-                records = records.filter(r => r.id !== id);
-                localStorage.setItem('records', JSON.stringify(records));
-                renderDashboard();
+              records = records.filter(r => r.id !== id);
+              saveLocalStorageBackup();
+
+              if (isOnline && db) {
+                try {
+                  await db.collection("meter_records").doc(id).delete();
+                } catch (err) {
+                  console.warn("Cloud delete error:", err);
+                }
               }
+              renderDashboard();
             });
           });
         }
+      }
+
+      function escapeHtml(str) {
+        return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function getSignTypeLabel(t) {
+        return t === 'import' ? 'นำเข้า' : t === 'withdraw' ? 'เบิกใช้' : t === 'damage' ? 'แจ้งชำรุด' : t;
       }
 
       document.getElementById('searchStockMeter').addEventListener('input', () => renderDashboard());
@@ -1439,8 +1507,10 @@
 
       document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
       document.getElementById('goToRecordBtn').addEventListener('click', () => switchTab('record'));
+
+      // รันการเริ่มต้นระบบ
+      initializeApp();
     })();
   </script>
 </body>
 </html>
-```
