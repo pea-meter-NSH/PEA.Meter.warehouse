@@ -1,4 +1,3 @@
-```html
 <!doctype html>
 <html lang="th">
 <head>
@@ -10,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-  <!-- Firebase v10 Compat SDK (เสถียรสูงสุดสำหรับไฟล์เดี่ยว ไม่ติดปัญหา Module / CORS / file://) -->
+  <!-- Firebase v10 Compat SDK (เสถียรที่สุดสำหรับไฟล์ HTML เดี่ยว) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -131,12 +130,12 @@
     .brand-title { margin: 0; font-size: 20px; font-weight: 700; color: var(--ink); line-height: 1.25; }
     .brand-subtitle { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
 
-    .user-badge-wrap { display: flex; align-items: center; gap: var(--space-3); }
+    .user-badge-wrap { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
     .user-profile-badge {
       background: var(--brand-soft); border: 1px solid #bae6fd;
       padding: 6px 12px; border-radius: var(--radius-sm);
       font-size: 13.5px; color: #0369a1; font-weight: 600;
-      display: flex; align-items: center; gap: var(--space-2); cursor: pointer;
+      display: flex; align-items: center; gap: var(--space-2);
     }
     .user-role-tag {
       background: var(--brand); color: var(--brand-ink);
@@ -146,8 +145,9 @@
     .user-role-tag.admin { background: #7c3aed; }
 
     .cloud-pill {
-      font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 20px;
-      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+      display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+      transition: all 0.2s ease;
     }
     .cloud-pill.online { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
     .cloud-pill.offline { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
@@ -324,7 +324,7 @@
 
       <form id="systemSetupForm" novalidate>
         <div style="padding: var(--space-3); background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); margin-bottom: var(--space-4); font-size: 13px; color: #166534;">
-          ⚡ <strong>ยินดีต้อนรับ!</strong> ระบบจะสร้างรหัสบัญชี <strong>ADMIN-01</strong> ขึ้นสู่ Cloud Firestore (พร้อมสำรองในเครื่อง) ทำให้อุปกรณ์อื่นสามารถล็อกอินได้ทันทีค่ะ
+          ⚡ <strong>ยินดีต้อนรับ!</strong> ระบบจะสร้างรหัสบัญชี <strong>ADMIN-01</strong> บันทึกขึ้น Cloud Firestore (พร้อมสำรองในเครื่อง) ทำให้อุปกรณ์อื่นสามารถล็อกอินได้ทันทีค่ะ
         </div>
         <div class="form-group">
           <label for="setupAdminName">ชื่อ - นามสกุล ผู้ดูแลระบบสูงสุด <span class="req-star">*</span></label>
@@ -337,7 +337,7 @@
         <div class="form-group">
           <label for="setupAdminPasscode">กำหนดรหัสผ่านยืนยันสิทธิ์ Admin (Admin Passcode) <span class="req-star">*</span></label>
           <input type="text" id="setupAdminPasscode" class="input" placeholder="เช่น 1234 หรือ 9999" required>
-          <div class="field-hint">ใช้ยืนยันสิทธิ์เมื่อต้องการเพิ่ม Admin ในอนาคต</div>
+          <div class="field-hint">ใช้ยืนยันสิทธิ์เมื่อต้องการเพิ่ม Admin คนใหม่</div>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; background: #16a34a; margin-top: var(--space-3);">
           🔑 สร้างบัญชี Super Admin และเริ่มใช้งาน
@@ -417,7 +417,7 @@
           <div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <h1 class="brand-title">ระบบจัดการมิเตอร์ไฟฟ้า</h1>
-              <span id="cloudStatusBadge" class="cloud-pill offline">ตรวจสอบการเชื่อมต่อ...</span>
+              <span id="cloudStatusBadge" class="cloud-pill offline" title="คลิกเพื่อตรวจสอบหรือตั้งค่า API Key">กำลังตรวจสอบ...</span>
             </div>
             <p class="brand-subtitle">บันทึกการเบิกใช้ นำเข้า แจ้งมิเตอร์ชำรุด และตรวจสอบผู้บันทึก</p>
           </div>
@@ -430,7 +430,10 @@
         </nav>
 
         <div class="user-badge-wrap">
-          <div class="user-profile-badge" id="headerUserBadge" title="คลิกเพื่อดูข้อมูลผู้ใช้งาน">
+          <button type="button" class="btn btn-secondary btn-sm" id="btnOpenFirebaseModal" style="border-color: #f59e0b; color: #b45309;">
+            ⚙️ ตั้งค่า API
+          </button>
+          <div class="user-profile-badge" id="headerUserBadge">
             <span id="headerUserText">กำลังโหลด...</span>
             <span id="headerUserRoleBadge" class="user-role-tag">STAFF</span>
           </div>
@@ -767,13 +770,40 @@
     </div>
   </div>
 
+  <!-- FIREBASE CONFIG MODAL -->
+  <div id="firebaseConfigModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ ตั้งค่าและตรวจสอบ Firebase API Key</h3>
+        <button type="button" class="btn btn-secondary btn-sm" id="closeFirebaseModalBtn">ปิด</button>
+      </div>
+      <form id="firebaseConfigForm" novalidate>
+        <p style="font-size: 13px; color: var(--muted); margin-top: 0;">
+          คุณสามารถนำค่า **API Key** จาก Firebase Console มากรอกที่นี่โดยตรง เพื่อเปลี่ยนสถานะเป็น **Online (Cloud Firestore)** ได้ทันทีโดยไม่ต้องแก้ไขโค้ดค่ะ
+        </p>
+        <div class="form-group">
+          <label for="cfgApiKey">Firebase API Key (เช่น AIzaSy...)</label>
+          <input type="text" id="cfgApiKey" class="input" placeholder="วาง Firebase API Key ที่นี่..." required>
+        </div>
+        <div id="cfgFeedback" class="inline-feedback"></div>
+        <div style="display: flex; gap: var(--space-2); justify-content: flex-end; margin-top: var(--space-4);">
+          <button type="button" class="btn btn-secondary" id="btnTestConnection">ทดสอบเชื่อมต่อ</button>
+          <button type="submit" class="btn btn-primary">บันทึกและเชื่อมต่อ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     (function () {
       // -------------------------------------------------------------
-      // 1. FIREBASE CONFIGURATION (ใส่ API KEY จริงของคุณที่นี่)
+      // 1. FIREBASE CONFIGURATION
       // -------------------------------------------------------------
+      // หากมีการบันทึกคีย์ไว้ในเบราว์เซอร์จะดึงมาใช้ก่อน หากไม่มีจะใช้ค่าเริ่มต้น
+      const savedApiKey = localStorage.getItem('firebase_api_key_custom') || '';
+      
       const firebaseConfig = {
-        apiKey: "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0",
+        apiKey: savedApiKey || "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0",
         authDomain: "peameternsh-aa9cd.firebaseapp.com",
         databaseURL: "https://peameternsh-aa9cd-default-rtdb.asia-southeast1.firebasedatabase.app",
         projectId: "peameternsh-aa9cd",
@@ -785,22 +815,38 @@
 
       let db = null;
       let isOnline = false;
+      let connectionErrorMsg = '';
 
-      // เริ่มต้นระบบ Firebase ทันทีแบบ Synchronous
-      try {
-        if (typeof firebase !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.apiKey.trim() !== "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0") {
-          firebase.initializeApp(firebaseConfig);
-          db = firebase.firestore();
-          isOnline = true;
-          console.log("⚡ Firebase Initialized Successfully!");
+      function initFirebase() {
+        try {
+          if (typeof firebase !== 'undefined') {
+            const hasValidKey = firebaseConfig.apiKey && firebaseConfig.apiKey.trim() !== "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0";
+            if (hasValidKey) {
+              if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+              }
+              db = firebase.firestore();
+              isOnline = true;
+              console.log("⚡ Firebase Initialized Successfully!");
+            } else {
+              isOnline = false;
+              connectionErrorMsg = 'ยังไม่ได้ระบุ Firebase API Key จริง';
+            }
+          } else {
+            isOnline = false;
+            connectionErrorMsg = 'ไม่สามารถโหลด Firebase SDK ได้';
+          }
+        } catch (err) {
+          console.warn("Firebase Init Error:", err);
+          isOnline = false;
+          connectionErrorMsg = err.message || 'Firebase Init Error';
         }
-      } catch (err) {
-        console.warn("Firebase Init Error:", err);
-        isOnline = false;
       }
 
+      initFirebase();
+
       // -------------------------------------------------------------
-      // 2. STATE MANAGEMENT (Dual-Store: Memory + LocalStorage Backup)
+      // 2. STATE MANAGEMENT (Dual-Store)
       // -------------------------------------------------------------
       let users = [];
       let records = [];
@@ -809,7 +855,6 @@
       let systemInitialized = false;
       let overviewChartInstance = null;
 
-      // โหลดข้อมูลสำรองจาก LocalStorage เสมอเพื่อความรวดเร็วและกันข้อมูลสูญหาย
       function loadLocalStorageBackup() {
         try {
           systemInitialized = localStorage.getItem('system_init') === 'true';
@@ -818,9 +863,7 @@
           if (savedUsers) users = JSON.parse(savedUsers);
           const savedRecords = localStorage.getItem('records');
           if (savedRecords) records = JSON.parse(savedRecords);
-        } catch (e) {
-          console.warn("LocalStorage load error:", e);
-        }
+        } catch (e) {}
       }
 
       function saveLocalStorageBackup() {
@@ -840,9 +883,11 @@
         if (isOnline) {
           cloudBadge.textContent = '☁️ Cloud Firestore (Online)';
           cloudBadge.className = 'cloud-pill online';
+          cloudBadge.title = 'เชื่อมต่อฐานข้อมูลคลาวด์สำเร็จ ข้อมูลอัปเดตตรงกันทุกอุปกรณ์';
         } else {
-          cloudBadge.textContent = '⚡ Local Mode (Offline/ตรวจพบ API Key แล้ว)';
+          cloudBadge.textContent = '⚡ Local Mode (Offline - คลิกเพื่อตั้งค่า)';
           cloudBadge.className = 'cloud-pill offline';
+          cloudBadge.title = connectionErrorMsg || 'กำลังทำงานในเครื่อง คลิกเพื่อกรอก API Key เพื่อออนไลน์';
         }
       }
 
@@ -854,7 +899,7 @@
 
         if (isOnline && db) {
           try {
-            // ตรวจสอบสถานะการเปิดระบบจาก Cloud Firestore
+            // Ping ตรวจสอบการอ่าน Firestore
             const configDoc = await db.collection("system_config").doc("security").get();
             if (configDoc.exists) {
               const data = configDoc.data();
@@ -863,7 +908,7 @@
               saveLocalStorageBackup();
             }
 
-            // Real-time Users Listener (อัปเดตรายชื่อพนักงานอัตโนมัติ)
+            // Real-time Users Listener
             db.collection("users").onSnapshot((snapshot) => {
               if (!snapshot.empty) {
                 const cloudUsers = [];
@@ -874,10 +919,10 @@
                 updateUserDatalist();
               }
             }, (err) => {
-              console.warn("Firestore Users Snapshot Error (โปรดตรวจสอบ Firestore Rules):", err);
+              console.warn("Users snapshot warning (ตรวจ Rules):", err);
             });
 
-            // Real-time Records Listener (อัปเดตรายการมิเตอร์อัตโนมัติ)
+            // Real-time Records Listener
             db.collection("meter_records").orderBy("date", "desc").onSnapshot((snapshot) => {
               if (!snapshot.empty) {
                 const cloudRecords = [];
@@ -887,11 +932,14 @@
                 renderDashboard();
               }
             }, (err) => {
-              console.warn("Firestore Records Snapshot Error:", err);
+              console.warn("Records snapshot warning:", err);
             });
 
           } catch (err) {
             console.warn("Firestore connection check failed, using Local Backup:", err);
+            isOnline = false;
+            connectionErrorMsg = 'Firestore ตรวจสอบสิทธิ์ไม่ผ่าน (โปรดตรวจ Rules)';
+            updateStatusBadge();
           }
         }
 
@@ -935,20 +983,18 @@
 
         const superAdmin = { userId: 'ADMIN-01', name: nameVal, phone: phoneVal, role: 'admin' };
 
-        // บันทึกเข้า Memory และ LocalStorage ทันที (ป้องกันปัญหากลับเข้าระบบไม่ได้)
         users = [superAdmin];
         adminPasscode = passcodeVal;
         systemInitialized = true;
         currentUser = superAdmin;
         saveLocalStorageBackup();
 
-        // บันทึกขึ้น Cloud Firestore
         if (isOnline && db) {
           try {
             await db.collection("system_config").doc("security").set({ initialized: true, adminPasscode: passcodeVal });
             await db.collection("users").doc(superAdmin.userId).set(superAdmin);
           } catch (err) {
-            console.warn("Saved to local, Cloud Firestore write failed (ตรวจ Rules):", err);
+            console.warn("Firestore save warning:", err);
           }
         }
 
@@ -974,7 +1020,6 @@
         document.getElementById('regAdminPasscodeGroup').style.display = e.target.value === 'admin' ? 'block' : 'none';
       });
 
-      // ระบบล็อกอิน: ค้นหาทั้ง Memory และ LocalStorage อย่างแม่นยำ
       document.getElementById('authLoginForm').addEventListener('submit', (e) => {
         e.preventDefault();
         const queryVal = document.getElementById('loginQuery').value.trim();
@@ -987,7 +1032,6 @@
           return (cleanQuery && uId === cleanQuery) || (digits && uPh === digits);
         });
 
-        // หากไม่พบ ให้ค้นหาซ้ำใน LocalStorage สำรอง
         if (!matched) {
           try {
             const localUsers = JSON.parse(localStorage.getItem('users') || '[]');
@@ -1035,9 +1079,7 @@
         if (isOnline && db) {
           try {
             await db.collection("users").doc(newUser.userId).set(newUser);
-          } catch (err) {
-            console.warn("Cloud save error:", err);
-          }
+          } catch (err) {}
         }
 
         currentUser = newUser;
@@ -1145,7 +1187,7 @@
           return;
         }
 
-        // ตรวจสอบมิเตอร์คงคลัง: เบิกใช้ได้เฉพาะเมื่อมีมิเตอร์ในคลัง
+        // ตรวจสอบมิเตอร์คงคลัง
         if (typeVal === 'withdraw') {
           const latest = records.find(r => (r.meterCode||'').toUpperCase() === meterVal.toUpperCase());
           if (!latest || latest.type !== 'import') {
@@ -1173,9 +1215,7 @@
         if (isOnline && db) {
           try {
             await db.collection("meter_records").doc(newRec.id).set(newRec);
-          } catch (err) {
-            console.warn("Cloud save error:", err);
-          }
+          } catch (err) {}
         }
 
         document.getElementById('recordMeterCode').value = '';
@@ -1188,7 +1228,7 @@
       });
 
       // -------------------------------------------------------------
-      // 6. EMPLOYEE MANAGEMENT (ADMIN ONLY)
+      // 6. EMPLOYEE MANAGEMENT
       // -------------------------------------------------------------
       const employeesAddForm = document.getElementById('employeesAddForm');
       employeesAddForm.addEventListener('submit', async (e) => {
@@ -1214,9 +1254,7 @@
         if (isOnline && db) {
           try {
             await db.collection("users").doc(newEmp.userId).set(newEmp);
-          } catch (err) {
-            console.warn("Cloud save error:", err);
-          }
+          } catch (err) {}
         }
 
         document.getElementById('empAddName').value = '';
@@ -1275,9 +1313,7 @@
             if (isOnline && db) {
               try {
                 await db.collection("users").doc(empId).delete();
-              } catch (err) {
-                console.warn("Cloud delete error:", err);
-              }
+              } catch (err) {}
             }
             renderEmployeesTable();
             updateUserDatalist();
@@ -1304,9 +1340,7 @@
         if (isOnline && db) {
           try {
             await db.collection("users").doc(id).update({ name: nameVal, phone: phoneVal, role: roleVal });
-          } catch (err) {
-            console.warn("Cloud update error:", err);
-          }
+          } catch (err) {}
         }
 
         document.getElementById('editEmployeeModal').classList.remove('open');
@@ -1322,7 +1356,77 @@
       }
 
       // -------------------------------------------------------------
-      // 7. DASHBOARD & RENDER
+      // 7. FIREBASE MODAL & LIVE API KEY CONFIG
+      // -------------------------------------------------------------
+      const firebaseConfigModal = document.getElementById('firebaseConfigModal');
+      const btnOpenFirebaseModal = document.getElementById('btnOpenFirebaseModal');
+      const closeFirebaseModalBtn = document.getElementById('closeFirebaseModalBtn');
+      const firebaseConfigForm = document.getElementById('firebaseConfigForm');
+      const cfgApiKey = document.getElementById('cfgApiKey');
+      const cfgFeedback = document.getElementById('cfgFeedback');
+      const btnTestConnection = document.getElementById('btnTestConnection');
+      const cloudStatusBadge = document.getElementById('cloudStatusBadge');
+
+      function openConfigModal() {
+        cfgApiKey.value = localStorage.getItem('firebase_api_key_custom') || (firebaseConfig.apiKey !== "YOUR_API_KEY_HERE" ? firebaseConfig.apiKey : '');
+        cfgFeedback.className = 'inline-feedback';
+        firebaseConfigModal.classList.add('open');
+      }
+
+      btnOpenFirebaseModal.addEventListener('click', openConfigModal);
+      cloudStatusBadge.addEventListener('click', openConfigModal);
+      closeFirebaseModalBtn.addEventListener('click', () => firebaseConfigModal.classList.remove('open'));
+
+      async function testKeyConnection(keyToTest) {
+        cfgFeedback.textContent = 'กำลังทดสอบเชื่อมต่อกับ Cloud Firestore...';
+        cfgFeedback.className = 'inline-feedback success';
+        cfgFeedback.style.background = '#f1f5f9';
+        cfgFeedback.style.color = '#334155';
+        cfgFeedback.style.borderColor = '#cbd5e1';
+
+        try {
+          const testConfig = { ...firebaseConfig, apiKey: keyToTest };
+          const testApp = firebase.initializeApp(testConfig, 'testApp_' + Date.now());
+          const testDb = testApp.firestore();
+          await testDb.collection("system_config").doc("security").get();
+          
+          cfgFeedback.textContent = '✅ เชื่อมต่อ Cloud Firestore สำเร็จสมบูรณ์!';
+          cfgFeedback.className = 'inline-feedback success';
+          return true;
+        } catch (err) {
+          cfgFeedback.textContent = `❌ เชื่อมต่อไม่สำเร็จ: ${err.message || err}`;
+          cfgFeedback.className = 'inline-feedback success';
+          cfgFeedback.style.background = 'var(--damage-bg)';
+          cfgFeedback.style.color = 'var(--damage-color)';
+          cfgFeedback.style.borderColor = 'var(--damage-border)';
+          return false;
+        }
+      }
+
+      btnTestConnection.addEventListener('click', () => {
+        const key = cfgApiKey.value.trim();
+        if (!key) {
+          alert('กรุณาระบุ API Key');
+          return;
+        }
+        testKeyConnection(key);
+      });
+
+      firebaseConfigForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const key = cfgApiKey.value.trim();
+        if (!key) return;
+
+        const success = await testKeyConnection(key);
+        if (success) {
+          localStorage.setItem('firebase_api_key_custom', key);
+          alert('บันทึก API Key สำเร็จ! ระบบจะรีเฟรชหน้าจอเพื่อเริ่มการเชื่อมต่อแบบ Online');
+          window.location.reload();
+        }
+      });
+
+      // -------------------------------------------------------------
+      // 8. DASHBOARD & RENDER
       // -------------------------------------------------------------
       function renderDashboard() {
         const total = records.length;
@@ -1330,7 +1434,6 @@
         const wdr = records.filter(r => r.type === 'withdraw').length;
         const dmg = records.filter(r => r.type === 'damage').length;
 
-        // คำนวณสต็อกคงคลัง (มิเตอร์ลูกที่สถานะล่าสุดคือ 'import')
         const latestMeters = new Map();
         records.forEach(r => {
           const k = (r.meterCode || '').toUpperCase();
@@ -1468,9 +1571,7 @@
               if (isOnline && db) {
                 try {
                   await db.collection("meter_records").doc(id).delete();
-                } catch (err) {
-                  console.warn("Cloud delete error:", err);
-                }
+                } catch (err) {}
               }
               renderDashboard();
             });
@@ -1515,4 +1616,3 @@
   </script>
 </body>
 </html>
-```
