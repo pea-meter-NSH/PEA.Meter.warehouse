@@ -1,11 +1,11 @@
-!doctype html>
+<!doctype html>
 <html lang="th">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" tent="width=device-width, initial-scale=1">
   <title>ระบบบริหารจัดการเบิกใช้-นำเข้ามิเตอร์ไฟฟ้า และแจ้งชำรุด</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="prenect" href="https://fonts.googleapis.com">
+  <link rel="prenect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
@@ -21,7 +21,7 @@
       --border: #e2e8f0;
       --border-strong: #cbd5e1;
       --ink: #0f172a;
-      --ink-secondary: #334155;
+      --ink-sedary: #334155;
       --muted: #64748b;
       --brand: #0284c7;
       --brand-hover: #0369a1;
@@ -59,25 +59,25 @@
       font-size: 15px;
     }
 
-    .setup-container {
+    .setup-tainer {
       display: none;
       align-items: center;
-      justify-content: center;
+      justify-tent: center;
       min-height: 100vh;
       padding: var(--space-6);
       background: linear-gradient(135deg, #0369a1 0%, #0f172a 100%);
     }
-    .setup-container.active { display: flex; }
+    .setup-tainer.active { display: flex; }
 
-    .auth-container {
+    .auth-tainer {
       display: none;
       align-items: center;
-      justify-content: center;
+      justify-tent: center;
       min-height: 100vh;
       padding: var(--space-6);
       background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     }
-    .auth-container.active { display: flex; }
+    .auth-tainer.active { display: flex; }
 
     .auth-card {
       background: var(--surface);
@@ -88,10 +88,10 @@
       padding: var(--space-8) var(--space-6);
     }
     .auth-header { text-align: center; margin-bottom: var(--space-6); }
-    .auth-brand-icon {
+    .auth-brand-i {
       width: 56px; height: 56px; border-radius: 12px;
       background: var(--brand-soft); color: var(--brand);
-      display: inline-flex; align-items: center; justify-content: center;
+      display: inline-flex; align-items: center; justify-tent: center;
       margin-bottom: var(--space-3);
     }
     .auth-title { margin: 0; font-size: 22px; font-weight: 700; color: var(--ink); }
@@ -119,13 +119,13 @@
     }
     .header-inner {
       max-width: 1200px; margin: 0 auto; padding: var(--space-4) var(--space-6);
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4);
+      display: flex; flex-wrap: wrap; align-items: center; justify-tent: space-between; gap: var(--space-4);
     }
     .brand-group { display: flex; align-items: center; gap: var(--space-3); }
-    .brand-icon {
+    .brand-i {
       width: 42px; height: 42px; border-radius: 10px;
       background: var(--brand-soft); color: var(--brand);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      display: flex; align-items: center; justify-tent: center; flex-shrink: 0;
     }
     .brand-title { margin: 0; font-size: 20px; font-weight: 700; color: var(--ink); line-height: 1.25; }
     .brand-subtitle { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
@@ -156,12 +156,12 @@
     .tab-btn {
       font: inherit; font-size: 14px; font-weight: 600; padding: 9px 16px;
       border-radius: var(--radius-sm); border: 1px solid var(--border);
-      background: var(--surface); color: var(--ink-secondary); cursor: pointer;
+      background: var(--surface); color: var(--ink-sedary); cursor: pointer;
       display: inline-flex; align-items: center; gap: var(--space-2);
     }
     .tab-btn.active { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: var(--space-6); }
+    .tainer { max-width: 1200px; margin: 0 auto; padding: var(--space-6); }
     .view-panel { display: none; }
     .view-panel.active { display: block; }
 
@@ -172,7 +172,7 @@
     }
     .section-header {
       margin-bottom: var(--space-4); display: flex; flex-wrap: wrap;
-      align-items: baseline; justify-content: space-between; gap: var(--space-2);
+      align-items: baseline; justify-tent: space-between; gap: var(--space-2);
     }
     .section-title { margin: 0; font-size: 18px; font-weight: 700; color: var(--ink); }
     .section-desc { margin: 4px 0 0; font-size: 13.5px; color: var(--muted); }
@@ -199,7 +199,7 @@
       display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: var(--space-6); margin-bottom: var(--space-6);
     }
-    .chart-box { position: relative; height: 240px; width: 100%; display: flex; align-items: center; justify-content: center; }
+    .chart-box { position: relative; height: 240px; width: 100%; display: flex; align-items: center; justify-tent: center; }
 
     .filter-panel {
       background: var(--surface-subtle); border: 1px solid var(--border);
@@ -217,7 +217,7 @@
       gap: var(--space-6); align-items: start;
     }
     .form-group { margin-bottom: var(--space-4); }
-    label { display: block; font-size: 14px; font-weight: 600; color: var(--ink-secondary); margin-bottom: 6px; }
+    label { display: block; font-size: 14px; font-weight: 600; color: var(--ink-sedary); margin-bottom: 6px; }
     .req-star { color: var(--damage-color); margin-left: 2px; }
 
     .input, .select, .textarea {
@@ -256,7 +256,7 @@
     }
     .user-profile-avatar {
       width: 44px; height: 44px; border-radius: 50%; background: var(--brand);
-      color: var(--brand-ink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;
+      color: var(--brand-ink); display: flex; align-items: center; justify-tent: center; font-weight: 700; font-size: 18px;
     }
     .user-profile-name { font-size: 15px; font-weight: 700; color: var(--ink); }
     .user-profile-id-phone { font-size: 13px; color: var(--muted); }
@@ -264,11 +264,11 @@
     .btn {
       font: inherit; font-size: 14px; font-weight: 600; padding: 9px 16px;
       border-radius: var(--radius-sm); border: 1px solid transparent; cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+      display: inline-flex; align-items: center; justify-tent: center; gap: var(--space-2);
     }
     .btn-primary { background: var(--brand); color: var(--brand-ink); }
     .btn-primary:hover { background: var(--brand-hover); }
-    .btn-secondary { background: var(--surface); color: var(--ink-secondary); border-color: var(--border-strong); }
+    .btn-sedary { background: var(--surface); color: var(--ink-sedary); border-color: var(--border-strong); }
     .btn-danger { background: var(--damage-color); color: white; }
     .btn-sm { padding: 5px 10px; font-size: 12.5px; }
 
@@ -280,7 +280,7 @@
 
     .table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
     table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; }
-    th { background: var(--surface-subtle); color: var(--ink-secondary); font-weight: 700; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th { background: var(--surface-subtle); color: var(--ink-sedary); font-weight: 700; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
     td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
     tbody tr:hover { background: #f8fafc; }
 
@@ -297,11 +297,11 @@
 
     .modal-backdrop {
       position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65);
-      display: none; align-items: center; justify-content: center; padding: var(--space-4); z-index: 50;
+      display: none; align-items: center; justify-tent: center; padding: var(--space-4); z-index: 50;
     }
     .modal-backdrop.open { display: flex; }
     .modal-card { background: var(--surface); border-radius: var(--radius); max-width: 540px; width: 100%; padding: var(--space-6); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); }
-    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border); }
+    .modal-header { display: flex; align-items: center; justify-tent: space-between; margin-bottom: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border); }
     .modal-title { margin: 0; font-size: 16px; font-weight: 700; }
     .empty-state { text-align: center; padding: var(--space-6) var(--space-4); color: var(--muted); }
   </style>
@@ -309,10 +309,10 @@
 <body>
 
   <!-- VIEW STEP 0: FIRST-TIME SETUP SYSTEM -->
-  <div id="setup-view" class="setup-container">
+  <div id="setup-view" class="setup-tainer">
     <div class="auth-card" style="max-width: 500px;">
       <div class="auth-header">
-        <div class="auth-brand-icon" style="background: #f0fdf4; color: #15803d;">
+        <div class="auth-brand-i" style="background: #f0fdf4; color: #15803d;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <h2 class="auth-title">เปิดใช้งานระบบครั้งแรก</h2>
@@ -344,10 +344,10 @@
   </div>
 
   <!-- VIEW A: LOGIN & REGISTRATION -->
-  <div id="auth-view" class="auth-container">
+  <div id="auth-view" class="auth-tainer">
     <div class="auth-card">
       <div class="auth-header">
-        <div class="auth-brand-icon">
+        <div class="auth-brand-i">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         </div>
         <h2 class="auth-title">ระบบจัดการมิเตอร์ไฟฟ้า</h2>
@@ -408,7 +408,7 @@
     <header class="app-header">
       <div class="header-inner">
         <div class="brand-group">
-          <div class="brand-icon">
+          <div class="brand-i">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           </div>
           <div>
@@ -427,19 +427,19 @@
         </nav>
 
         <div class="user-badge-wrap">
-          <button type="button" class="btn btn-secondary btn-sm" id="btnOpenFirebaseModal" style="border-color: #f59e0b; color: #b45309; font-weight:700;">
+          <button type="button" class="btn btn-sedary btn-sm" id="btnOpenFirebaseModal" style="border-color: #f59e0b; color: #b45309; font-weight:700;">
             ⚙️ ตั้งค่า API
           </button>
           <div class="user-profile-badge" id="headerUserBadge">
             <span id="headerUserText">กำลังโหลด...</span>
             <span id="headerUserRoleBadge" class="user-role-tag">STAFF</span>
           </div>
-          <button type="button" class="btn btn-secondary btn-sm" id="logoutBtn">ออกจากระบบ</button>
+          <button type="button" class="btn btn-sedary btn-sm" id="logoutBtn">ออกจากระบบ</button>
         </div>
       </div>
     </header>
 
-    <main class="container">
+    <main class="tainer">
       <!-- VIEW 1: DASHBOARD -->
       <section id="view-dashboard" class="view-panel active">
         <div class="kpi-grid">
@@ -564,7 +564,7 @@
               <input type="date" id="filterDate" class="input">
             </div>
             <div>
-              <button type="button" class="btn btn-secondary" id="clearFilterBtn" style="width: 100%;">ล้างตัวกรอง</button>
+              <button type="button" class="btn btn-sedary" id="clearFilterBtn" style="width: 100%;">ล้างตัวกรอง</button>
             </div>
           </div>
 
@@ -603,7 +603,7 @@
               <textarea id="rawLongTextInput" class="textarea" placeholder="เช่น PEA525112,001245.5,CA551223,เปลี่ยนมิเตอร์หน้างาน"></textarea>
               <div style="margin-top: var(--space-2); display: flex; gap: var(--space-2);">
                 <button type="button" class="btn btn-primary btn-sm" id="parseRawDataBtn">แยกข้อมูลลงช่องกรอก</button>
-                <button type="button" class="btn btn-secondary btn-sm" id="clearRawDataBtn">ล้างข้อความที่วาง</button>
+                <button type="button" class="btn btn-sedary btn-sm" id="clearRawDataBtn">ล้างข้อความที่วาง</button>
               </div>
               <div id="parseRawFeedback" class="inline-feedback"></div>
             </div>
@@ -640,7 +640,7 @@
               <div class="form-group">
                 <label>ผู้บันทึกทำรายการ (ล็อคเฉพาะบัญชีคุณ)</label>
                 <div class="user-profile-highlight">
-                  <div class="user-profile-avatar" id="formAvatarIcon">U</div>
+                  <div class="user-profile-avatar" id="formAvatarI">U</div>
                   <div>
                     <div class="user-profile-name" id="formUserName">สมชาย สายฟ้า</div>
                     <div class="user-profile-id-phone" id="formUserIdAndPhone">รหัส: USR-001 | 081-234-5678</div>
@@ -675,7 +675,7 @@
 
             <div style="display: flex; gap: var(--space-2); margin-top: var(--space-4);">
               <button type="submit" class="btn btn-primary" id="submitRecordBtn">บันทึกข้อมูลมิเตอร์</button>
-              <button type="button" class="btn btn-secondary" id="resetRecordFormBtn">ล้างฟอร์ม</button>
+              <button type="button" class="btn btn-sedary" id="resetRecordFormBtn">ล้างฟอร์ม</button>
             </div>
             <div id="recordFeedback" class="inline-feedback"></div>
           </form>
@@ -739,7 +739,7 @@
     <div class="modal-card">
       <div class="modal-header">
         <h3 class="modal-title">✏️ แก้ไขข้อมูลพนักงาน (Admin)</h3>
-        <button type="button" class="btn btn-secondary btn-sm" id="closeEditEmpModalBtn">ยกเลิก</button>
+        <button type="button" class="btn btn-sedary btn-sm" id="closeEditEmpModalBtn">ยกเลิก</button>
       </div>
       <form id="editEmployeeForm" novalidate>
         <input type="hidden" id="editEmployeeId">
@@ -758,8 +758,8 @@
             <option value="admin">ผู้ดูแลระบบ (Admin)</option>
           </select>
         </div>
-        <div style="display: flex; gap: var(--space-2); justify-content: flex-end; margin-top: var(--space-3);">
-          <button type="button" class="btn btn-secondary" id="cancelEditEmpBtn">ยกเลิก</button>
+        <div style="display: flex; gap: var(--space-2); justify-tent: flex-end; margin-top: var(--space-3);">
+          <button type="button" class="btn btn-sedary" id="cancelEditEmpBtn">ยกเลิก</button>
           <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
         </div>
       </form>
@@ -771,7 +771,7 @@
     <div class="modal-card">
       <div class="modal-header">
         <h3 class="modal-title">⚙️ ตั้งค่าและตรวจสอบ Firebase API Key</h3>
-        <button type="button" class="btn btn-secondary btn-sm" id="closeFirebaseModalBtn">ปิด</button>
+        <button type="button" class="btn btn-sedary btn-sm" id="closeFirebaseModalBtn">ปิด</button>
       </div>
       <form id="firebaseConfigForm" novalidate>
         <p style="font-size: 13px; color: var(--muted); margin-top: 0;">
@@ -782,28 +782,28 @@
           <input type="text" id="cfgApiKey" class="input" placeholder="วาง Firebase API Key ที่นี่..." required>
         </div>
         <div id="cfgFeedback" class="inline-feedback"></div>
-        <div style="display: flex; gap: var(--space-2); justify-content: flex-end; margin-top: var(--space-4);">
-          <button type="button" class="btn btn-secondary" id="btnTestConnection">ทดสอบเชื่อมต่อ</button>
+        <div style="display: flex; gap: var(--space-2); justify-tent: flex-end; margin-top: var(--space-4);">
+          <button type="button" class="btn btn-sedary" id="btnTestConnection">ทดสอบเชื่อมต่อ</button>
           <button type="submit" class="btn btn-primary">บันทึกและเชื่อมต่อทันที</button>
         </div>
       </form>
     </div>
   </div>
 
-  <script> /
+  <script>
     (function () {
       // -------------------------------------------------------------
       // 1. FIREBASE CONFIGURATION
       // -------------------------------------------------------------
-      const HARDCODED_API_KEY = "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0";
-      const savedApiKey = localStorage.getItem('firebase_api_key_custom') || '';
+      st HARDCODED_API_KEY = "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0";
+      st savedApiKey = localStorage.getItem('firebase_api_key_custom') || '';
       
       // ดึงคีย์จริง: หากในโค้ดมีการเปลี่ยนจาก YOUR_API_KEY_HERE แล้วให้ใช้ในโค้ดก่อน หากไม่มีให้ใช้จากที่เซฟไว้
-      const effectiveApiKey = (HARDCODED_API_KEY !== "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0" && HARDCODED_API_KEY)
+      st effectiveApiKey = (HARDCODED_API_KEY !== "YOUR_API_KEY_HERE" && HARDCODED_API_KEY)
         ? HARDCODED_API_KEY 
         : (savedApiKey || HARDCODED_API_KEY);
 
-      const firebaseConfig = {
+      st firebaseConfig = {
         apiKey: effectiveApiKey,
         authDomain: "peameternsh-aa9cd.firebaseapp.com",
         databaseURL: "https://peameternsh-aa9cd-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -816,31 +816,31 @@
 
       let db = null;
       let isOnline = false;
-      let connectionErrorMsg = '';
+      let nectionErrorMsg = '';
 
       function initFirebase() {
         try {
           if (typeof firebase !== 'undefined') {
-            const hasValidKey = firebaseConfig.apiKey && firebaseConfig.apiKey.trim() !== "YOUR_API_KEY_HERE" && firebaseConfig.apiKey.trim() !== "";
+            st hasValidKey = firebaseConfig.apiKey && firebaseConfig.apiKey.trim() !== "YOUR_API_KEY_HERE" && firebaseConfig.apiKey.trim() !== "";
             if (hasValidKey) {
               if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
               }
               db = firebase.firestore();
               isOnline = true;
-              console.log("⚡ Firebase Initialized Successfully with Key:", firebaseConfig.apiKey.substring(0, 10) + "...");
+              sole.log("⚡ Firebase Initialized Successfully with Key:", firebaseConfig.apiKey.substring(0, 10) + "...");
             } else {
               isOnline = false;
-              connectionErrorMsg = 'ยังไม่ได้ระบุ Firebase API Key จริง';
+              nectionErrorMsg = 'ยังไม่ได้ระบุ Firebase API Key จริง';
             }
           } else {
             isOnline = false;
-            connectionErrorMsg = 'ไม่สามารถโหลด Firebase SDK ได้';
+            nectionErrorMsg = 'ไม่สามารถโหลด Firebase SDK ได้';
           }
         } catch (err) {
-          console.warn("Firebase Init Error:", err);
+          sole.warn("Firebase Init Error:", err);
           isOnline = false;
-          connectionErrorMsg = err.message || 'Firebase Init Error';
+          nectionErrorMsg = err.message || 'Firebase Init Error';
         }
       }
 
@@ -860,9 +860,9 @@
         try {
           systemInitialized = localStorage.getItem('system_init') === 'true';
           adminPasscode = localStorage.getItem('admin_passcode') || '';
-          const savedUsers = localStorage.getItem('users');
+          st savedUsers = localStorage.getItem('users');
           if (savedUsers) users = JSON.parse(savedUsers);
-          const savedRecords = localStorage.getItem('records');
+          st savedRecords = localStorage.getItem('records');
           if (savedRecords) records = JSON.parse(savedRecords);
         } catch (e) {}
       }
@@ -879,7 +879,7 @@
       loadLocalStorageBackup();
 
       function updateStatusBadge() {
-        const cloudBadge = document.getElementById('cloudStatusBadge');
+        st cloudBadge = document.getElementById('cloudStatusBadge');
         if (!cloudBadge) return;
         if (isOnline) {
           cloudBadge.textContent = '☁️ Cloud Firestore (Online)';
@@ -888,7 +888,7 @@
         } else {
           cloudBadge.textContent = '⚡ Local Mode (Offline - คลิกเพื่อตั้งค่า)';
           cloudBadge.className = 'cloud-pill offline';
-          cloudBadge.title = connectionErrorMsg || 'กำลังทำงานในเครื่อง คลิกเพื่อกรอก API Key เพื่อออนไลน์';
+          cloudBadge.title = nectionErrorMsg || 'กำลังทำงานในเครื่อง คลิกเพื่อกรอก API Key เพื่อออนไลน์';
         }
       }
 
@@ -901,9 +901,9 @@
         if (isOnline && db) {
           try {
             // Ping ตรวจสอบการอ่าน Firestore
-            const configDoc = await db.collection("system_config").doc("security").get();
-            if (configDoc.exists) {
-              const data = configDoc.data();
+            st figDoc = await db.collection("system_fig").doc("security").get();
+            if (figDoc.exists) {
+              st data = figDoc.data();
               systemInitialized = data.initialized === true;
               adminPasscode = data.adminPasscode || adminPasscode;
               saveLocalStorageBackup();
@@ -912,7 +912,7 @@
             // Real-time Users Listener
             db.collection("users").onSnapshot((snapshot) => {
               if (!snapshot.empty) {
-                const cloudUsers = [];
+                st cloudUsers = [];
                 snapshot.forEach((d) => cloudUsers.push(d.data()));
                 users = cloudUsers;
                 saveLocalStorageBackup();
@@ -920,26 +920,26 @@
                 updateUserDatalist();
               }
             }, (err) => {
-              console.warn("Users snapshot warning (ตรวจ Rules):", err);
+              sole.warn("Users snapshot warning (ตรวจ Rules):", err);
             });
 
             // Real-time Records Listener
             db.collection("meter_records").orderBy("date", "desc").onSnapshot((snapshot) => {
               if (!snapshot.empty) {
-                const cloudRecords = [];
+                st cloudRecords = [];
                 snapshot.forEach((d) => cloudRecords.push(d.data()));
                 records = cloudRecords;
                 saveLocalStorageBackup();
                 renderDashboard();
               }
             }, (err) => {
-              console.warn("Records snapshot warning:", err);
+              sole.warn("Records snapshot warning:", err);
             });
 
           } catch (err) {
-            console.warn("Firestore connection check failed, using Local Backup:", err);
+            sole.warn("Firestore nection check failed, using Local Backup:", err);
             isOnline = false;
-            connectionErrorMsg = `Firestore ติดขัด: ${err.code || err.message || 'โปรดตรวจ Rules'}`;
+            nectionErrorMsg = `Firestore ติดขัด: ${err.code || err.message || 'โปรดตรวจ Rules'}`;
             updateStatusBadge();
           }
         }
@@ -948,9 +948,9 @@
       }
 
       function checkRouting() {
-        const setupView = document.getElementById('setup-view');
-        const authView = document.getElementById('auth-view');
-        const appPortal = document.getElementById('app-portal');
+        st setupView = document.getElementById('setup-view');
+        st authView = document.getElementById('auth-view');
+        st appPortal = document.getElementById('app-portal');
 
         if (!systemInitialized) {
           setupView.classList.add('active');
@@ -970,19 +970,19 @@
       // -------------------------------------------------------------
       // 4. SUPER ADMIN SETUP & AUTHENTICATION
       // -------------------------------------------------------------
-      const systemSetupForm = document.getElementById('systemSetupForm');
+      st systemSetupForm = document.getElementById('systemSetupForm');
       systemSetupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const nameVal = document.getElementById('setupAdminName').value.trim();
-        const phoneVal = document.getElementById('setupAdminPhone').value.trim();
-        const passcodeVal = document.getElementById('setupAdminPasscode').value.trim();
+        st nameVal = document.getElementById('setupAdminName').value.trim();
+        st phoneVal = document.getElementById('setupAdminPhone').value.trim();
+        st passcodeVal = document.getElementById('setupAdminPasscode').value.trim();
 
         if (!nameVal || phoneVal.replace(/\D/g, '').length < 9 || passcodeVal.length < 4) {
           alert('กรุณากรอกข้อมูลให้ครบถ้วนถูกต้อง');
           return;
         }
 
-        const superAdmin = { userId: 'ADMIN-01', name: nameVal, phone: phoneVal, role: 'admin' };
+        st superAdmin = { userId: 'ADMIN-01', name: nameVal, phone: phoneVal, role: 'admin' };
 
         users = [superAdmin];
         adminPasscode = passcodeVal;
@@ -992,10 +992,10 @@
 
         if (isOnline && db) {
           try {
-            await db.collection("system_config").doc("security").set({ initialized: true, adminPasscode: passcodeVal });
+            await db.collection("system_fig").doc("security").set({ initialized: true, adminPasscode: passcodeVal });
             await db.collection("users").doc(superAdmin.userId).set(superAdmin);
           } catch (err) {
-            console.warn("Firestore save warning:", err);
+            sole.warn("Firestore save warning:", err);
           }
         }
 
@@ -1023,22 +1023,22 @@
 
       document.getElementById('authLoginForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        const queryVal = document.getElementById('loginQuery').value.trim();
-        const digits = queryVal.replace(/\D/g, '');
-        const cleanQuery = queryVal.toLowerCase().replace(/[^a-z0-9]/g, '');
+        st queryVal = document.getElementById('loginQuery').value.trim();
+        st digits = queryVal.replace(/\D/g, '');
+        st cleanQuery = queryVal.toLowerCase().replace(/[^a-z0-9]/g, '');
 
         let matched = users.find(u => {
-          const uId = (u.userId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-          const uPh = (u.phone || '').replace(/\D/g, '');
+          st uId = (u.userId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          st uPh = (u.phone || '').replace(/\D/g, '');
           return (cleanQuery && uId === cleanQuery) || (digits && uPh === digits);
         });
 
         if (!matched) {
           try {
-            const localUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            st localUsers = JSON.parse(localStorage.getItem('users') || '[]');
             matched = localUsers.find(u => {
-              const uId = (u.userId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-              const uPh = (u.phone || '').replace(/\D/g, '');
+              st uId = (u.userId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+              st uPh = (u.phone || '').replace(/\D/g, '');
               return (cleanQuery && uId === cleanQuery) || (digits && uPh === digits);
             });
             if (matched && !users.some(u => u.userId === matched.userId)) {
@@ -1058,21 +1058,21 @@
 
       document.getElementById('authRegisterForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const nameVal = document.getElementById('regUserName').value.trim();
-        const phoneVal = document.getElementById('regUserPhone').value.trim();
-        const roleVal = document.getElementById('regUserRole').value;
-        const passVal = document.getElementById('regAdminPasscode').value.trim();
+        st nameVal = document.getElementById('regUserName').value.trim();
+        st phoneVal = document.getElementById('regUserPhone').value.trim();
+        st roleVal = document.getElementById('regUserRole').value;
+        st passVal = document.getElementById('regAdminPasscode').value.trim();
 
         if (roleVal === 'admin' && passVal !== adminPasscode) {
           alert('รหัสผ่านยืนยันสิทธิ์ Admin ไม่ถูกต้อง');
           return;
         }
 
-        const genId = roleVal === 'admin'
+        st genId = roleVal === 'admin'
           ? `ADM-${String(users.filter(u => (u.userId||'').startsWith('ADM')).length + 1).padStart(2, '0')}`
           : `USR-${String(users.filter(u => (u.userId||'').startsWith('USR')).length + 1).padStart(3, '0')}`;
 
-        const newUser = { userId: genId, name: nameVal, phone: phoneVal, role: roleVal };
+        st newUser = { userId: genId, name: nameVal, phone: phoneVal, role: roleVal };
 
         users.push(newUser);
         saveLocalStorageBackup();
@@ -1092,11 +1092,11 @@
         document.getElementById('app-portal').classList.add('active');
 
         document.getElementById('headerUserText').textContent = `${currentUser.userId} - ${currentUser.name}`;
-        const isAdmin = currentUser.role === 'admin';
+        st isAdmin = currentUser.role === 'admin';
         document.getElementById('headerUserRoleBadge').textContent = isAdmin ? 'ADMIN' : 'STAFF';
         document.getElementById('headerUserRoleBadge').className = `user-role-tag ${isAdmin ? 'admin' : ''}`;
 
-        document.getElementById('formAvatarIcon').textContent = (currentUser.name || 'U').charAt(0).toUpperCase();
+        document.getElementById('formAvatarI').textContent = (currentUser.name || 'U').charAt(0).toUpperCase();
         document.getElementById('formUserName').textContent = currentUser.name;
         document.getElementById('formUserIdAndPhone').textContent = `รหัส: ${currentUser.userId} | ${currentUser.phone}`;
 
@@ -1120,19 +1120,19 @@
       // -------------------------------------------------------------
       // 5. SMART TEXT PARSER
       // -------------------------------------------------------------
-      const rawLongTextInput = document.getElementById('rawLongTextInput');
-      const parseRawDataBtn = document.getElementById('parseRawDataBtn');
-      const clearRawDataBtn = document.getElementById('clearRawDataBtn');
-      const parseRawFeedback = document.getElementById('parseRawFeedback');
+      st rawLongTextInput = document.getElementById('rawLongTextInput');
+      st parseRawDataBtn = document.getElementById('parseRawDataBtn');
+      st clearRawDataBtn = document.getElementById('clearRawDataBtn');
+      st parseRawFeedback = document.getElementById('parseRawFeedback');
 
       parseRawDataBtn.addEventListener('click', () => {
-        const text = rawLongTextInput.value.trim();
+        st text = rawLongTextInput.value.trim();
         if (!text) {
           alert('กรุณาวางข้อความก่อนกดแยกข้อมูล');
           return;
         }
 
-        const tokens = text.split(/[,|\/\n\t]+/).map(t => t.trim()).filter(Boolean);
+        st tokens = text.split(/[,|\/\n\t]+/).map(t => t.trim()).filter(Boolean);
         let extracted = { meter: '', reading: '', customer: '', note: '' };
 
         tokens.forEach(tok => {
@@ -1163,8 +1163,8 @@
 
       document.querySelectorAll('input[name="recordType"]').forEach(r => {
         r.addEventListener('change', () => {
-          const val = document.querySelector('input[name="recordType"]:checked').value;
-          const lbl = document.getElementById('recordCustomerNumberLabel');
+          st val = document.querySelector('input[name="recordType"]:checked').value;
+          st lbl = document.getElementById('recordCustomerNumberLabel');
           if (val === 'withdraw') lbl.innerHTML = 'หมายเลขผู้ใช้ไฟ (นำไปติดตั้งให้) <span class="req-star">*</span>';
           else if (val === 'import') lbl.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถอดมาจาก) <span class="req-star">*</span>';
           else lbl.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถ้ามี)';
@@ -1176,12 +1176,12 @@
       // บันทึกข้อมูลมิเตอร์
       document.getElementById('meterRecordForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const typeVal = document.querySelector('input[name="recordType"]:checked').value;
-        const meterVal = document.getElementById('recordMeterCode').value.trim();
-        const readingVal = document.getElementById('recordMeterReading').value.trim();
-        const custVal = document.getElementById('recordCustomerNumber').value.trim();
-        const dateVal = document.getElementById('recordDate').value;
-        const noteVal = document.getElementById('recordNote').value.trim();
+        st typeVal = document.querySelector('input[name="recordType"]:checked').value;
+        st meterVal = document.getElementById('recordMeterCode').value.trim();
+        st readingVal = document.getElementById('recordMeterReading').value.trim();
+        st custVal = document.getElementById('recordCustomerNumber').value.trim();
+        st dateVal = document.getElementById('recordDate').value;
+        st noteVal = document.getElementById('recordNote').value.trim();
 
         if (!meterVal || !readingVal || !dateVal) {
           alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน');
@@ -1190,14 +1190,14 @@
 
         // ตรวจสอบมิเตอร์คงคลัง
         if (typeVal === 'withdraw') {
-          const latest = records.find(r => (r.meterCode||'').toUpperCase() === meterVal.toUpperCase());
+          st latest = records.find(r => (r.meterCode||'').toUpperCase() === meterVal.toUpperCase());
           if (!latest || latest.type !== 'import') {
             alert(`ไม่สามารถเบิกใช้ได้ เนื่องจากมิเตอร์ ${meterVal} ไม่อยู่ในคลังพร้อมใช้ (ต้องมีรายการนำเข้ามาก่อน)`);
             return;
           }
         }
 
-        const newRec = {
+        st newRec = {
           id: 'REC-' + Date.now(),
           type: typeVal,
           meterCode: meterVal,
@@ -1231,23 +1231,23 @@
       // -------------------------------------------------------------
       // 6. EMPLOYEE MANAGEMENT
       // -------------------------------------------------------------
-      const employeesAddForm = document.getElementById('employeesAddForm');
+      st employeesAddForm = document.getElementById('employeesAddForm');
       employeesAddForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const nameVal = document.getElementById('empAddName').value.trim();
-        const phoneVal = document.getElementById('empAddPhone').value.trim();
-        const roleVal = document.getElementById('empAddRole').value;
+        st nameVal = document.getElementById('empAddName').value.trim();
+        st phoneVal = document.getElementById('empAddPhone').value.trim();
+        st roleVal = document.getElementById('empAddRole').value;
 
         if (!nameVal || phoneVal.replace(/\D/g, '').length < 9) {
           alert('กรุณากรอกชื่อและเบอร์โทรให้ถูกต้อง');
           return;
         }
 
-        const genId = roleVal === 'admin'
+        st genId = roleVal === 'admin'
           ? `ADM-${String(users.filter(u => (u.userId||'').startsWith('ADM')).length + 1).padStart(2, '0')}`
           : `USR-${String(users.filter(u => (u.userId||'').startsWith('USR')).length + 1).padStart(3, '0')}`;
 
-        const newEmp = { userId: genId, name: nameVal, phone: phoneVal, role: roleVal };
+        st newEmp = { userId: genId, name: nameVal, phone: phoneVal, role: roleVal };
 
         users.push(newEmp);
         saveLocalStorageBackup();
@@ -1266,7 +1266,7 @@
       });
 
       function renderEmployeesTable() {
-        const tbody = document.getElementById('employeesTableBody');
+        st tbody = document.getElementById('employeesTableBody');
         if (!tbody) return;
 
         if (users.length === 0) {
@@ -1275,7 +1275,7 @@
         }
 
         tbody.innerHTML = users.map(u => {
-          const isSelf = currentUser && currentUser.userId === u.userId;
+          st isSelf = currentUser && currentUser.userId === u.userId;
           return `
             <tr>
               <td><span class="code-pill">${escapeHtml(u.userId)}</span></td>
@@ -1283,7 +1283,7 @@
               <td>${escapeHtml(u.phone)}</td>
               <td><span class="user-role-tag ${u.role === 'admin' ? 'admin' : ''}">${(u.role||'staff').toUpperCase()}</span></td>
               <td>
-                <button type="button" class="btn btn-secondary btn-sm edit-emp-btn" data-id="${escapeHtml(u.userId)}">✏️ แก้ไข</button>
+                <button type="button" class="btn btn-sedary btn-sm edit-emp-btn" data-id="${escapeHtml(u.userId)}">✏️ แก้ไข</button>
                 <button type="button" class="btn btn-danger btn-sm delete-emp-btn" data-id="${escapeHtml(u.userId)}" ${isSelf ? 'disabled title="ไม่สามารถลบบัญชีที่กำลังล็อกอินได้"' : ''}>🗑️ ลบ</button>
               </td>
             </tr>
@@ -1292,7 +1292,7 @@
 
         tbody.querySelectorAll('.edit-emp-btn').forEach(btn => {
           btn.addEventListener('click', () => {
-            const emp = users.find(u => u.userId === btn.dataset.id);
+            st emp = users.find(u => u.userId === btn.dataset.id);
             if (emp) {
               document.getElementById('editEmployeeId').value = emp.userId;
               document.getElementById('editEmpName').value = emp.name;
@@ -1305,8 +1305,8 @@
 
         tbody.querySelectorAll('.delete-emp-btn').forEach(btn => {
           btn.addEventListener('click', async () => {
-            const empId = btn.dataset.id;
-            if (!confirm(`คุณต้องการลบพนักงานรหัส ${empId} ใช่หรือไม่?`)) return;
+            st empId = btn.dataset.id;
+            if (!firm(`คุณต้องการลบพนักงานรหัส ${empId} ใช่หรือไม่?`)) return;
 
             users = users.filter(u => u.userId !== empId);
             saveLocalStorageBackup();
@@ -1327,12 +1327,12 @@
 
       document.getElementById('editEmployeeForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const id = document.getElementById('editEmployeeId').value;
-        const nameVal = document.getElementById('editEmpName').value.trim();
-        const phoneVal = document.getElementById('editEmpPhone').value.trim();
-        const roleVal = document.getElementById('editEmpRole').value;
+        st id = document.getElementById('editEmployeeId').value;
+        st nameVal = document.getElementById('editEmpName').value.trim();
+        st phoneVal = document.getElementById('editEmpPhone').value.trim();
+        st roleVal = document.getElementById('editEmpRole').value;
 
-        const idx = users.findIndex(u => u.userId === id);
+        st idx = users.findIndex(u => u.userId === id);
         if (idx !== -1) {
           users[idx] = { ...users[idx], name: nameVal, phone: phoneVal, role: roleVal };
           saveLocalStorageBackup();
@@ -1350,7 +1350,7 @@
       });
 
       function updateUserDatalist() {
-        const dl = document.getElementById('registeredUserIdList');
+        st dl = document.getElementById('registeredUserIdList');
         if (dl) {
           dl.innerHTML = users.map(u => `<option value="${escapeHtml(u.userId)}">${escapeHtml(u.name)} (${escapeHtml(u.phone)})</option>`).join('');
         }
@@ -1359,14 +1359,14 @@
       // -------------------------------------------------------------
       // 7. FIREBASE MODAL & LIVE API KEY CONFIG
       // -------------------------------------------------------------
-      const firebaseConfigModal = document.getElementById('firebaseConfigModal');
-      const btnOpenFirebaseModal = document.getElementById('btnOpenFirebaseModal');
-      const closeFirebaseModalBtn = document.getElementById('closeFirebaseModalBtn');
-      const firebaseConfigForm = document.getElementById('firebaseConfigForm');
-      const cfgApiKey = document.getElementById('cfgApiKey');
-      const cfgFeedback = document.getElementById('cfgFeedback');
-      const btnTestConnection = document.getElementById('btnTestConnection');
-      const cloudStatusBadge = document.getElementById('cloudStatusBadge');
+      st firebaseConfigModal = document.getElementById('firebaseConfigModal');
+      st btnOpenFirebaseModal = document.getElementById('btnOpenFirebaseModal');
+      st closeFirebaseModalBtn = document.getElementById('closeFirebaseModalBtn');
+      st firebaseConfigForm = document.getElementById('firebaseConfigForm');
+      st cfgApiKey = document.getElementById('cfgApiKey');
+      st cfgFeedback = document.getElementById('cfgFeedback');
+      st btnTestConnection = document.getElementById('btnTestConnection');
+      st cloudStatusBadge = document.getElementById('cloudStatusBadge');
 
       function openConfigModal() {
         cfgApiKey.value = localStorage.getItem('firebase_api_key_custom') || (firebaseConfig.apiKey !== "YOUR_API_KEY_HERE" ? firebaseConfig.apiKey : '');
@@ -1386,13 +1386,13 @@
         cfgFeedback.style.borderColor = '#cbd5e1';
 
         try {
-          const testConfig = { ...firebaseConfig, apiKey: keyToTest };
-          const appName = 'testApp_' + Date.now();
-          const testApp = firebase.initializeApp(testConfig, appName);
-          const testDb = testApp.firestore();
+          st testConfig = { ...firebaseConfig, apiKey: keyToTest };
+          st appName = 'testApp_' + Date.now();
+          st testApp = firebase.initializeApp(testConfig, appName);
+          st testDb = testApp.firestore();
           
           // ดำเนินการ Ping อ่านข้อมูล Firestore จริง
-          await testDb.collection("system_config").doc("security").get();
+          await testDb.collection("system_fig").doc("security").get();
 
           cfgFeedback.innerHTML = '✅ <strong>เชื่อมต่อ Cloud Firestore สำเร็จสมบูรณ์!</strong><br>กดปุ่ม "บันทึกและเชื่อมต่อทันที" ด้านล่างเพื่อเริ่มใช้งานออนไลน์ได้เลยค่ะ';
           cfgFeedback.className = 'inline-feedback success';
@@ -1401,7 +1401,7 @@
           cfgFeedback.style.borderColor = 'var(--import-border)';
           return true;
         } catch (err) {
-          console.error("Test Connection Error:", err);
+          sole.error("Test Connection Error:", err);
           let detail = err.message || err;
           if (err.code === 'permission-denied') {
             detail = 'ติดสิทธิ์การเข้าถึง (Permission Denied) - กรุณาตรวจสอบแท็บ Rules ใน Cloud Firestore ให้เป็น allow read, write: if true;';
@@ -1416,7 +1416,7 @@
       }
 
       btnTestConnection.addEventListener('click', () => {
-        const key = cfgApiKey.value.trim();
+        st key = cfgApiKey.value.trim();
         if (!key) {
           alert('กรุณาวาง API Key ก่อนกดทดสอบ');
           return;
@@ -1426,10 +1426,10 @@
 
       firebaseConfigForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const key = cfgApiKey.value.trim();
+        st key = cfgApiKey.value.trim();
         if (!key) return;
 
-        const success = await testKeyConnection(key);
+        st success = await testKeyConnection(key);
         if (success) {
           localStorage.setItem('firebase_api_key_custom', key);
           alert('บันทึก API Key สำเร็จ! ระบบจะรีเฟรชหน้าจอเพื่อเข้าสู่โหมด Cloud Firestore (Online) ทันที');
@@ -1441,14 +1441,14 @@
       // 8. DASHBOARD & RENDER
       // -------------------------------------------------------------
       function renderDashboard() {
-        const total = records.length;
-        const imp = records.filter(r => r.type === 'import').length;
-        const wdr = records.filter(r => r.type === 'withdraw').length;
-        const dmg = records.filter(r => r.type === 'damage').length;
+        st total = records.length;
+        st imp = records.filter(r => r.type === 'import').length;
+        st wdr = records.filter(r => r.type === 'withdraw').length;
+        st dmg = records.filter(r => r.type === 'damage').length;
 
-        const latestMeters = new Map();
+        st latestMeters = new Map();
         records.forEach(r => {
-          const k = (r.meterCode || '').toUpperCase();
+          st k = (r.meterCode || '').toUpperCase();
           if (!latestMeters.has(k)) latestMeters.set(k, r);
         });
         let stock = 0;
@@ -1467,8 +1467,8 @@
       }
 
       function renderChart(imp, wdr, dmg) {
-        const cv = document.getElementById('overviewChart');
-        const empty = document.getElementById('chartEmptyNotice');
+        st cv = document.getElementById('overviewChart');
+        st empty = document.getElementById('chartEmptyNotice');
         if (imp + wdr + dmg === 0) {
           cv.style.display = 'none'; empty.style.display = 'block'; return;
         }
@@ -1489,7 +1489,7 @@
       }
 
       function renderLatestTable(latestMap) {
-        const tb = document.getElementById('latestMeterTableBody');
+        st tb = document.getElementById('latestMeterTableBody');
         if (latestMap.size === 0) {
           tb.innerHTML = `<tr><td colspan="6" class="empty-state">ยังไม่มีรายการมิเตอร์</td></tr>`; return;
         }
@@ -1506,8 +1506,8 @@
       }
 
       function renderStockTable(latestMap) {
-        const tb = document.getElementById('stockMeterTableBody');
-        const q = document.getElementById('searchStockMeter').value.trim().toLowerCase();
+        st tb = document.getElementById('stockMeterTableBody');
+        st q = document.getElementById('searchStockMeter').value.trim().toLowerCase();
         let inStock = Array.from(latestMap.values()).filter(r => r.type === 'import');
         if (q) inStock = inStock.filter(r => (r.meterCode || '').toLowerCase().includes(q));
 
@@ -1536,19 +1536,19 @@
       }
 
       function renderRecordsTable() {
-        const tb = document.getElementById('recordsTableBody');
-        const uQ = document.getElementById('filterUserId').value.trim().toLowerCase();
-        const kw = document.getElementById('filterKeyword').value.trim().toLowerCase();
-        const tF = document.getElementById('filterType').value;
-        const dF = document.getElementById('filterDate').value;
-        const isAdmin = currentUser && currentUser.role === 'admin';
+        st tb = document.getElementById('recordsTableBody');
+        st uQ = document.getElementById('filterUserId').value.trim().toLowerCase();
+        st kw = document.getElementById('filterKeyword').value.trim().toLowerCase();
+        st tF = document.getElementById('filterType').value;
+        st dF = document.getElementById('filterDate').value;
+        st isAdmin = currentUser && currentUser.role === 'admin';
 
-        const filtered = records.filter(r => {
+        st filtered = records.filter(r => {
           if (uQ && !(r.userId || '').toLowerCase().includes(uQ)) return false;
           if (tF !== 'all' && r.type !== tF) return false;
           if (dF && r.date !== dF) return false;
           if (kw) {
-            const str = `${r.meterCode} ${r.meterReading} ${r.customerNumber} ${r.userName}`.toLowerCase();
+            st str = `${r.meterCode} ${r.meterReading} ${r.customerNumber} ${r.userName}`.toLowerCase();
             if (!str.includes(kw)) return false;
           }
           return true;
@@ -1575,8 +1575,8 @@
         if (isAdmin) {
           tb.querySelectorAll('.del-rec-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
-              if (!confirm('ต้องการลบรายการนี้ใช่หรือไม่?')) return;
-              const id = btn.dataset.id;
+              if (!firm('ต้องการลบรายการนี้ใช่หรือไม่?')) return;
+              st id = btn.dataset.id;
               records = records.filter(r => r.id !== id);
               saveLocalStorageBackup();
 
