@@ -1,4 +1,4 @@
-<!doctype html>
+!doctype html>
 <html lang="th">
 <head>
   <meta charset="utf-8">
@@ -230,9 +230,6 @@
       box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18);
     }
     .textarea { min-height: 80px; resize: vertical; }
-    .field-hint { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
-    .field-error { font-size: 13px; color: var(--damage-color); margin-top: 6px; font-weight: 500; display: none; }
-    .field-error.visible { display: block; }
 
     .quick-parse-box {
       background: #f8fafc; border: 1px dashed var(--brand);
@@ -277,7 +274,7 @@
 
     .inline-feedback {
       margin-top: var(--space-3); padding: 10px 14px; border-radius: var(--radius-sm);
-      font-size: 13.5px; font-weight: 600; display: none;
+      font-size: 13.5px; font-weight: 600; display: none; line-height: 1.5;
     }
     .inline-feedback.success { display: block; background: var(--import-bg); color: var(--import-color); border: 1px solid var(--import-border); }
 
@@ -337,7 +334,7 @@
         <div class="form-group">
           <label for="setupAdminPasscode">กำหนดรหัสผ่านยืนยันสิทธิ์ Admin (Admin Passcode) <span class="req-star">*</span></label>
           <input type="text" id="setupAdminPasscode" class="input" placeholder="เช่น 1234 หรือ 9999" required>
-          <div class="field-hint">ใช้ยืนยันสิทธิ์เมื่อต้องการเพิ่ม Admin คนใหม่</div>
+          <div class="field-hint" style="color:var(--muted); font-size:12px; margin-top:4px;">ใช้ยืนยันสิทธิ์เมื่อต้องการเพิ่ม Admin คนใหม่</div>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; background: #16a34a; margin-top: var(--space-3);">
           🔑 สร้างบัญชี Super Admin และเริ่มใช้งาน
@@ -430,7 +427,7 @@
         </nav>
 
         <div class="user-badge-wrap">
-          <button type="button" class="btn btn-secondary btn-sm" id="btnOpenFirebaseModal" style="border-color: #f59e0b; color: #b45309;">
+          <button type="button" class="btn btn-secondary btn-sm" id="btnOpenFirebaseModal" style="border-color: #f59e0b; color: #b45309; font-weight:700;">
             ⚙️ ตั้งค่า API
           </button>
           <div class="user-profile-badge" id="headerUserBadge">
@@ -655,14 +652,13 @@
                 <div class="form-group">
                   <label for="recordMeterCode">PEA มิเตอร์ <span class="req-star">*</span></label>
                   <input type="text" id="recordMeterCode" class="input" placeholder="เช่น PEA-67001234" required>
-                  <div id="errMeterCode" class="field-error">กรุณากรอกหมายเลข PEA มิเตอร์</div>
                 </div>
                 <div class="form-group">
                   <label for="recordMeterReading">เลขอ่าน <span class="req-star">*</span></label>
                   <input type="text" id="recordMeterReading" class="input" placeholder="เช่น 001245.5" required>
                 </div>
                 <div class="form-group">
-                  <label for="recordCustomerNumber" id="recordCustomerNumberLabel">หมายเลขผู้ใช้ไฟ (นำไปติดตั้งให้ผู้ใช้ไฟหมายเลข) <span class="req-star">*</span></label>
+                  <label for="recordCustomerNumber" id="recordCustomerNumberLabel">หมายเลขผู้ใช้ไฟ (นำไปติดตั้งให้) <span class="req-star">*</span></label>
                   <input type="text" id="recordCustomerNumber" class="input" placeholder="เช่น CA-0200123456" required>
                 </div>
                 <div class="form-group">
@@ -779,31 +775,36 @@
       </div>
       <form id="firebaseConfigForm" novalidate>
         <p style="font-size: 13px; color: var(--muted); margin-top: 0;">
-          คุณสามารถนำค่า **API Key** จาก Firebase Console มากรอกที่นี่โดยตรง เพื่อเปลี่ยนสถานะเป็น **Online (Cloud Firestore)** ได้ทันทีโดยไม่ต้องแก้ไขโค้ดค่ะ
+          คุณสามารถนำค่า **API Key** จาก Firebase Console มาวางที่นี่เพื่อเชื่อมต่อ **Cloud Firestore (Online)** ได้ทันทีค่ะ
         </p>
         <div class="form-group">
-          <label for="cfgApiKey">Firebase API Key (เช่น AIzaSy...)</label>
+          <label for="cfgApiKey">Firebase API Key (ขึ้นต้นด้วย AIzaSy...)</label>
           <input type="text" id="cfgApiKey" class="input" placeholder="วาง Firebase API Key ที่นี่..." required>
         </div>
         <div id="cfgFeedback" class="inline-feedback"></div>
         <div style="display: flex; gap: var(--space-2); justify-content: flex-end; margin-top: var(--space-4);">
           <button type="button" class="btn btn-secondary" id="btnTestConnection">ทดสอบเชื่อมต่อ</button>
-          <button type="submit" class="btn btn-primary">บันทึกและเชื่อมต่อ</button>
+          <button type="submit" class="btn btn-primary">บันทึกและเชื่อมต่อทันที</button>
         </div>
       </form>
     </div>
   </div>
 
-  <script>
+  <script> /
     (function () {
       // -------------------------------------------------------------
       // 1. FIREBASE CONFIGURATION
       // -------------------------------------------------------------
-      // หากมีการบันทึกคีย์ไว้ในเบราว์เซอร์จะดึงมาใช้ก่อน หากไม่มีจะใช้ค่าเริ่มต้น
+      const HARDCODED_API_KEY = "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0";
       const savedApiKey = localStorage.getItem('firebase_api_key_custom') || '';
       
+      // ดึงคีย์จริง: หากในโค้ดมีการเปลี่ยนจาก YOUR_API_KEY_HERE แล้วให้ใช้ในโค้ดก่อน หากไม่มีให้ใช้จากที่เซฟไว้
+      const effectiveApiKey = (HARDCODED_API_KEY !== "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0" && HARDCODED_API_KEY)
+        ? HARDCODED_API_KEY 
+        : (savedApiKey || HARDCODED_API_KEY);
+
       const firebaseConfig = {
-        apiKey: savedApiKey || "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0",
+        apiKey: effectiveApiKey,
         authDomain: "peameternsh-aa9cd.firebaseapp.com",
         databaseURL: "https://peameternsh-aa9cd-default-rtdb.asia-southeast1.firebasedatabase.app",
         projectId: "peameternsh-aa9cd",
@@ -820,14 +821,14 @@
       function initFirebase() {
         try {
           if (typeof firebase !== 'undefined') {
-            const hasValidKey = firebaseConfig.apiKey && firebaseConfig.apiKey.trim() !== "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0";
+            const hasValidKey = firebaseConfig.apiKey && firebaseConfig.apiKey.trim() !== "YOUR_API_KEY_HERE" && firebaseConfig.apiKey.trim() !== "";
             if (hasValidKey) {
               if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
               }
               db = firebase.firestore();
               isOnline = true;
-              console.log("⚡ Firebase Initialized Successfully!");
+              console.log("⚡ Firebase Initialized Successfully with Key:", firebaseConfig.apiKey.substring(0, 10) + "...");
             } else {
               isOnline = false;
               connectionErrorMsg = 'ยังไม่ได้ระบุ Firebase API Key จริง';
@@ -938,7 +939,7 @@
           } catch (err) {
             console.warn("Firestore connection check failed, using Local Backup:", err);
             isOnline = false;
-            connectionErrorMsg = 'Firestore ตรวจสอบสิทธิ์ไม่ผ่าน (โปรดตรวจ Rules)';
+            connectionErrorMsg = `Firestore ติดขัด: ${err.code || err.message || 'โปรดตรวจ Rules'}`;
             updateStatusBadge();
           }
         }
@@ -1378,7 +1379,7 @@
       closeFirebaseModalBtn.addEventListener('click', () => firebaseConfigModal.classList.remove('open'));
 
       async function testKeyConnection(keyToTest) {
-        cfgFeedback.textContent = 'กำลังทดสอบเชื่อมต่อกับ Cloud Firestore...';
+        cfgFeedback.textContent = '⏳ กำลังทดสอบเชื่อมต่อกับ Cloud Firestore... กรุณารอสักครู่';
         cfgFeedback.className = 'inline-feedback success';
         cfgFeedback.style.background = '#f1f5f9';
         cfgFeedback.style.color = '#334155';
@@ -1386,15 +1387,26 @@
 
         try {
           const testConfig = { ...firebaseConfig, apiKey: keyToTest };
-          const testApp = firebase.initializeApp(testConfig, 'testApp_' + Date.now());
+          const appName = 'testApp_' + Date.now();
+          const testApp = firebase.initializeApp(testConfig, appName);
           const testDb = testApp.firestore();
-          await testDb.collection("system_config").doc("security").get();
           
-          cfgFeedback.textContent = '✅ เชื่อมต่อ Cloud Firestore สำเร็จสมบูรณ์!';
+          // ดำเนินการ Ping อ่านข้อมูล Firestore จริง
+          await testDb.collection("system_config").doc("security").get();
+
+          cfgFeedback.innerHTML = '✅ <strong>เชื่อมต่อ Cloud Firestore สำเร็จสมบูรณ์!</strong><br>กดปุ่ม "บันทึกและเชื่อมต่อทันที" ด้านล่างเพื่อเริ่มใช้งานออนไลน์ได้เลยค่ะ';
           cfgFeedback.className = 'inline-feedback success';
+          cfgFeedback.style.background = 'var(--import-bg)';
+          cfgFeedback.style.color = 'var(--import-color)';
+          cfgFeedback.style.borderColor = 'var(--import-border)';
           return true;
         } catch (err) {
-          cfgFeedback.textContent = `❌ เชื่อมต่อไม่สำเร็จ: ${err.message || err}`;
+          console.error("Test Connection Error:", err);
+          let detail = err.message || err;
+          if (err.code === 'permission-denied') {
+            detail = 'ติดสิทธิ์การเข้าถึง (Permission Denied) - กรุณาตรวจสอบแท็บ Rules ใน Cloud Firestore ให้เป็น allow read, write: if true;';
+          }
+          cfgFeedback.innerHTML = `❌ <strong>เชื่อมต่อไม่สำเร็จ:</strong> ${detail}`;
           cfgFeedback.className = 'inline-feedback success';
           cfgFeedback.style.background = 'var(--damage-bg)';
           cfgFeedback.style.color = 'var(--damage-color)';
@@ -1406,7 +1418,7 @@
       btnTestConnection.addEventListener('click', () => {
         const key = cfgApiKey.value.trim();
         if (!key) {
-          alert('กรุณาระบุ API Key');
+          alert('กรุณาวาง API Key ก่อนกดทดสอบ');
           return;
         }
         testKeyConnection(key);
@@ -1420,7 +1432,7 @@
         const success = await testKeyConnection(key);
         if (success) {
           localStorage.setItem('firebase_api_key_custom', key);
-          alert('บันทึก API Key สำเร็จ! ระบบจะรีเฟรชหน้าจอเพื่อเริ่มการเชื่อมต่อแบบ Online');
+          alert('บันทึก API Key สำเร็จ! ระบบจะรีเฟรชหน้าจอเพื่อเข้าสู่โหมด Cloud Firestore (Online) ทันที');
           window.location.reload();
         }
       });
@@ -1610,7 +1622,7 @@
       document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
       document.getElementById('goToRecordBtn').addEventListener('click', () => switchTab('record'));
 
-      // รันการเริ่มต้นระบบ
+      // เริ่มการทำงานของระบบ
       initializeApp();
     })();
   </script>
