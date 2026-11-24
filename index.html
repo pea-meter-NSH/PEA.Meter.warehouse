@@ -20,9 +20,9 @@
 
   <style>
     :root {
-      --bg: #f4f6f9;
+      --bg: #f8fafc;
       --surface: #ffffff;
-      --surface-subtle: #f8fafc;
+      --surface-subtle: #f1f5f9;
       --border: #e2e8f0;
       --border-strong: #cbd5e1;
       --ink: #0f172a;
@@ -56,8 +56,10 @@
       --radius-sm: 8px;
       --radius: 14px;
       --radius-lg: 20px;
+      
       --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 8px -1px rgba(15, 23, 42, 0.03);
       --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 10px 10px -5px rgba(15, 23, 42, 0.03);
+      
       --space-1: 4px;
       --space-2: 8px;
       --space-3: 12px;
@@ -983,7 +985,7 @@
             <span class="kpi-caption">พร้อมเบิกใช้งาน</span>
           </div>
           <div class="kpi-card kpi-stock-used">
-            <span class="kpi-label">🟣 คงคลัง (เก่า)</span>
+            <span class="kpi-label">📦 คงคลัง (เก่า)</span>
             <span class="kpi-value" id="kpiStockUsed">0</span>
             <span class="kpi-caption">ถอนคืน/ผ่านการใช้แล้ว</span>
           </div>
@@ -1045,7 +1047,7 @@
             </div>
           </div>
 
-          <div style="margin-bottom: var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: end;">
+          <div style="margin-bottom: var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-4);">
             <div style="flex: 1; min-width: 280px;">
               <label for="searchStockMeter">🔎 ค้นหารหัส PEA มิเตอร์ในคลัง</label>
               <input type="text" id="searchStockMeter" class="input" placeholder="ระบุหมายเลข PEA มิเตอร์..." autocomplete="off">
@@ -1085,8 +1087,8 @@
         <div class="card" style="border: 2px solid var(--import-border); background: #f0fdfa;">
           <div class="section-header">
             <div>
-              <h2 class="section-title" style="color: #0d9488;">📥 นำเข้ามิเตอร์ด้วยไฟล์ Excel (.xlsx / .xls / .csv)</h2>
-              <p class="section-desc">คุณสามารถอัปโหลดไฟล์ Excel เพื่อดึงรายละเอียดทั้งหมดเก็บเข้าคลังสินค้าได้อัตโนมัติ</p>
+              <h2 class="section-title" style="color: #0d9488;">📥 นำเข้าสต็อคครั้งละหลายเครื่องด้วยไฟล์ Excel (.xlsx / .csv)</h2>
+              <p class="section-desc">อัปโหลดไฟล์ Excel เพื่อนำรหัสและรายละเอียดเครื่องทั้งหมดเข้าฐานข้อมูลในครั้งเดียว</p>
             </div>
           </div>
           
@@ -1095,9 +1097,9 @@
               <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="input" style="border-color: var(--import-border);">
             </div>
             <div style="flex: 2; font-size: 13px; color: var(--ink-secondary); line-height: 1.5;">
-              📌 <strong>คำแนะนำคอลัมน์ Excel:</strong><br>
-              • รหัส PEA (คอลัมน์ B) • แอมป์/อัตราส่วน (คอลัมน์ G) • คำอธิบายรหัส (คอลัมน์ E)<br>
-              • ตรวจหา <strong>สภาพมิเตอร์ (ใหม่/เก่า)</strong> จาก แบทช์สต็อค (คอลัมน์ F: N = ใหม่, R = เก่า) และวันที่ถอนคืน (คอลัมน์ N)
+              💡 <strong>โครงสร้างนำเข้าไฟล์:</strong><br>
+              • หมายเลข PEA (คอลัมน์ B) • คำอธิบายรหัสพัสดุ (คอลัมน์ E) • แอมป์/อัตราส่วน (คอลัมน์ G)<br>
+              • สภาพมิเตอร์วัดจาก แบทช์สต็อค (คอลัมน์ F: N = ใหม่, R = เก่า) และเลขอ่านถอนคืน (คอลัมน์ O)
             </div>
           </div>
           <div id="excelImportFeedback" class="inline-feedback"></div>
@@ -1106,65 +1108,68 @@
         <div class="card">
           <div class="section-header">
             <div>
-              <h2 class="section-title">แบบฟอร์มลงบันทึกมิเตอร์ไฟฟ้า (คีย์มือ)</h2>
-              <p class="section-desc">กรอกข้อมูลเบิกใช้ นำเข้า หรือแจ้งชำรุดรายเครื่องลงระบบคลาวด์</p>
+              <h2 class="section-title">✍️ แบบฟอร์มลงบันทึกข้อมูลมิเตอร์ไฟฟ้า (ป้อนมือ)</h2>
+              <p class="section-desc">กรอกข้อมูลเบิกใช้ นำเข้า หรือรายงานชำรุดรายเครื่องลงระบบอย่างถูกต้อง</p>
             </div>
           </div>
 
           <form id="meterRecordForm" novalidate>
-            <!-- Smart parser text box -->
+            <!-- Smart parser textbox -->
             <div class="quick-parse-box">
               <div class="quick-parse-header">
-                <h3 class="quick-parse-title">กรอกหรือวางข้อมูลยาวๆ เพื่อแยกข้อมูลลงฟอร์มอัตโนมัติ</h3>
+                <h3 class="quick-parse-title">⚡ วางข้อความยาวๆ เพื่อแยกวิเคราะห์คำลงช่องกรอกอัตโนมัติ</h3>
               </div>
-              <textarea id="rawLongTextInput" class="textarea" style="min-height: 76px;" placeholder="PEA-67001234, 124.5, CA-02001234, ตรวจสภาพมิเตอร์ชำรุด"></textarea>
-              <div style="margin-top: var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center;">
-                <button type="button" class="btn btn-primary btn-sm" id="parseRawDataBtn">⚡ แยกข้อมูลลงช่องกรอก</button>
-                <button type="button" class="btn btn-secondary btn-sm" id="clearRawDataBtn">🗑️ ล้างข้อความที่วาง</button>
+              <textarea id="rawLongTextInput" class="textarea" style="min-height: 72px;" placeholder="ตัวอย่างวาง: PEA-67001234, เลขอ่าน 152.4, ผู้ใช้ไฟ CA-02001234, บริษัทผลิต..."></textarea>
+              <div style="margin-top: var(--space-2); display: flex; gap: var(--space-2);">
+                <button type="button" class="btn btn-primary btn-sm" id="parseRawDataBtn">⚡ แยกคำลงช่องกรอก</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="clearRawDataBtn">🗑️ ล้างคำที่วาง</button>
               </div>
-              <div id="parseRawFeedback" class="inline-feedback" role="status"></div>
+              <div id="parseRawFeedback" class="inline-feedback"></div>
             </div>
 
             <div class="form-group">
-              <label>ประเภทรายการ <span class="req-star">*</span></label>
+              <label>ประเภทรายการการเดินระบบ <span class="req-star">*</span></label>
               <div class="sign-type-grid">
                 <div class="sign-type-option">
                   <input type="radio" name="recordType" id="typeWithdraw" value="withdraw" checked>
                   <label class="sign-type-label" for="typeWithdraw">
                     <span class="sign-type-title">เบิกใช้</span>
+                    <span class="sign-type-sub">เบิกมิเตอร์จากคลังเพื่อไปติดตั้ง</span>
                   </label>
                 </div>
                 <div class="sign-type-option">
                   <input type="radio" name="recordType" id="typeImport" value="import">
                   <label class="sign-type-label" for="typeImport">
                     <span class="sign-type-title">นำเข้า</span>
+                    <span class="sign-type-sub">นำมิเตอร์ใหม่/รื้อถอนเข้าเก็บคลัง</span>
                   </label>
                 </div>
                 <div class="sign-type-option">
                   <input type="radio" name="recordType" id="typeDamage" value="damage">
                   <label class="sign-type-label" for="typeDamage">
                     <span class="sign-type-title">แจ้งชำรุด</span>
+                    <span class="sign-type-sub">รายงานมิเตอร์ขัดข้องเสียหาย</span>
                   </label>
                 </div>
               </div>
             </div>
 
             <!-- METER CONDITION -->
-            <div class="form-group" style="margin-top: var(--space-4);">
-              <label>สภาพมิเตอร์ <span class="req-star">*</span></label>
+            <div class="form-group">
+              <label>สภาพมิเตอร์ปัจจุบัน <span class="req-star">*</span></label>
               <div class="sign-type-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="sign-type-option">
                   <input type="radio" name="meterStatus" id="statusNew" value="new" checked>
                   <label class="sign-type-label" for="statusNew">
                     <span class="sign-type-title" style="color: var(--new-color);">🟢 คงคลัง (ใหม่)</span>
-                    <span class="sign-type-sub">มิเตอร์ใหม่แกะกล่อง ยังไม่เคยใช้งาน</span>
+                    <span class="sign-type-sub">เครื่องใหม่แกะกล่อง ไม่เคยผ่านการติดตั้ง</span>
                   </label>
                 </div>
                 <div class="sign-type-option">
                   <input type="radio" name="meterStatus" id="statusUsed" value="used">
                   <label class="sign-type-label" for="statusUsed">
                     <span class="sign-type-title" style="color: var(--used-color);">🟣 คงคลัง (เก่า)</span>
-                    <span class="sign-type-sub">มิเตอร์ถอนคืน ผ่านการใช้งานแล้ว</span>
+                    <span class="sign-type-sub">ถอนคืนหรือเดินสายระบบผ่านใช้งานมาแล้ว</span>
                   </label>
                 </div>
               </div>
@@ -1172,91 +1177,94 @@
 
             <div class="two-col-grid" style="margin-top: var(--space-4);">
               <div class="form-group">
-                <label>ผู้บันทึกทำรายการ (ล็อคเฉพาะบัญชีคุณเท่านั้น)</label>
+                <label>พนักงานผู้บันทึกระบบ (อิงตามบัญชีล็อกอิน)</label>
                 <div class="user-profile-highlight">
-                  <div class="user-profile-avatar" id="formAvatarIcon">U</div>
+                  <div class="user-profile-avatar" id="formAvatarIcon">?</div>
                   <div class="user-profile-info">
-                    <div class="user-profile-name" id="formUserName">สมชาย สายฟ้า</div>
-                    <div class="user-profile-id-phone" id="formUserIdAndPhone">รหัสผู้ใช้: USR-001</div>
+                    <div class="user-profile-name" id="formUserName">-</div>
+                    <div class="user-profile-id-phone" id="formUserIdAndPhone">-</div>
                   </div>
                 </div>
 
                 <div class="form-group" style="margin-top: var(--space-4);">
                   <label for="recordParcelDesc">คำอธิบายรหัสพัสดุ (ชื่อสินค้า/รุ่น)</label>
                   <input type="text" id="recordParcelDesc" class="input" placeholder="เช่น METER SMART 3P 4W GPRS">
+                  <div class="field-hint">รายละเอียดรุ่นมิเตอร์ อิงตามตารางคลังสินค้า</div>
                 </div>
 
                 <div class="form-group">
                   <label for="recordAmpRatio">แอมป์ / อัตราส่วนระบบ</label>
                   <input type="text" id="recordAmpRatio" class="input" placeholder="เช่น 5(15) A. หรือ 5 A with CT">
+                  <div class="field-hint">ค่าพิกัดกระแสและขนาดพัสดุ</div>
                 </div>
               </div>
 
               <div>
                 <div class="form-group">
-                  <label for="recordMeterCode">PEA มิเตอร์ <span class="req-star">*</span></label>
-                  <input type="text" id="recordMeterCode" class="input" placeholder="ระบุหมายเลข PEA มิเตอร์ เช่น PEA-67001234" required>
-                  <div id="errMeterCode" class="field-error">กรุณากรอกหมายเลข PEA มิเตอร์</div>
+                  <label for="recordMeterCode">หมายเลข PEA มิเตอร์ <span class="req-star">*</span></label>
+                  <input type="text" id="recordMeterCode" class="input" placeholder="ระบุเลขรหัสสินค้ามิเตอร์ เช่น PEA-670001" required>
+                  <div id="errMeterCode" class="field-error">กรุณาระบุหมายเลขรหัส PEA</div>
                 </div>
 
                 <div class="form-group">
-                  <label for="recordMeterReading">เลขอ่าน <span class="req-star">*</span></label>
-                  <input type="text" id="recordMeterReading" class="input" placeholder="ระบุเลขอ่านมิเตอร์ (หน่วย kWh)" inputmode="decimal" required>
+                  <label for="recordMeterReading">เลขอ่านปัจจุบัน (หน่วย kWH) <span class="req-star">*</span></label>
+                  <input type="text" id="recordMeterReading" class="input" placeholder="ระบุเลขอ่านบนตัวเครื่อง" required>
                   <div id="errMeterReading" class="field-error">กรุณาระบุเลขอ่านของมิเตอร์</div>
                 </div>
 
                 <div class="form-group" id="customerNumberGroup">
                   <label for="recordCustomerNumber" id="recordCustomerNumberLabel">หมายเลขผู้ใช้ไฟ <span class="req-star">*</span></label>
-                  <input type="text" id="recordCustomerNumber" class="input" placeholder="ระบุหมายเลขผู้ใช้ไฟ เช่น CA-0200123456" required>
+                  <input type="text" id="recordCustomerNumber" class="input" placeholder="ระบุเลข CA หมายเลขบัญชีผู้ใช้ไฟ" required>
                   <div id="errCustomerNumber" class="field-error">กรุณาระบุหมายเลขผู้ใช้ไฟ</div>
                 </div>
 
                 <div class="form-group">
-                  <label for="recordDate">วันที่ลงบันทึก <span class="req-star">*</span></label>
+                  <label for="recordDate">วันที่ทำรายการ <span class="req-star">*</span></label>
                   <input type="date" id="recordDate" class="input" required>
                 </div>
               </div>
             </div>
 
-            <div class="form-group" style="margin-top: var(--space-4);">
-              <label for="recordNote" id="recordNoteLabel">หมายเหตุ / อาการชำรุด</label>
-              <textarea id="recordNote" class="textarea" placeholder="ระบุอาการชำรุดหรือหมายเหตุเพิ่มเติม..."></textarea>
+            <div class="form-group" style="margin-top: var(--space-3);">
+              <label for="recordNote" id="recordNoteLabel">หมายเหตุเพิ่มเติม / รายงานความชำรุดเสียหาย</label>
+              <textarea id="recordNote" class="textarea" placeholder="เขียนรายละเอียดหมายเหตุ เช่น รื้อถอนสายถาวร, สภาพชำรุดเสียหายเป็นต้น"></textarea>
             </div>
 
             <div class="form-group">
-              <label for="recordPhoto">รูปภาพมิเตอร์ประกอบ (ถ้ามี)</label>
+              <label>แนบรูปภาพมิเตอร์หน้างาน (ถ้ามี)</label>
               <div class="photo-upload-area">
-                <input type="file" id="recordPhoto" accept="image/*" class="input" style="max-width: 380px;">
+                <input type="file" id="recordPhoto" accept="image/*" class="input" style="max-width: 320px;">
                 <div id="photoPreviewWrap" class="photo-preview-wrap">
                   <img id="photoPreviewImg" src="" alt="preview">
-                  <button type="button" class="btn btn-secondary btn-sm" id="removePhotoBtn" style="margin-top: 4px;">ลบรูปภาพ</button>
+                  <div style="font-size: 13px;" id="photoFileName"></div>
+                  <button type="button" class="btn btn-secondary btn-sm" id="removePhotoBtn">ลบรูปภาพ</button>
                 </div>
               </div>
             </div>
 
             <div style="margin-top: var(--space-6); display: flex; gap: var(--space-3);">
-              <button type="submit" class="btn btn-primary" id="submitRecordBtn">บันทึกข้อมูลมิเตอร์</button>
-              <button type="button" class="btn btn-secondary" id="resetRecordFormBtn">ล้างฟอร์ม</button>
+              <button type="submit" class="btn btn-primary" id="submitRecordBtn">💾 ลงบันทึกประวัติติดตั้ง</button>
+              <button type="button" class="btn btn-secondary" id="resetRecordFormBtn">ล้างข้อมูลฟอร์ม</button>
             </div>
             <div id="recordFeedback" class="inline-feedback"></div>
           </form>
         </div>
       </section>
 
-      <!-- TAB 5: TRANSACTION RECORDS HISTORY -->
+      <!-- TAB 4: HISTORICAL RECORDS -->
       <section id="view-history" class="view-panel">
         <div class="card">
           <div class="section-header">
             <div>
-              <h2 class="section-title">ประวัติการลงบันทึกมิเตอร์ทั้งหมด</h2>
-              <p class="section-desc">ตรวจสอบรายการเบิกใช้ นำเข้า และแจ้งชำรุด พร้อมลบรายการซ้ำซ้อน</p>
+              <h2 class="section-title">📜 ประวัติการลงทะเบียนและบันทึกข้อมูลมิเตอร์ทั้งหมด</h2>
+              <p class="section-desc">รวบรวมประวัติการเข้างานเบิกจ่ายคลังและเดินสายติดตั้งของพนักงานทุกคน</p>
             </div>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-              <button type="button" class="btn btn-danger btn-sm admin-only-col" id="bulkDeleteRecordsBtn" style="display: none; font-weight: 700; background: var(--damage-color); color: white;">
+            <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+              <button type="button" class="btn btn-danger btn-sm admin-only-col" id="bulkDeleteRecordsBtn" style="display: none;">
                 🗑️ ลบรายการที่เลือก
               </button>
               <button type="button" class="btn btn-secondary btn-sm admin-only-col" id="adminRegisterUserBtn" style="display: none;">
-                👤 สมัครบัญชีให้พนักงาน
+                👤 ลงทะเบียนให้พนักงาน
               </button>
             </div>
           </div>
@@ -1264,28 +1272,28 @@
           <!-- Filters -->
           <div class="filter-panel">
             <div class="user-id-search-highlight">
-              <label for="filterUserId">ค้นหาเฉพาะรหัสผู้ใช้ (User ID)</label>
-              <input type="text" id="filterUserId" class="input" list="registeredUserIdList" placeholder="ระบุรหัสผู้ใช้ เช่น USR-001" autocomplete="off">
+              <label for="filterUserId">กรองรหัสพนักงานผู้บันทึก</label>
+              <input type="text" id="filterUserId" class="input" list="registeredUserIdList" placeholder="เช่น ADM-01 หรือ USR-001">
               <datalist id="registeredUserIdList"></datalist>
             </div>
 
             <div>
-              <label for="filterKeyword">ค้นหาทั่วไป</label>
-              <input type="text" id="filterKeyword" class="input" placeholder="พิมพ์ PEA มิเตอร์ เลขอ่าน ผู้ใช้ไฟ..." autocomplete="off">
+              <label for="filterKeyword">ค้นหาคำสำคัญ</label>
+              <input type="text" id="filterKeyword" class="input" placeholder="ค้นหา PEA, CA, ชื่อรุ่น, ชื่อคนบันทึก...">
             </div>
 
             <div>
-              <label for="filterType">ประเภทรายการ</label>
+              <label for="filterType">ประเภทงานเดินสาย</label>
               <select id="filterType" class="select">
                 <option value="all">ทั้งหมด</option>
-                <option value="import">นำเข้า</option>
-                <option value="withdraw">เบิกใช้</option>
+                <option value="import">นำเข้าคลัง</option>
+                <option value="withdraw">เบิกใช้งาน</option>
                 <option value="damage">แจ้งชำรุด</option>
               </select>
             </div>
 
             <div>
-              <label for="filterDate">กรองตามวันที่</label>
+              <label for="filterDate">กรองตามวันที่บันทึก</label>
               <input type="date" id="filterDate" class="input">
             </div>
 
@@ -1299,17 +1307,15 @@
               <thead>
                 <tr>
                   <th class="admin-only-col" style="display: none;"><input type="checkbox" id="selectAllRecords" title="เลือกทั้งหมด"></th>
-                  <th>วันที่บันทึก</th>
-                  <th>ประเภทรายการ</th>
-                  <th>สภาพมิเตอร์</th>
+                  <th>วันที่ทำรายการ</th>
+                  <th>ประเภทงาน</th>
+                  <th>สภาพเครื่อง</th>
                   <th>PEA มิเตอร์</th>
                   <th>คำอธิบายพัสดุ</th>
                   <th>แอมป์/อัตราส่วน</th>
-                  <th>เลขอ่าน</th>
-                  <th>หมายเลขผู้ใช้ไฟ</th>
-                  <th>รหัสผู้ใช้</th>
-                  <th>ชื่อผู้บันทึก</th>
-                  <th>หมายเหตุ / อาการชำรุด</th>
+                  <th>เลขอ่าน kWH</th>
+                  <th>หมายเลขผู้ใช้ไฟ CA</th>
+                  <th>ผู้บันทึกระบบ</th>
                   <th>รูปภาพ</th>
                   <th class="admin-only-col" style="display: none;">การจัดการ (Admin)</th>
                 </tr>
@@ -1320,7 +1326,7 @@
         </div>
       </section>
 
-      <!-- TAB 6: EMPLOYEE MANAGEMENT -->
+      <!-- TAB 5: STAFF/EMPLOYEE MANAGEMENT -->
       <section id="view-employees" class="view-panel">
         <div class="two-col-grid">
           <div class="card">
@@ -1375,32 +1381,32 @@
     </main>
   </div>
 
-  <!-- METER DETAILS HISTORY TRAIL MODAL -->
+  <!-- POPUP 1: METER TRANSACTION AUDIT TRAIL MODAL -->
   <div id="meterDetailsModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="meterDetailsTitle">
     <div class="modal-card" style="max-width: 840px; overflow-y: auto; max-height: 90vh;">
       <div class="modal-header">
-        <h3 class="modal-title" id="meterDetailsTitle">📋 ประวัติการทำรายการของมิเตอร์</h3>
+        <h3 class="modal-title" id="meterDetailsTitle">📋 รายละเอียดประวัติทั้งหมดรายมิเตอร์</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeMeterDetailsBtn">ปิด</button>
       </div>
       <div style="padding: var(--space-2) 0;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-4); background: var(--surface-subtle); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-4); background: var(--surface-subtle); padding: var(--space-3); border-radius: var(--radius); border: 1px solid var(--border);">
           <div><strong>PEA มิเตอร์:</strong> <span id="detailMeterCode" class="code-pill"></span></div>
           <div><strong>สภาพปัจจุบัน:</strong> <span id="detailMeterStatus"></span></div>
           <div><strong>สถานะล่าสุด:</strong> <span id="detailMeterType"></span></div>
           <div><strong>เลขอ่านล่าสุด:</strong> <span id="detailMeterReading" class="code-pill"></span></div>
         </div>
         
-        <h4 style="margin: 0 0 var(--space-2); font-size: 14.5px; font-weight: 700; color: var(--brand);">📜 ประวัติการรื้อถอน/ติดตั้งสายงานทั้งหมด</h4>
+        <h4 style="margin: 0 0 var(--space-2); font-size: 14.5px; font-weight: 800; color: var(--brand);">📜 ประวัติการรื้อถอน/ติดตั้งสายงานทั้งหมด</h4>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>วันที่ทำรายการ</th>
+                <th>วันที่</th>
                 <th>ประเภทรายการ</th>
                 <th>เลขอ่าน</th>
                 <th>คำอธิบายพัสดุ</th>
                 <th>ขนาดแอมป์</th>
-                <th>หมายเลขผู้ใช้ไฟ CA</th>
+                <th>หมายเลขผู้ใช้ไฟ</th>
                 <th>ผู้บันทึก</th>
                 <th>รูปภาพ</th>
                 <th>หมายเหตุ / รายละเอียด</th>
@@ -1413,131 +1419,141 @@
     </div>
   </div>
 
-  <!-- ADMIN SECURITY SETTINGS MODAL -->
+  <!-- POPUP 2: FIREBASE API CONFIGURATION SETTING MODAL -->
+  <div id="firebaseConfigModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="apiConfigTitle">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="apiConfigTitle">⚙️ ตั้งค่าสิทธิ์ความปลอดภัย Firebase SDK</h3>
+        <button type="button" class="btn btn-secondary btn-sm" id="closeFirebaseModalBtn">ปิด</button>
+      </div>
+      <form id="firebaseConfigForm">
+        <div style="margin-bottom: var(--space-4); font-size: 13.5px; color: var(--muted); line-height: 1.5;">
+          ระบุ Firebase API Key จริงเพื่อเชื่อมต่อเครือข่าย Firebase Firestore ซิงก์ประวัติมิเตอร์แบบ 2-Way ข้ามอุปกรณ์ทั้งหมด
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--space-4);">
+          <label for="firebaseApiKeyInput">Firebase API Key <span class="req-star">*</span></label>
+          <input type="text" id="firebaseApiKeyInput" class="input" placeholder="ระบุ API Key เช่น AIzaSy..." required>
+        </div>
+
+        <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" id="testFirebaseConnectionBtn">⚡ ตรวจสอบการเชื่อมต่อ</button>
+          <button type="submit" class="btn btn-primary" id="saveAndConnectBtn">💾 บันทึกสิทธิ์เชื่อมต่อ</button>
+        </div>
+        <div id="firebaseConnectionFeedback" class="inline-feedback"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- POPUP 3: ADMIN SECURITY SETTINGS MODAL -->
   <div id="securitySettingsModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="securityModalTitle">
     <div class="modal-card" style="max-width: 480px;">
       <div class="modal-header">
-        <h3 class="modal-title" id="securityModalTitle">🔐 ตั้งค่าความปลอดภัยผู้ดูแลระบบ</h3>
+        <h3 class="modal-title" id="securityModalTitle">🔐 ตั้งค่ารหัสผ่านความปลอดภัยผู้ดูแลระบบ</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeSecurityModalBtn">ปิด</button>
       </div>
-      <div style="padding: var(--space-2) 0;">
-        <form id="changePasscodeForm" novalidate>
-          <div style="margin-bottom: var(--space-4); font-size: 13.5px; color: var(--muted); line-height: 1.5;">
-            คุณสามารถแก้ไข **รหัสผ่านยืนยันสิทธิ์ผู้ดูแลระบบ (Admin Passcode)** ตัวใหม่ได้ที่นี่ เพื่อความปลอดภัยในการควบคุมระบบ
-          </div>
+      <form id="changePasscodeForm" novalidate>
+        <div style="margin-bottom: var(--space-4); font-size: 13.5px; color: var(--muted); line-height: 1.5;">
+          แก้ไข **รหัสผ่านยืนยันสิทธิ์ผู้ดูแลระบบ (Admin Passcode)** ตัวใหม่ สำหรับควบคุมพนักงานที่ต้องการสิทธิ์ Admin
+        </div>
 
-          <div class="form-group" style="margin-bottom: var(--space-3);">
-            <label for="currentAdminPasscode">รหัสผ่านปัจจุบัน <span class="req-star">*</span></label>
-            <input type="password" id="currentAdminPasscode" class="input" placeholder="กรอกรหัสผ่านปัจจุบัน" required>
-            <div id="errCurrentPasscode" class="field-error">รหัสผ่านปัจจุบันไม่ถูกต้อง</div>
-          </div>
+        <div class="form-group">
+          <label for="currentAdminPasscode">รหัสผ่านปัจจุบัน <span class="req-star">*</span></label>
+          <input type="password" id="currentAdminPasscode" class="input" placeholder="กรอกรหัสผ่านเดิม" required>
+          <div id="errCurrentPasscode" class="field-error">รหัสผ่านปัจจุบันไม่ถูกต้อง</div>
+        </div>
 
-          <div class="form-group" style="margin-bottom: var(--space-4);">
-            <label for="newAdminPasscode">รหัสผ่านใหม่ <span class="req-star">*</span></label>
-            <input type="text" id="newAdminPasscode" class="input" placeholder="ตั้งรหัสผ่านใหม่ (อย่างน้อย 4 ตัว)" required>
-            <div id="errNewPasscode" class="field-error">รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร</div>
-          </div>
+        <div class="form-group">
+          <label for="newAdminPasscode">รหัสผ่านใหม่ <span class="req-star">*</span></label>
+          <input type="text" id="newAdminPasscode" class="input" placeholder="ตั้งรหัสผ่านความปลอดภัยใหม่" required>
+          <div id="errNewPasscode" class="field-error">รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร</div>
+        </div>
 
-          <button type="submit" class="btn btn-primary" style="width: 100%;">
-            💾 บันทึกรหัสผ่านใหม่
-          </button>
-
-          <div id="passcodeFeedback" class="inline-feedback" role="status"></div>
-        </form>
-      </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">💾 บันทึกการเปลี่ยนแปลง</button>
+        <div id="passcodeFeedback" class="inline-feedback"></div>
+      </form>
     </div>
   </div>
 
-  <!-- ADMIN REGISTER USER MODAL -->
+  <!-- POPUP 4: ADMIN REGISTER USER MODAL -->
   <div id="adminRegisterUserModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="adminRegModalTitle">
     <div class="modal-card" style="max-width: 480px;">
       <div class="modal-header">
-        <h3 class="modal-title" id="adminRegModalTitle">👤 สมัครบัญชีผู้ใช้งานใหม่ (สิทธิ์ Admin)</h3>
+        <h3 class="modal-title" id="adminRegModalTitle">👤 สมัครบัญชีผู้ใช้งานใหม่ให้พนักงาน</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeAdminRegModalBtn">ปิด</button>
       </div>
-      <div style="padding: var(--space-2) 0;">
-        <form id="adminRegUserForm" novalidate>
-          <div style="margin-bottom: var(--space-4); font-size: 13.5px; color: var(--muted); line-height: 1.5;">
-            คุณสามารถเพิ่มและสมัครบัญชีผู้ใช้งานใหม่ให้กับพนักงานคนอื่นๆ เพื่อร่วมลงบันทึกข้อมูลมิเตอร์ได้ที่นี่โดยตรงค่ะ
-          </div>
+      <form id="adminRegUserForm" novalidate>
+        <div class="form-group">
+          <label for="adminRegUserName">ชื่อ - นามสกุล พนักงาน <span class="req-star">*</span></label>
+          <input type="text" id="adminRegUserName" class="input" placeholder="ระบุ เช่น นายสมหวัง พลังแรง" required>
+          <div id="errAdminRegName" class="field-error">กรุณากรอกชื่อพนักงาน</div>
+        </div>
 
-          <div class="form-group" style="margin-bottom: var(--space-3);">
-            <label for="adminRegUserName">ชื่อ - นามสกุล พนักงาน <span class="req-star">*</span></label>
-            <input type="text" id="adminRegUserName" class="input" placeholder="เช่น นายสมศักดิ์ รักดี" required>
-            <div id="errAdminRegName" class="field-error">กรุณากรอกชื่อผู้บันทึก</div>
-          </div>
+        <div class="form-group">
+          <label for="adminRegUserPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
+          <input type="tel" id="adminRegUserPhone" class="input" placeholder="เช่น 082-111-2222" required>
+          <div id="errAdminRegPhone" class="field-error">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง</div>
+        </div>
 
-          <div class="form-group" style="margin-bottom: var(--space-3);">
-            <label for="adminRegUserPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
-            <input type="tel" id="adminRegUserPhone" class="input" placeholder="เช่น 082-111-2222" required>
-            <div id="errAdminRegPhone" class="field-error">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (อย่างน้อย 9 หลัก)</div>
-          </div>
+        <div class="form-group">
+          <label for="adminRegUserRole">สิทธิ์ระดับผู้ใช้พนักงาน <span class="req-star">*</span></label>
+          <select id="adminRegUserRole" class="select" required>
+            <option value="staff" selected>ผู้ใช้ทั่วไป (Staff - ลงบันทึกได้อย่างเดียว)</option>
+            <option value="admin">ผู้ดูแลระบบ (Admin - แก้ไขและลบได้)</option>
+          </select>
+        </div>
 
-          <div class="form-group" style="margin-bottom: var(--space-4);">
-            <label for="adminRegUserRole">สิทธิ์การใช้งานของพนักงาน <span class="req-star">*</span></label>
-            <select id="adminRegUserRole" class="select" required>
-              <option value="staff" selected>ผู้ใช้ทั่วไป (Staff - ลงบันทึกได้อย่างเดียว)</option>
-              <option value="admin">ผู้ดูแลระบบ (Admin - สามารถแก้ไข/ลบข้อมูลได้)</option>
-            </select>
-          </div>
-
-          <button type="submit" class="btn btn-primary" style="width: 100%;">
-            👤 สมัครบัญชีและสร้างรหัสผู้ใช้ทันที
-          </button>
-
-          <div id="adminRegFeedback" class="inline-feedback" role="status"></div>
-        </form>
-      </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">👤 สมัครบัญชีพนักงานและบันทึก</button>
+        <div id="adminRegFeedback" class="inline-feedback"></div>
+      </form>
     </div>
   </div>
 
-  <!-- ADMIN EDIT EMPLOYEE MODAL -->
+  <!-- POPUP 5: ADMIN EDIT EMPLOYEE MODAL -->
   <div id="editEmployeeModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="editEmpModalTitle">
     <div class="modal-card" style="max-width: 480px;">
       <div class="modal-header">
-        <h3 class="modal-title" id="editEmpModalTitle">✏️ แก้ไขข้อมูลพนักงาน (ผู้ดูแลระบบ)</h3>
+        <h3 class="modal-title" id="editEmpModalTitle">✏️ แก้ไขข้อมูลพนักงาน (Admin Only)</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeEditEmpModalBtn">ยกเลิก</button>
       </div>
-      <div style="padding: var(--space-2) 0;">
-        <form id="editEmployeeForm" novalidate>
-          <input type="hidden" id="editEmployeeId">
+      <form id="editEmployeeForm" novalidate>
+        <input type="hidden" id="editEmployeeId">
 
-          <div class="form-group" style="margin-bottom: var(--space-3);">
-            <label for="editEmpName">ชื่อ - นามสกุล พนักงาน <span class="req-star">*</span></label>
-            <input type="text" id="editEmpName" class="input" required>
-          </div>
+        <div class="form-group">
+          <label for="editEmpName">ชื่อ - นามสกุล พนักงาน <span class="req-star">*</span></label>
+          <input type="text" id="editEmpName" class="input" required>
+        </div>
 
-          <div class="form-group" style="margin-bottom: var(--space-3);">
-            <label for="editEmpPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
-            <input type="tel" id="editEmpPhone" class="input" required>
-          </div>
+        <div class="form-group">
+          <label for="editEmpPhone">เบอร์โทรศัพท์ติดต่อ <span class="req-star">*</span></label>
+          <input type="tel" id="editEmpPhone" class="input" required>
+        </div>
 
-          <div class="form-group" style="margin-bottom: var(--space-4);">
-            <label for="editEmpRole">ระดับสิทธิ์พนักงาน <span class="req-star">*</span></label>
-            <select id="editEmpRole" class="select" required>
-              <option value="staff">ผู้ใช้ทั่วไป (Staff - ลงบันทึกได้อย่างเดียว)</option>
-              <option value="admin">ผู้ดูแลระบบ (Admin - สามารถแก้ไข/ลบข้อมูลได้)</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label for="editEmpRole">ระดับสิทธิ์ระดับการเข้างาน <span class="req-star">*</span></label>
+          <select id="editEmpRole" class="select" required>
+            <option value="staff">ผู้ใช้ทั่วไป (Staff)</option>
+            <option value="admin">ผู้ดูแลระบบสูงสุด (Admin)</option>
+          </select>
+        </div>
 
-          <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
-            <button type="button" class="btn btn-secondary" id="cancelEditEmpBtn">ยกเลิก</button>
-            <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
-          </div>
-        </form>
-      </div>
+        <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" id="cancelEditEmpBtn">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary">💾 ยืนยันบันทึกการแก้ไข</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- EXCEL IMPORT PREVIEW MODAL -->
+  <!-- POPUP 6: EXCEL IMPORT PREVIEW MODAL -->
   <div id="excelPreviewModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="excelPreviewTitle">
-    <div class="modal-card" style="max-width: 860px; overflow-y: auto; max-height: 90vh;">
+    <div class="modal-card" style="max-width: 900px; overflow-y: auto; max-height: 90vh;">
       <div class="modal-header">
-        <h3 class="modal-title" id="excelPreviewTitle">📋 ตรวจสอบข้อมูลก่อนการนำเข้าคลังมิเตอร์</h3>
+        <h3 class="modal-title" id="excelPreviewTitle">📋 ตรวจสอบและประมวลผลข้อมูลในไฟล์ Excel ก่อนบันทึกจริง</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeExcelPreviewBtn">ยกเลิก</button>
       </div>
       <div style="padding: var(--space-2) 0;">
-        <p style="font-size: 13.5px; color: var(--muted);">ระบบได้อ่านไฟล์สำเร็จตามที่กำหนดไว้ ตรวจสอบข้อมูลด้านล่างให้ถูกต้องก่อนกดเซฟบันทึกลงสู่ระบบ</p>
+        <p style="font-size: 13.5px; color: var(--muted); margin-bottom: var(--space-4);">ระบบตรวจพบพัสดุและมิเตอร์ไฟฟ้าทั้งหมดในคลังสินค้าตามรายงานด้านล่าง ตรวจเช็คข้อมูลทั้งหมดก่อนทำการกดบันทึกเข้าสู่ระบบฐานข้อมูลประวัติคลังส่วนกลาง</p>
         
         <div class="table-wrap" style="max-height: 480px; overflow-y: auto;">
           <table>
@@ -1548,149 +1564,146 @@
                 <th>สภาพมิเตอร์</th>
                 <th>คำอธิบายรหัสพัสดุ</th>
                 <th>แอมป์/อัตราส่วน</th>
-                <th>เลขอ่านล่าสุด</th>
+                <th>เลขอ่านถอนคืน</th>
                 <th>วันที่ติดตั้ง</th>
                 <th>วันที่ถอนคืน</th>
-                <th>สาเหตุถอนคืน</th>
+                <th>สาเหตุรื้อถอน</th>
               </tr>
             </thead>
             <tbody id="excelPreviewTableBody"></tbody>
           </table>
         </div>
 
-        <div style="margin-top: var(--space-4); display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 14.5px; font-weight: 700; color: var(--brand);" id="excelParsedCountText">พบมิเตอร์ทั้งหมด: 0 ลูก</span>
+        <div style="margin-top: var(--space-4); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3);">
+          <span style="font-size: 15px; font-weight: 800; color: var(--brand);" id="excelParsedCountText">พบข้อมูลมิเตอร์ทั้งหมด: 0 เครื่อง</span>
           <div style="display: flex; gap: var(--space-2);">
             <button type="button" class="btn btn-secondary" id="cancelExcelImportBtn">ยกเลิก</button>
-            <button type="button" class="btn btn-primary" id="confirmExcelImportBtn" style="background: var(--import-color);">💾 ยืนยันนำเข้าข้อมูลทั้งหมด</button>
+            <button type="button" class="btn btn-primary" id="confirmExcelImportBtn" style="background: var(--import-color);">📥 ยืนยันบันทึกนำเข้าสต็อคทั้งหมด</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- EDIT RECORD MODAL (ADMIN ONLY) -->
+  <!-- POPUP 7: METER RECORD EDIT MODAL (ADMIN ONLY) -->
   <div id="editRecordModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
     <div class="modal-card" style="max-width: 680px; overflow-y: auto; max-height: 90vh;">
       <div class="modal-header">
-        <h3 class="modal-title" id="editModalTitle">✏️ แก้ไขข้อมูลมิเตอร์ไฟฟ้า (ผู้ดูแลระบบ)</h3>
+        <h3 class="modal-title" id="editModalTitle">✏️ แก้ไขบันทึกรายละเอียดมิเตอร์ไฟฟ้า (Admin Only)</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeEditModalBtn">ยกเลิก</button>
       </div>
-      <div style="padding: var(--space-3) 0;">
-        <form id="editRecordForm" novalidate>
-          <input type="hidden" id="editRecordId">
-          
-          <div class="form-group" style="margin-bottom: var(--space-4);">
-            <label>ประเภทรายการ <span class="req-star">*</span></label>
-            <div class="sign-type-grid">
-              <div class="sign-type-option">
-                <input type="radio" name="editRecordType" id="editTypeWithdraw" value="withdraw">
-                <label class="sign-type-label" for="editTypeWithdraw" style="padding: 8px var(--space-3);">
-                  <span class="sign-type-title" style="font-size: 14px;">เบิกใช้</span>
-                </label>
-              </div>
-              <div class="sign-type-option">
-                <input type="radio" name="editRecordType" id="editTypeImport" value="import">
-                <label class="sign-type-label" for="editTypeImport" style="padding: 8px var(--space-3);">
-                  <span class="sign-type-title" style="font-size: 14px;">นำเข้า</span>
-                </label>
-              </div>
-              <div class="sign-type-option">
-                <input type="radio" name="editRecordType" id="editTypeDamage" value="damage">
-                <label class="sign-type-label" for="editTypeDamage" style="padding: 8px var(--space-3);">
-                  <span class="sign-type-title" style="font-size: 14px;">แจ้งชำรุด</span>
-                </label>
-              </div>
+      <form id="editRecordForm" novalidate>
+        <input type="hidden" id="editRecordId">
+        
+        <div class="form-group" style="margin-bottom: var(--space-4);">
+          <label>ประเภทรายการ <span class="req-star">*</span></label>
+          <div class="sign-type-grid">
+            <div class="sign-type-option">
+              <input type="radio" name="editRecordType" id="editTypeWithdraw" value="withdraw">
+              <label class="sign-type-label" for="editTypeWithdraw" style="padding: 8px var(--space-3);">
+                <span class="sign-type-title" style="font-size: 14px;">เบิกใช้</span>
+              </label>
+            </div>
+            <div class="sign-type-option">
+              <input type="radio" name="editRecordType" id="editTypeImport" value="import">
+              <label class="sign-type-label" for="editTypeImport" style="padding: 8px var(--space-3);">
+                <span class="sign-type-title" style="font-size: 14px;">นำเข้า</span>
+              </label>
+            </div>
+            <div class="sign-type-option">
+              <input type="radio" name="editRecordType" id="editTypeDamage" value="damage">
+              <label class="sign-type-label" for="editTypeDamage" style="padding: 8px var(--space-3);">
+                <span class="sign-type-title" style="font-size: 14px;">แจ้งชำรุด</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--space-4);">
+          <label>สภาพมิเตอร์ <span class="req-star">*</span></label>
+          <div class="sign-type-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="sign-type-option">
+              <input type="radio" name="editMeterStatus" id="editStatusNew" value="new">
+              <label class="sign-type-label" for="editStatusNew" style="padding: 8px var(--space-3);">
+                <span class="sign-type-title" style="font-size: 14px; color: var(--import-color);">🟢 คงคลัง (ใหม่)</span>
+              </label>
+            </div>
+            <div class="sign-type-option">
+              <input type="radio" name="editMeterStatus" id="editStatusUsed" value="used">
+              <label class="sign-type-label" for="editStatusUsed" style="padding: 8px var(--space-3);">
+                <span class="sign-type-title" style="font-size: 14px; color: var(--used-color);">🟣 คงคลัง (เก่า)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col-grid">
+          <div>
+            <div class="form-group">
+              <label for="editMeterCode">PEA มิเตอร์ <span class="req-star">*</span></label>
+              <input type="text" id="editMeterCode" class="input" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editMeterReading">เลขอ่านปัจจุบัน <span class="req-star">*</span></label>
+              <input type="text" id="editMeterReading" class="input" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editCustomerNumber" id="editCustomerNumberLabel">หมายเลขผู้ใช้ไฟ CA <span class="req-star">*</span></label>
+              <input type="text" id="editCustomerNumber" class="input" required>
             </div>
           </div>
 
-          <!-- EDIT METER CONDITION -->
-          <div class="form-group" style="margin-bottom: var(--space-4);">
-            <label>สภาพมิเตอร์ <span class="req-star">*</span></label>
-            <div class="sign-type-grid" style="grid-template-columns: 1fr 1fr;">
-              <div class="sign-type-option">
-                <input type="radio" name="editMeterStatus" id="editStatusNew" value="new">
-                <label class="sign-type-label" for="editStatusNew" style="padding: 8px var(--space-3);">
-                  <span class="sign-type-title" style="font-size: 14px; color: var(--new-color);">🟢 คงคลัง (ใหม่)</span>
-                </label>
-              </div>
-              <div class="sign-type-option">
-                <input type="radio" name="editMeterStatus" id="editStatusUsed" value="used">
-                <label class="sign-type-label" for="editStatusUsed" style="padding: 8px var(--space-3);">
-                  <span class="sign-type-title" style="font-size: 14px; color: var(--used-color);">🟣 คงคลัง (เก่า)</span>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="two-col-grid">
-            <div>
-              <div class="form-group">
-                <label for="editMeterCode">PEA มิเตอร์ <span class="req-star">*</span></label>
-                <input type="text" id="editMeterCode" class="input" required>
-              </div>
-
-              <div class="form-group">
-                <label for="editMeterReading">เลขอ่าน <span class="req-star">*</span></label>
-                <input type="text" id="editMeterReading" class="input" required>
-              </div>
-
-              <div class="form-group">
-                <label for="editCustomerNumber" id="editCustomerNumberLabel">หมายเลขผู้ใช้ไฟ <span class="req-star">*</span></label>
-                <input type="text" id="editCustomerNumber" class="input" required>
-              </div>
+          <div>
+            <div class="form-group">
+              <label for="editParcelDesc">คำอธิบายรหัสพัสดุ</label>
+              <input type="text" id="editParcelDesc" class="input">
             </div>
 
-            <div>
-              <div class="form-group">
-                <label for="editParcelDesc">คำอธิบายรหัสพัสดุ</label>
-                <input type="text" id="editParcelDesc" class="input">
-              </div>
+            <div class="form-group">
+              <label for="editAmpRatio">แอมป์/อัตราส่วน</label>
+              <input type="text" id="editAmpRatio" class="input">
+            </div>
 
-              <div class="form-group">
-                <label for="editAmpRatio">แอมป์ / อัตราส่วน</label>
-                <input type="text" id="editAmpRatio" class="input">
-              </div>
-
-              <div class="form-group">
-                <label for="editDate">วันที่บันทึก <span class="req-star">*</span></label>
-                <input type="date" id="editDate" class="input" required>
-              </div>
+            <div class="form-group">
+              <label for="editDate">วันที่ทำรายการ <span class="req-star">*</span></label>
+              <input type="date" id="editDate" class="input" required>
             </div>
           </div>
+        </div>
 
-          <div class="form-group">
-            <label for="editNote" id="editNoteLabel">หมายเหตุ / รายละเอียดหากมิเตอร์ชำรุด</label>
-            <textarea id="editNote" class="textarea"></textarea>
-          </div>
+        <div class="form-group">
+          <label for="editNote" id="editNoteLabel">หมายเหตุ / อาการขำรุดเสียหาย</label>
+          <textarea id="editNote" class="textarea"></textarea>
+        </div>
 
-          <div class="form-group">
-            <label for="editPhoto">เปลี่ยนรูปภาพมิเตอร์</label>
-            <input type="file" id="editPhoto" accept="image/*" class="input">
-            <div id="editPhotoPreviewWrap" style="margin-top: 10px; display: none; align-items: center; gap: 10px;">
-              <img id="editPhotoPreviewImg" src="" alt="รูปภาพมิเตอร์" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);">
-              <button type="button" class="btn btn-secondary btn-sm" id="removeEditPhotoBtn">ลบรูปภาพปัจจุบัน</button>
-            </div>
+        <div class="form-group">
+          <label for="editPhoto">ปรับเปลี่ยนภาพถ่ายบันทึกการทำงาน</label>
+          <input type="file" id="editPhoto" accept="image/*" class="input">
+          <div id="editPhotoPreviewWrap" style="margin-top: 10px; display: none; align-items: center; gap: 10px;">
+            <img id="editPhotoPreviewImg" src="" alt="รูปภาพมิเตอร์" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);">
+            <button type="button" class="btn btn-secondary btn-sm" id="removeEditPhotoBtn">ลบรูปภาพปัจจุบัน</button>
           </div>
+        </div>
 
-          <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
-            <button type="button" class="btn btn-secondary" id="cancelEditBtn">ยกเลิก</button>
-            <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
-          </div>
-        </form>
-      </div>
+        <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" id="cancelEditBtn">ยกเลิก</button>
+          <button type="submit" class="btn btn-primary">💾 ยืนยันบันทึกการแก้ไข</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- In-page Image Preview Modal -->
+  <!-- POPUP 8: IMAGE ZOOM MODAL -->
   <div id="imageModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 class="modal-title" id="modalTitle">รูปภาพมิเตอร์</h3>
+        <h3 class="modal-title" id="modalTitle">ภาพถ่ายมิเตอร์แบบเต็ม</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeModalBtn">ปิดหน้าต่าง</button>
       </div>
       <div class="modal-img-wrap">
-        <img id="modalImageEl" src="" alt="รูปขยายมิเตอร์ไฟฟ้า">
+        <img id="modalImageEl" src="" alt="รูปภาพมิเตอร์ไฟฟ้า kWH">
       </div>
     </div>
   </div>
@@ -2791,17 +2804,17 @@
 
         if (recordCustomerNumberLabel && recordCustomerNumber) {
           if (mode === 'withdraw') {
-            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ติดตั้งให้ CA) <span class="req-star">*</span>';
-            recordCustomerNumber.placeholder = 'ระบุหมายเลข CA สำหรับเบิกไปติดตั้ง';
-            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลข CA สำหรับติดตั้ง';
+            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (นำไปติดตั้งให้ผู้ใช้ไฟหมายเลข) <span class="req-star">*</span>';
+            recordCustomerNumber.placeholder = 'ระบุหมายเลขผู้ใช้ไฟที่นำมิเตอร์ไปติดตั้ง เช่น CA-0200123456';
+            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลขผู้ใช้ไฟที่นำมิเตอร์ไปติดตั้ง';
           } else if (mode === 'import') {
-            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถอดมาจาก CA) <span class="req-star">*</span>';
-            recordCustomerNumber.placeholder = 'ระบุหมายเลข CA ที่ถอดมิเตอร์คืนมา';
-            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลข CA ที่ถอดคืนมา';
+            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถอดมาจากผู้ใช้ไฟหมายเลข) <span class="req-star">*</span>';
+            recordCustomerNumber.placeholder = 'ระบุหมายเลขผู้ใช้ไฟที่ถอดมิเตอร์มา เช่น CA-0200123456';
+            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลขผู้ใช้ไฟที่ถอดมิเตอร์มา';
           } else {
-            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ CA';
-            recordCustomerNumber.placeholder = 'ระบุหมายเลข CA ที่เกี่ยวข้อง (ถ้ามี)';
-            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลขผู้ใช้ไฟ CA';
+            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถ้ามี)';
+            recordCustomerNumber.placeholder = 'ระบุหมายเลขผู้ใช้ไฟที่เกี่ยวข้อง (ถ้ามี)';
+            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลขผู้ใช้ไฟ';
           }
         }
         if (errCustomerNumber) errCustomerNumber.classList.remove('visible');
@@ -2845,34 +2858,6 @@
 
       if (removePhotoBtn) {
         removePhotoBtn.addEventListener('click', clearPhotoAttachment);
-      }
-
-      // Autofill specs when typing/entering PEA meter code
-      if (recordMeterCode) {
-        recordMeterCode.addEventListener('input', () => {
-          const codeVal = recordMeterCode.value.trim().toUpperCase();
-          if (codeVal.length >= 3) {
-            const match = records.find(r => r.meterCode.trim().toUpperCase() === codeVal);
-            if (match) {
-              const parcelInput = document.getElementById('recordParcelDesc');
-              const ampInput = document.getElementById('recordAmpRatio');
-              
-              if (parcelInput && match.parcelDesc && !parcelInput.value) {
-                parcelInput.value = match.parcelDesc;
-              }
-              if (ampInput && match.ampRatio && !ampInput.value) {
-                ampInput.value = match.ampRatio;
-              }
-              
-              if (match.meterStatus) {
-                const statusRadio = document.getElementById('status' + match.meterStatus.charAt(0).toUpperCase() + match.meterStatus.slice(1));
-                if (statusRadio) {
-                  statusRadio.checked = true;
-                }
-              }
-            }
-          }
-        });
       }
 
       // Record Form submission (Locked automatically to currentUser!)
@@ -3080,8 +3065,8 @@
 
           extractedPEA = extractedPEA.replace(/pea/gi, '').replace(/มิเตอร์/g, '').replace(/[:：]/g, '').trim();
           extractedReading = extractedReading.replace(/เลขอ่าน/g, '').replace(/หน่วย/g, '').replace(/kWh/gi, '').replace(/[:：]/g, '').trim();
-          extractedCustomer = extractedCustomer.replace(/ผู้ใช้ไฟ/g, '').replace(/[:：]/g, '').trim();
-          extractedNote = extractedNote.replace(/หมายเหตุ/g, '').replace(/[:：]/g, '').trim();
+          extractedCustomer = extractedCustomer.replace(/ผู้ใช้ไฟ/g, '').replace(/[:::]/g, '').trim();
+          extractedNote = extractedNote.replace(/หมายเหตุ/g, '').replace(/[:::]/g, '').trim();
 
           if (extractedPEA) document.getElementById('recordMeterCode').value = extractedPEA;
           if (extractedReading) document.getElementById('recordMeterReading').value = extractedReading;
@@ -3311,6 +3296,11 @@
         }).join('');
       }
 
+      function closeExcelPreview() {
+        if (excelPreviewModal) excelPreviewModal.classList.remove('open');
+        if (excelFileInput) excelFileInput.value = '';
+      }
+
       if (closeExcelPreviewBtn) closeExcelPreviewBtn.addEventListener('click', closeExcelPreview);
       if (cancelExcelImportBtn) cancelExcelImportBtn.addEventListener('click', closeExcelPreview);
 
@@ -3437,7 +3427,7 @@
 
         const seenMeters = new Map();
         records.forEach((rec) => {
-          const key = rec.meterCode.trim().toUpperCase();
+          const key = rec.meterCode.toUpperCase();
           if (!seenMeters.has(key)) {
             seenMeters.set(key, rec);
           }
@@ -3565,7 +3555,7 @@
 
         const seenMeters = new Map();
         records.forEach((rec) => {
-          const key = rec.meterCode.trim().toUpperCase();
+          const key = rec.meterCode.toUpperCase();
           if (!seenMeters.has(key)) {
             seenMeters.set(key, rec);
           }
@@ -3706,7 +3696,7 @@
 
         const seenMeters = new Map();
         records.forEach((rec) => {
-          const key = rec.meterCode.trim().toUpperCase();
+          const key = rec.meterCode.toUpperCase();
           if (!seenMeters.has(key)) {
             seenMeters.set(key, rec);
           }
@@ -3795,8 +3785,6 @@
               if (recordCustomerNumberInput) {
                 recordCustomerNumberInput.value = '';
               }
-              // Dispatch input event to trigger auto-fill instantly!
-              recordMeterCodeInput.dispatchEvent(new Event('input'));
             }
 
             const recordFeedback = document.getElementById('recordFeedback');
