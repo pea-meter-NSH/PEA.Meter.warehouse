@@ -15,8 +15,8 @@
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
   <!-- Firebase Compat SDKs (v10) -->
-  <script src="about:invalid#zPythonSafez"></script>
-  <script src="about:invalid#zPythonSafez"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@10.8.0/firebase-app-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/firebase@10.8.0/firebase-firestore-compat.js"></script>
 
   <style>
     :root {
@@ -1032,7 +1032,7 @@
       }
     }
   </style>
-<style data-link-removed-style>a[data-link-removed],a[href*="zPythonSafez"]:not([onclick]){pointer-events:none!important;cursor:default!important;opacity:.6}</style></head>
+</head>
 <body>
 
   <!-- VIEW STEP 0: FIRST-TIME SETUP SYSTEM (Shown if database is brand-new / uninitialized) -->
@@ -4203,6 +4203,38 @@
       initFirebase();
 
       function checkSystemStatusAndViews() {
+        // Safe check online config first
+        if (isOnline && db) {
+          db.collection('system_config').doc('config').get().then((docSnapshot) => {
+            if (docSnapshot.exists) {
+              systemInitialized = true;
+              localStorage.setItem(STORAGE_KEYS.INITIALIZED, 'true');
+              const data = docSnapshot.data();
+              adminPasscode = data.adminPasscode || adminPasscode;
+              saveState();
+              
+              if (currentUser) {
+                enterAppView();
+              } else {
+                exitAppView();
+              }
+            } else {
+              // Not initialized anywhere yet, fallback to setup
+              setupView.classList.add('active');
+              authView.classList.remove('active');
+              appPortal.classList.remove('active');
+            }
+          }).catch(err => {
+            console.warn("Error checking cloud system config, using local state:", err);
+            // Local State fallback
+            runLocalStatusCheck();
+          });
+        } else {
+          runLocalStatusCheck();
+        }
+      }
+
+      function runLocalStatusCheck() {
         if (!systemInitialized) {
           setupView.classList.add('active');
           authView.classList.remove('active');
