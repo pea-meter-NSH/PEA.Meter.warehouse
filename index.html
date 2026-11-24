@@ -1391,6 +1391,9 @@
               <p class="section-desc">ตรวจสอบรายการเบิกใช้ นำเข้า และแจ้งชำรุด พร้อมรูปภาพและหมายเหตุ</p>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-danger btn-sm admin-only-col" id="bulkDeleteRecordsBtn" style="display: none; font-weight: 700; background: var(--damage-color); color: white;">
+                🗑️ ลบรายการที่เลือก
+              </button>
               <button type="button" class="btn btn-primary btn-sm" id="goToRecordBtn">
                 + ลงบันทึกมิเตอร์ใหม่
               </button>
@@ -1452,6 +1455,7 @@
             <table>
               <thead>
                 <tr>
+                  <th class="admin-only-col" style="display: none;"><input type="checkbox" id="selectAllRecords" title="เลือกทั้งหมด"></th>
                   <th>วันที่บันทึก</th>
                   <th>ประเภทรายการ</th>
                   <th>สภาพมิเตอร์</th>
@@ -3637,6 +3641,40 @@
         renderRecordsTable();
       });
 
+      // BULK DELETE ACTION FOR ADMIN
+      const bulkDeleteRecordsBtn = document.getElementById('bulkDeleteRecordsBtn');
+      if (bulkDeleteRecordsBtn) {
+        bulkDeleteRecordsBtn.addEventListener('click', () => {
+          const checkedCbs = document.querySelectorAll('.record-select-checkbox:checked');
+          if (checkedCbs.length === 0) return;
+
+          const confirmed = confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบรายการที่เลือกทั้งหมด ${checkedCbs.length} รายการจากระบบ? (การลบจะลบข้อมูลออกจากระบบคลาวด์และเครื่องทันที)`);
+          if (confirmed) {
+            const idsToDelete = Array.from(checkedCbs).map(cb => cb.dataset.id);
+            
+            // Delete from memory and local storage
+            records = records.filter(r => !idsToDelete.includes(r.id));
+            saveState();
+
+            // Delete from Firestore
+            if (isOnline && db) {
+              const batch = db.batch();
+              idsToDelete.forEach(id => {
+                const docRef = db.collection('meter_records').doc(id);
+                batch.delete(docRef);
+              });
+              batch.commit().then(() => {
+                console.log("Successfully bulk deleted from Cloud");
+              }).catch(err => {
+                console.warn("Bulk delete on Cloud failed:", err);
+              });
+            }
+
+            renderDashboard();
+          }
+        });
+      }
+
       function renderDashboard() {
         const totalCount = records.length;
         const importCount = records.filter((r) => r.type === 'import').length;
@@ -3973,8 +4011,13 @@
                </td>`
             : '';
 
+          const adminCheckboxCell = isAdmin
+            ? `<td class="admin-only-col"><input type="checkbox" class="record-select-checkbox" data-id="${escapeHtml(rec.id)}"></td>`
+            : '';
+
           return `
             <tr>
+              ${adminCheckboxCell}
               <td style="white-space: nowrap;">${escapeHtml(formatThaiDate(rec.date))}</td>
               <td><span class="status-chip ${escapeHtml(rec.type)}">${escapeHtml(getSignTypeLabel(rec.type))}</span></td>
               <td>
@@ -4035,6 +4078,38 @@
               }
             });
           });
+
+          // Handle select all checkbox
+          const selectAllInp = document.getElementById('selectAllRecords');
+          if (selectAllInp) {
+            selectAllInp.checked = false; // Reset on render
+            selectAllInp.addEventListener('change', () => {
+              const isChecked = selectAllInp.checked;
+              tbody.querySelectorAll('.record-select-checkbox').forEach((cb) => {
+                cb.checked = isChecked;
+              });
+              toggleBulkDeleteButtonVisibility();
+            });
+          }
+
+          // Handle individual checkbox change
+          tbody.querySelectorAll('.record-select-checkbox').forEach((cb) => {
+            cb.addEventListener('change', () => {
+              toggleBulkDeleteButtonVisibility();
+            });
+          });
+
+          function toggleBulkDeleteButtonVisibility() {
+            const bulkBtn = document.getElementById('bulkDeleteRecordsBtn');
+            if (!bulkBtn) return;
+            const checkedCbs = tbody.querySelectorAll('.record-select-checkbox:checked');
+            if (checkedCbs.length > 0 && isAdmin) {
+              bulkBtn.style.display = 'inline-flex';
+              bulkBtn.textContent = `🗑️ ลบรายการที่เลือก (${checkedCbs.length})`;
+            } else {
+              bulkBtn.style.display = 'none';
+            }
+          }
         }
       }
 
