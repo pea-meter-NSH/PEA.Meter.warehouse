@@ -13,11 +13,9 @@
   
   <!-- SheetJS CDN for importing Excel -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
   <!-- Firebase Compat SDKs (v10) -->
   <script src="https://cdn.jsdelivr.net/npm/firebase@10.8.0/firebase-app-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/firebase@10.8.0/firebase-firestore-compat.js"></script>
-
   <style>
     :root {
       --bg: #f8fafc;
@@ -52,7 +50,6 @@
       --used-color: #8b5cf6;
       --used-bg: #ede9fe;
       --used-border: #ddd6fe;
-
       --radius-sm: 8px;
       --radius: 14px;
       --radius-lg: 20px;
@@ -68,11 +65,9 @@
       --space-8: 32px;
       --font: "Sarabun", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-
     * {
       box-sizing: border-box;
     }
-
     body {
       margin: 0;
       font-family: var(--font);
@@ -81,7 +76,6 @@
       line-height: 1.6;
       font-size: 14.5px;
     }
-
     /* Setup & Auth common styles */
     .setup-container, .auth-container {
       display: none;
@@ -91,11 +85,15 @@
       padding: var(--space-6);
       background: radial-gradient(circle at top, #312e81 0%, #0f172a 100%);
     }
-
     .setup-container.active, .auth-container.active {
       display: flex;
     }
-
+    .app-layout {
+      display: none;
+    }
+    .app-layout.active {
+      display: block;
+    }
     .auth-card {
       background: var(--surface);
       border-radius: var(--radius-lg);
@@ -105,12 +103,10 @@
       padding: var(--space-8) var(--space-6);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-
     .auth-header {
       text-align: center;
       margin-bottom: var(--space-6);
     }
-
     .auth-brand-icon {
       width: 60px;
       height: 60px;
@@ -123,7 +119,6 @@
       margin-bottom: var(--space-3);
       box-shadow: 0 8px 16px -4px rgba(79, 70, 229, 0.3);
     }
-
     .auth-title {
       margin: 0;
       font-size: 24px;
@@ -131,13 +126,11 @@
       color: var(--ink);
       letter-spacing: -0.5px;
     }
-
     .auth-subtitle {
       margin: var(--space-1) 0 0;
       font-size: 14px;
       color: var(--muted);
     }
-
     .auth-tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -146,7 +139,6 @@
       border-radius: var(--radius);
       margin-bottom: var(--space-6);
     }
-
     .auth-tab-btn {
       border: none;
       background: none;
@@ -159,21 +151,17 @@
       color: var(--muted);
       transition: all 0.2s ease;
     }
-
     .auth-tab-btn.active {
       background: var(--surface);
       color: var(--brand);
       box-shadow: var(--shadow);
     }
-
     .auth-form-panel {
       display: none;
     }
-
     .auth-form-panel.active {
       display: block;
     }
-
     /* Main App layout */
     .app-header {
       background: var(--surface);
@@ -183,7 +171,6 @@
       z-index: 20;
       box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);
     }
-
     .header-inner {
       max-width: 1280px;
       margin: 0 auto;
@@ -194,13 +181,11 @@
       justify-content: space-between;
       gap: var(--space-4);
     }
-
     .brand-group {
       display: flex;
       align-items: center;
       gap: var(--space-3);
     }
-
     .brand-icon {
       width: 44px;
       height: 44px;
@@ -213,7 +198,6 @@
       flex-shrink: 0;
       box-shadow: 0 4px 10px rgba(79, 70, 229, 0.15);
     }
-
     .brand-title {
       margin: 0;
       font-size: 20px;
@@ -222,19 +206,40 @@
       line-height: 1.25;
       letter-spacing: -0.5px;
     }
-
     .brand-subtitle {
       margin: 1px 0 0;
       font-size: 12.5px;
       color: var(--muted);
     }
-
     .user-badge-wrap {
       display: flex;
       align-items: center;
       gap: var(--space-3);
+      flex-wrap: wrap;
     }
-
+    .cloud-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface-subtle);
+      color: var(--ink-secondary);
+      transition: all 0.2s ease;
+    }
+    .cloud-status-pill.online {
+      background: var(--new-bg);
+      color: var(--new-color);
+      border-color: var(--new-border);
+    }
+    .cloud-status-pill.offline {
+      background: var(--surface-subtle);
+      color: var(--muted);
+    }
     .user-profile-badge {
       background: var(--surface-subtle);
       border: 1px solid var(--border);
@@ -249,16 +254,13 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
-
     .user-profile-badge:hover {
       background: var(--border);
       border-color: var(--border-strong);
     }
-
     .user-profile-badge svg {
       color: var(--brand);
     }
-
     .user-role-tag {
       background: var(--brand);
       color: var(--brand-ink);
@@ -269,17 +271,14 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-
     .user-role-tag.admin {
       background: var(--used-color);
     }
-
     .nav-tabs {
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-2);
     }
-
     .tab-btn {
       font: inherit;
       font-size: 14px;
@@ -295,33 +294,27 @@
       gap: var(--space-2);
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
     .tab-btn:hover {
       background: var(--border);
       color: var(--ink);
     }
-
     .tab-btn.active {
       background: var(--brand);
       color: var(--brand-ink);
       box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
     }
-
     /* Container & Cards */
     .container {
       max-width: 1280px;
       margin: 0 auto;
       padding: var(--space-6);
     }
-
     .view-panel {
       display: none;
     }
-
     .view-panel.active {
       display: block;
     }
-
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -331,7 +324,6 @@
       margin-bottom: var(--space-6);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
     .section-header {
       margin-bottom: var(--space-4);
       display: flex;
@@ -340,7 +332,6 @@
       justify-content: space-between;
       gap: var(--space-2);
     }
-
     .section-title {
       margin: 0;
       font-size: 19px;
@@ -348,13 +339,11 @@
       color: var(--ink);
       letter-spacing: -0.5px;
     }
-
     .section-desc {
       margin: var(--space-1) 0 0;
       font-size: 13.5px;
       color: var(--muted);
     }
-
     /* KPI Grid */
     .kpi-grid {
       display: grid;
@@ -362,7 +351,6 @@
       gap: var(--space-4);
       margin-bottom: var(--space-6);
     }
-
     .kpi-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -375,18 +363,15 @@
       border-left: 4px solid var(--border);
       transition: transform 0.2s ease;
     }
-
     .kpi-card:hover {
       transform: translateY(-2px);
     }
-
     .kpi-card.kpi-import { border-left-color: var(--import-color); }
     .kpi-card.kpi-withdraw { border-left-color: var(--withdraw-color); }
     .kpi-card.kpi-damage { border-left-color: var(--damage-color); }
     .kpi-card.kpi-total { border-left-color: var(--brand); }
     .kpi-card.kpi-stock-new { border-left-color: var(--new-color); }
     .kpi-card.kpi-stock-used { border-left-color: var(--used-color); }
-
     .kpi-label {
       font-size: 13px;
       font-weight: 700;
@@ -394,7 +379,6 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-
     .kpi-value {
       font-size: 30px;
       font-weight: 800;
@@ -402,12 +386,10 @@
       line-height: 1.1;
       letter-spacing: -1px;
     }
-
     .kpi-caption {
       font-size: 12px;
       color: var(--muted);
     }
-
     /* Dashboard Grid */
     .dashboard-mid-grid {
       display: grid;
@@ -415,7 +397,6 @@
       gap: var(--space-6);
       margin-bottom: var(--space-6);
     }
-
     .chart-box {
       position: relative;
       height: 240px;
@@ -424,7 +405,6 @@
       align-items: center;
       justify-content: center;
     }
-
     /* Search & Filter Bar */
     .filter-panel {
       background: var(--surface-subtle);
@@ -437,18 +417,15 @@
       gap: var(--space-4);
       align-items: end;
     }
-
     .user-id-search-highlight {
       background: var(--brand-soft);
       border: 1px solid #bae6fd;
       padding: var(--space-3);
       border-radius: var(--radius-sm);
     }
-
     .user-id-search-highlight label {
       color: #0369a1;
     }
-
     /* Forms */
     .two-col-grid {
       display: grid;
@@ -456,11 +433,9 @@
       gap: var(--space-6);
       align-items: start;
     }
-
     .form-group {
       margin-bottom: var(--space-4);
     }
-
     label {
       display: block;
       font-size: 14px;
@@ -468,12 +443,10 @@
       color: var(--ink-secondary);
       margin-bottom: var(--space-2);
     }
-
     .req-star {
       color: var(--damage-color);
       margin-left: 2px;
     }
-
     .input,
     .select,
     .textarea {
@@ -487,11 +460,9 @@
       color: var(--ink);
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
     .input:hover, .select:hover, .textarea:hover {
       border-color: var(--muted);
     }
-
     .input:focus,
     .select:focus,
     .textarea:focus {
@@ -500,18 +471,15 @@
       border-color: var(--brand);
       box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
     }
-
     .textarea {
       min-height: 96px;
       resize: vertical;
     }
-
     .field-hint {
       font-size: 12px;
       color: var(--muted);
       margin-top: 6px;
     }
-
     .field-error {
       font-size: 12.5px;
       color: var(--damage-color);
@@ -519,11 +487,93 @@
       font-weight: 600;
       display: none;
     }
-
     .field-error.visible {
       display: block;
     }
-
+    .inline-feedback {
+      display: none;
+      margin-top: var(--space-3);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+    .inline-feedback.success {
+      display: block;
+      background: var(--new-bg);
+      color: var(--new-color);
+      border-color: var(--new-border);
+    }
+    .user-profile-highlight {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .user-profile-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--brand);
+      color: white;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .user-profile-name {
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .user-profile-id-phone {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .photo-preview-wrap {
+      display: none;
+      margin-top: 10px;
+    }
+    .photo-preview-wrap.visible {
+      display: block;
+    }
+    .photo-preview-wrap img {
+      max-width: 140px;
+      max-height: 140px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+    .thumb-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+    }
+    .thumb-btn img {
+      width: 24px;
+      height: 24px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .modal-img-wrap {
+      text-align: center;
+    }
+    .modal-img-wrap img {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: var(--radius-sm);
+    }
     /* Quick Parse Box */
     .quick-parse-box {
       background: var(--surface-subtle);
@@ -532,7 +582,6 @@
       padding: var(--space-4);
       margin-bottom: var(--space-6);
     }
-
     .quick-parse-header {
       display: flex;
       flex-wrap: wrap;
@@ -541,31 +590,26 @@
       gap: var(--space-2);
       margin-bottom: var(--space-3);
     }
-
     .quick-parse-title {
       font-size: 15px;
       font-weight: 800;
       color: var(--brand);
       margin: 0;
     }
-
     /* Sign-off Type Selector Cards */
     .sign-type-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: var(--space-3);
     }
-
     .sign-type-option {
       position: relative;
     }
-
     .sign-type-option input[type="radio"] {
       position: absolute;
       opacity: 0;
       pointer-events: none;
     }
-
     .sign-type-label {
       display: flex;
       flex-direction: column;
@@ -578,52 +622,43 @@
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       margin: 0;
     }
-
     .sign-type-title {
       font-weight: 800;
       font-size: 14.5px;
       color: var(--ink);
     }
-
     .sign-type-sub {
       font-size: 12px;
       font-weight: 400;
       color: var(--muted);
       line-height: 1.3;
     }
-
     .sign-type-option input[value="withdraw"]:checked + .sign-type-label {
       border-color: var(--withdraw-color);
       background: var(--withdraw-bg);
     }
-
     .sign-type-option input[value="import"]:checked + .sign-type-label {
       border-color: var(--import-color);
       background: var(--import-bg);
     }
-
     .sign-type-option input[value="damage"]:checked + .sign-type-label {
       border-color: var(--damage-color);
       background: var(--damage-bg);
     }
-
     .sign-type-option input[value="new"]:checked + .sign-type-label {
       border-color: var(--import-color);
       background: var(--import-bg);
       box-shadow: 0 0 0 1px var(--import-color);
     }
-
     .sign-type-option input[value="used"]:checked + .sign-type-label {
       border-color: var(--used-color);
       background: var(--used-bg);
       box-shadow: 0 0 0 1px var(--used-color);
     }
-
     .sign-type-option input:focus-visible + .sign-type-label {
       outline: 2px solid var(--brand);
       outline-offset: 2px;
     }
-
     /* Buttons */
     .btn {
       font: inherit;
@@ -639,43 +674,39 @@
       gap: var(--space-2);
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
     .btn:active {
       transform: scale(0.98);
     }
-
     .btn-primary {
       background: var(--brand);
       color: var(--brand-ink);
       box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
     }
-
     .btn-primary:hover {
       background: var(--brand-hover);
       box-shadow: 0 6px 14px rgba(79, 70, 229, 0.3);
     }
-
     .btn-secondary {
       background: var(--surface);
       color: var(--ink-secondary);
       border-color: var(--border-strong);
     }
-
     .btn-secondary:hover {
       background: var(--surface-subtle);
       color: var(--ink);
     }
-
     .btn-danger {
       background: var(--damage-color);
       color: white;
       box-shadow: 0 4px 10px rgba(225, 29, 72, 0.2);
     }
-
     .btn-danger:hover {
       background: #be123c;
     }
-
     /* Tables */
     .table-wrap {
       width: 100%;
@@ -684,14 +715,12 @@
       border-radius: var(--radius);
       background: var(--surface);
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
       font-size: 13.5px;
     }
-
     th {
       background: var(--surface-subtle);
       color: var(--ink-secondary);
@@ -700,18 +729,15 @@
       border-bottom: 1.5px solid var(--border);
       white-space: nowrap;
     }
-
     td {
       padding: 14px 16px;
       border-bottom: 1px solid var(--border);
       vertical-align: middle;
       color: var(--ink);
     }
-
     tbody tr:hover {
       background: #f8fafc;
     }
-
     /* Status Tags */
     .status-chip {
       display: inline-flex;
@@ -722,13 +748,11 @@
       font-weight: 700;
       white-space: nowrap;
     }
-
     .status-chip.import { background: var(--import-bg); color: var(--import-color); border: 1px solid var(--import-border); }
     .status-chip.withdraw { background: var(--withdraw-bg); color: var(--withdraw-color); border: 1px solid var(--withdraw-border); }
     .status-chip.damage { background: var(--damage-bg); color: var(--damage-color); border: 1px solid var(--damage-border); }
     .status-chip.new-badge { background: var(--new-bg); color: var(--new-color); border: 1px solid var(--new-border); }
     .status-chip.used-badge { background: var(--used-bg); color: var(--used-color); border: 1px solid var(--used-border); }
-
     .code-pill {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 12.5px;
@@ -740,7 +764,20 @@
       color: var(--ink);
       display: inline-block;
     }
-
+    .empty-state {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+    }
+    .empty-state-title {
+      margin: 0;
+      font-weight: 700;
+      color: var(--ink-secondary);
+    }
+    .empty-state-sub {
+      margin: 4px 0 0;
+      font-size: 13px;
+    }
     /* Modals */
     .modal-backdrop {
       position: fixed;
@@ -753,11 +790,9 @@
       padding: var(--space-4);
       z-index: 50;
     }
-
     .modal-backdrop.open {
       display: flex;
     }
-
     .modal-card {
       background: var(--surface);
       border-radius: var(--radius-lg);
@@ -767,7 +802,6 @@
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--border);
     }
-
     .modal-header {
       display: flex;
       align-items: center;
@@ -776,23 +810,20 @@
       padding-bottom: var(--space-2);
       border-bottom: 1px solid var(--border);
     }
-
     .modal-title {
       margin: 0;
       font-size: 17px;
       font-weight: 800;
       letter-spacing: -0.5px;
     }
-
     @media (max-width: 768px) {
       .container { padding: var(--space-4); }
       .card { padding: var(--space-4); }
       .header-inner { padding: var(--space-3) var(--space-4); }
     }
   </style>
-<style data-link-removed-style>a[data-link-removed],a[href*="zPythonSafez"]:not([onclick]){pointer-events:none!important;cursor:default!important;opacity:.6}</style></head>
+</head>
 <body>
-
   <!-- SETUP VIEW (Shown on first-time usage only) -->
   <div id="setup-view" class="setup-container">
     <div class="auth-card" style="max-width: 520px;">
@@ -806,32 +837,27 @@
         <h2 class="auth-title">เปิดใช้งานระบบครั้งแรก</h2>
         <p class="auth-subtitle">สร้างบัญชีแอดมินสูงสุด (Super Admin) และตั้งรหัสยืนยันตัวตน</p>
       </div>
-
       <form id="systemSetupForm" novalidate>
         <div style="padding: var(--space-3); background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: var(--radius); margin-bottom: var(--space-4); font-size: 13.5px; color: #065f46; line-height: 1.5;">
           👋 <strong>ยินดีต้อนรับเข้าสู่ระบบมิเตอร์ไฟฟ้า!</strong><br>
           กรุณาตั้งค่าสร้างบัญชีผู้ดูแลสูงสุดสำหรับการเปิดซิงก์คลาวด์ค่ะ
         </div>
-
         <div class="form-group">
           <label for="setupAdminName">ชื่อ - นามสกุล ผู้ดูแลระบบ <span class="req-star">*</span></label>
           <input type="text" id="setupAdminName" class="input" placeholder="เช่น นายสมชาย ปรีชาชาญ" required>
           <div id="errSetupName" class="field-error">กรุณากรอกชื่อผู้ดูแลระบบสูงสุด</div>
         </div>
-
         <div class="form-group">
           <label for="setupAdminPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
           <input type="tel" id="setupAdminPhone" class="input" placeholder="เช่น 089-999-9999" required>
           <div id="errSetupPhone" class="field-error">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง</div>
         </div>
-
         <div class="form-group">
           <label for="setupAdminPasscode">รหัสลับยืนยันสิทธิ์แอดมิน (Admin Passcode) <span class="req-star">*</span></label>
           <input type="text" id="setupAdminPasscode" class="input" placeholder="กำหนดรหัสผ่านยืนยันตัว เช่น 1234" required>
           <div class="field-hint">รหัสนี้ใช้ป้องกันการแอบอ้างสิทธิ์ Admin ตอนพนักงานคนอื่นลงทะเบียน</div>
           <div id="errSetupPasscode" class="field-error">กรุณากำหนดรหัสผ่าน (อย่างน้อย 4 ตัวอักษร)</div>
         </div>
-
         <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--space-4);">
           🔑 สร้างบัญชีและเปิดใช้ระบบ
         </button>
@@ -851,12 +877,10 @@
         <h2 class="auth-title">ระบบจัดการมิเตอร์ไฟฟ้า</h2>
         <p class="auth-subtitle">เข้าสู่ระบบเพื่อดำเนินการเบิกใช้และนำเข้ามิเตอร์คลังสินค้า</p>
       </div>
-
       <div class="auth-tabs">
         <button type="button" class="auth-tab-btn active" id="authTabLoginBtn">ลงชื่อเข้าใช้งาน</button>
         <button type="button" class="auth-tab-btn" id="authTabRegisterBtn">ลงทะเบียนพนักงานใหม่</button>
       </div>
-
       <!-- PANEL 1: LOGIN -->
       <div id="authPanelLogin" class="auth-form-panel active">
         <form id="authLoginForm" novalidate>
@@ -865,13 +889,11 @@
             <input type="text" id="loginQuery" class="input" placeholder="ระบุ เช่น ADMIN-01, USR-001 หรือเบอร์โทร" required>
             <div id="errLoginQuery" class="field-error">กรุณากรอกรหัสพนักงานหรือเบอร์โทรศัพท์</div>
           </div>
-
           <button type="submit" class="btn btn-primary" style="width: 100%;">
             เข้าสู่ระบบและเริ่มปฏิบัติงาน
           </button>
         </form>
       </div>
-
       <!-- PANEL 2: REGISTER -->
       <div id="authPanelRegister" class="auth-form-panel">
         <form id="authRegisterForm" novalidate>
@@ -880,13 +902,11 @@
             <input type="text" id="regUserName" class="input" placeholder="เช่น นายสมศักดิ์ สายฟ้า" required>
             <div id="errRegName" class="field-error">กรุณากรอกชื่อ-นามสกุล</div>
           </div>
-
           <div class="form-group">
             <label for="regUserPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
             <input type="tel" id="regUserPhone" class="input" placeholder="เช่น 081-234-5678" required>
             <div id="errRegPhone" class="field-error">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง</div>
           </div>
-
           <div class="form-group">
             <label for="regUserRole">ระดับสิทธิ์ที่ต้องการ <span class="req-star">*</span></label>
             <select id="regUserRole" class="select" required>
@@ -894,19 +914,16 @@
               <option value="admin">ผู้ดูแลระบบ (Admin - แก้ไขและลบได้)</option>
             </select>
           </div>
-
           <div class="form-group" id="regAdminPasscodeGroup" style="display: none;">
             <label for="regAdminPasscode">รหัสลับยืนยันสิทธิ์แอดมิน <span class="req-star">*</span></label>
             <input type="password" id="regAdminPasscode" class="input" placeholder="ระบุรหัส Admin Passcode สากล">
             <div id="errRegAdminPasscode" class="field-error">รหัสผ่านยืนยันสิทธิ์ไม่ถูกต้อง</div>
           </div>
-
           <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--space-3);">
             สมัครบัญชีผู้ใช้ใหม่
           </button>
         </form>
       </div>
-
       <div id="authFeedback" class="inline-feedback"></div>
     </div>
   </div>
@@ -926,20 +943,17 @@
             <p class="brand-subtitle">บริหารคลัง นำเข้าไฟล์ Excel เบิกใช้ด่วน และตรวจสอบสายงาน</p>
           </div>
         </div>
-
         <nav class="nav-tabs">
           <button type="button" class="tab-btn active" data-tab="dashboard">แดชบอร์ดภาพรวม</button>
           <button type="button" class="tab-btn" data-tab="inventory">ตรวจสอบมิเตอร์คงคลัง</button>
           <button type="button" class="tab-btn" data-tab="record">ลงบันทึกมิเตอร์</button>
           <button type="button" class="tab-btn" data-tab="history">ประวัติการบันทึก</button>
-          <button type="button" class="tab-btn admin-only-col" data-tab="employees" style="display: none;">จัดการรายชื่อพนักงาน</button>
+          <button type="button" class="tab-btn admin-only-tab" id="tabBtnEmployees" data-tab="employees" style="display: none;">จัดการรายชื่อพนักงาน</button>
         </nav>
-
         <div class="user-badge-wrap">
           <div id="cloudStatusPill" class="cloud-status-pill offline" title="คลิกเพื่อตั้งค่า/ตรวจสอบ Firebase API Key">
             <span id="cloudStatusIcon">⚡</span> <span id="cloudStatusText">Local Mode (Offline)</span>
           </div>
-
           <div class="user-profile-badge" id="headerUserBadge">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -955,7 +969,6 @@
     </header>
 
     <main class="container">
-
       <!-- TAB 1: DASHBOARD OVERVIEW -->
       <section id="view-dashboard" class="view-panel active">
         <div class="kpi-grid">
@@ -985,7 +998,7 @@
             <span class="kpi-caption">พร้อมเบิกใช้งาน</span>
           </div>
           <div class="kpi-card kpi-stock-used">
-            <span class="kpi-label">📦 คงคลัง (เก่า)</span>
+            <span class="kpi-label">🟣 คงคลัง (เก่า)</span>
             <span class="kpi-value" id="kpiStockUsed">0</span>
             <span class="kpi-caption">ถอนคืน/ผ่านการใช้แล้ว</span>
           </div>
@@ -1000,6 +1013,10 @@
               </div>
             </div>
             <div class="chart-box">
+              <div id="chartEmptyNotice" class="empty-state" style="display: none;">
+                <p class="empty-state-title">ยังไม่มีข้อมูลกราฟ</p>
+                <p class="empty-state-sub">ลงบันทึกมิเตอร์เพื่อดูสัดส่วนรายการ</p>
+              </div>
               <canvas id="overviewChart" aria-label="กราฟสรุปประเภทมิเตอร์"></canvas>
             </div>
           </div>
@@ -1027,6 +1044,7 @@
                     <th>เลขอ่านล่าสุด</th>
                     <th>สถานะ</th>
                     <th>ผู้ปฏิบัติงาน</th>
+                    <th>วันที่อัปเดต</th>
                     <th>ดูประวัติ</th>
                   </tr>
                 </thead>
@@ -1043,14 +1061,14 @@
           <div class="section-header">
             <div>
               <h2 class="section-title">📦 ตรวจสอบมิเตอร์คงคลังพร้อมใช้ และเบิกใช้ด่วน</h2>
-              <p class="section-desc">ค้นหามิเตอร์ที่มีอยู่ในสต็อกคลังสะสม คัดกรองประเภท และสั่งทำรายการติดตั้งได้ทันที</p>
+              <p class="section-desc">ค้นหามิเตอร์ที่มีอยู่ในสต็อกคลังสะสม (ทั้งคลังใหม่และคลังเก่า) และสั่งทำรายการเบิกใช้ได้ทันที</p>
             </div>
           </div>
 
-          <div style="margin-bottom: var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-4);">
+          <div style="margin-bottom: var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: end;">
             <div style="flex: 1; min-width: 280px;">
-              <label for="searchStockMeter">🔎 ค้นหารหัส PEA มิเตอร์ในคลัง</label>
-              <input type="text" id="searchStockMeter" class="input" placeholder="ระบุหมายเลข PEA มิเตอร์..." autocomplete="off">
+              <label for="searchStockMeter">🔎 ค้นหารหัส PEA มิเตอร์ / คำอธิบายพัสดุ ในคลัง</label>
+              <input type="text" id="searchStockMeter" class="input" placeholder="ระบุหมายเลข PEA มิเตอร์ หรือชื่อพัสดุ..." autocomplete="off">
             </div>
             <div style="width: 240px;">
               <label for="filterStockType">🏷️ สภาพมิเตอร์คงคลัง</label>
@@ -1087,8 +1105,8 @@
         <div class="card" style="border: 2px solid var(--import-border); background: #f0fdfa;">
           <div class="section-header">
             <div>
-              <h2 class="section-title" style="color: #0d9488;">📥 นำเข้าสต็อคครั้งละหลายเครื่องด้วยไฟล์ Excel (.xlsx / .csv)</h2>
-              <p class="section-desc">อัปโหลดไฟล์ Excel เพื่อนำรหัสและรายละเอียดเครื่องทั้งหมดเข้าฐานข้อมูลในครั้งเดียว</p>
+              <h2 class="section-title" style="color: #0d9488;">📥 นำเข้ามิเตอร์ด้วยไฟล์ Excel (.xlsx / .xls / .csv)</h2>
+              <p class="section-desc">คุณสามารถอัปโหลดไฟล์ Excel เพื่อดึงรายละเอียดทั้งหมดเก็บเข้าคลังสินค้าได้อัตโนมัติ</p>
             </div>
           </div>
           
@@ -1097,9 +1115,9 @@
               <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="input" style="border-color: var(--import-border);">
             </div>
             <div style="flex: 2; font-size: 13px; color: var(--ink-secondary); line-height: 1.5;">
-              💡 <strong>โครงสร้างนำเข้าไฟล์:</strong><br>
-              • หมายเลข PEA (คอลัมน์ B) • คำอธิบายรหัสพัสดุ (คอลัมน์ E) • แอมป์/อัตราส่วน (คอลัมน์ G)<br>
-              • สภาพมิเตอร์วัดจาก แบทช์สต็อค (คอลัมน์ F: N = ใหม่, R = เก่า) และเลขอ่านถอนคืน (คอลัมน์ O)
+              📌 <strong>คำแนะนำคอลัมน์ Excel:</strong><br>
+              • รหัส PEA (คอลัมน์ B) • แอมป์/อัตราส่วน (คอลัมน์ G) • คำอธิบายรหัส (คอลัมน์ E)<br>
+              • ตรวจหา <strong>สภาพมิเตอร์ (ใหม่/เก่า)</strong> จาก แบทช์สต็อค (คอลัมน์ F: N = ใหม่, R = เก่า) และวันที่ถอนคืน (คอลัมน์ N)
             </div>
           </div>
           <div id="excelImportFeedback" class="inline-feedback"></div>
@@ -1108,163 +1126,185 @@
         <div class="card">
           <div class="section-header">
             <div>
-              <h2 class="section-title">✍️ แบบฟอร์มลงบันทึกข้อมูลมิเตอร์ไฟฟ้า (ป้อนมือ)</h2>
-              <p class="section-desc">กรอกข้อมูลเบิกใช้ นำเข้า หรือรายงานชำรุดรายเครื่องลงระบบอย่างถูกต้อง</p>
+              <h2 class="section-title">แบบฟอร์มลงบันทึกมิเตอร์ไฟฟ้า (คีย์มือ / เลือกเบิกจากคลัง)</h2>
+              <p class="section-desc">กรอกข้อมูลเบิกใช้ (จากคลังใหม่หรือคลังเก่า) นำเข้า หรือแจ้งชำรุด พร้อมดึงคำอธิบายพัสดุและแอมป์อัตโนมัติ</p>
             </div>
           </div>
 
           <form id="meterRecordForm" novalidate>
-            <!-- Smart parser textbox -->
+            <!-- Smart parser text box -->
             <div class="quick-parse-box">
               <div class="quick-parse-header">
-                <h3 class="quick-parse-title">⚡ วางข้อความยาวๆ เพื่อแยกวิเคราะห์คำลงช่องกรอกอัตโนมัติ</h3>
+                <h3 class="quick-parse-title">กรอกหรือวางข้อมูลยาวๆ เพื่อแยกข้อมูลลงฟอร์มอัตโนมัติ</h3>
               </div>
-              <textarea id="rawLongTextInput" class="textarea" style="min-height: 72px;" placeholder="ตัวอย่างวาง: PEA-67001234, เลขอ่าน 152.4, ผู้ใช้ไฟ CA-02001234, บริษัทผลิต..."></textarea>
-              <div style="margin-top: var(--space-2); display: flex; gap: var(--space-2);">
-                <button type="button" class="btn btn-primary btn-sm" id="parseRawDataBtn">⚡ แยกคำลงช่องกรอก</button>
-                <button type="button" class="btn btn-secondary btn-sm" id="clearRawDataBtn">🗑️ ล้างคำที่วาง</button>
+              <textarea id="rawLongTextInput" class="textarea" style="min-height: 76px;" placeholder="PEA-67001234, 124.5, CA-02001234, ตรวจสภาพมิเตอร์ชำรุด"></textarea>
+              <div style="margin-top: var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center;">
+                <button type="button" class="btn btn-primary btn-sm" id="parseRawDataBtn">⚡ แยกข้อมูลลงช่องกรอก</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="clearRawDataBtn">🗑️ ล้างข้อความที่วาง</button>
               </div>
-              <div id="parseRawFeedback" class="inline-feedback"></div>
+              <div id="parseRawFeedback" class="inline-feedback" role="status"></div>
             </div>
 
             <div class="form-group">
-              <label>ประเภทรายการการเดินระบบ <span class="req-star">*</span></label>
+              <label>ประเภทรายการ <span class="req-star">*</span></label>
               <div class="sign-type-grid">
                 <div class="sign-type-option">
                   <input type="radio" name="recordType" id="typeWithdraw" value="withdraw" checked>
                   <label class="sign-type-label" for="typeWithdraw">
                     <span class="sign-type-title">เบิกใช้</span>
-                    <span class="sign-type-sub">เบิกมิเตอร์จากคลังเพื่อไปติดตั้ง</span>
                   </label>
                 </div>
                 <div class="sign-type-option">
                   <input type="radio" name="recordType" id="typeImport" value="import">
                   <label class="sign-type-label" for="typeImport">
                     <span class="sign-type-title">นำเข้า</span>
-                    <span class="sign-type-sub">นำมิเตอร์ใหม่/รื้อถอนเข้าเก็บคลัง</span>
                   </label>
                 </div>
                 <div class="sign-type-option">
                   <input type="radio" name="recordType" id="typeDamage" value="damage">
                   <label class="sign-type-label" for="typeDamage">
                     <span class="sign-type-title">แจ้งชำรุด</span>
-                    <span class="sign-type-sub">รายงานมิเตอร์ขัดข้องเสียหาย</span>
                   </label>
                 </div>
               </div>
             </div>
 
-            <!-- METER CONDITION -->
-            <div class="form-group">
-              <label>สภาพมิเตอร์ปัจจุบัน <span class="req-star">*</span></label>
+            <!-- METER CONDITION / WAREHOUSE SOURCE -->
+            <div class="form-group" style="margin-top: var(--space-4);">
+              <label id="meterStatusSectionLabel">สภาพมิเตอร์ / เลือกคลังที่ต้องการเบิกใช้ <span class="req-star">*</span></label>
               <div class="sign-type-grid" style="grid-template-columns: 1fr 1fr;">
                 <div class="sign-type-option">
                   <input type="radio" name="meterStatus" id="statusNew" value="new" checked>
                   <label class="sign-type-label" for="statusNew">
                     <span class="sign-type-title" style="color: var(--new-color);">🟢 คงคลัง (ใหม่)</span>
-                    <span class="sign-type-sub">เครื่องใหม่แกะกล่อง ไม่เคยผ่านการติดตั้ง</span>
+                    <span class="sign-type-sub">มิเตอร์ใหม่แกะกล่อง ยังไม่เคยใช้งาน</span>
                   </label>
                 </div>
                 <div class="sign-type-option">
                   <input type="radio" name="meterStatus" id="statusUsed" value="used">
                   <label class="sign-type-label" for="statusUsed">
                     <span class="sign-type-title" style="color: var(--used-color);">🟣 คงคลัง (เก่า)</span>
-                    <span class="sign-type-sub">ถอนคืนหรือเดินสายระบบผ่านใช้งานมาแล้ว</span>
+                    <span class="sign-type-sub">มิเตอร์ถอนคืน ผ่านการใช้งานแล้ว</span>
                   </label>
                 </div>
               </div>
             </div>
 
+            <!-- QUICK STOCK PICKER FOR WITHDRAW -->
+            <div id="stockPickerGroup" class="form-group" style="background: var(--withdraw-bg); border: 1px solid var(--withdraw-border); padding: var(--space-4); border-radius: var(--radius); margin-top: var(--space-4);">
+              <div style="display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: end;">
+                <div style="width: 220px;">
+                  <label for="withdrawSourceFilter" style="color: var(--withdraw-color);">🏷️ กรองคลังที่จะเบิกใช้</label>
+                  <select id="withdrawSourceFilter" class="select" style="background: var(--surface);">
+                    <option value="all" selected>ทุกคลัง (คลังใหม่ + คลังเก่า)</option>
+                    <option value="new">🟢 เฉพาะคลังใหม่</option>
+                    <option value="used">🟣 เฉพาะคลังเก่า</option>
+                  </select>
+                </div>
+                <div style="flex: 1; min-width: 260px;">
+                  <label for="stockMeterSelect" style="color: var(--withdraw-color);">📦 เลือกเบิกมิเตอร์ที่มีในคลัง (ดึงคำอธิบายพัสดุ & แอมป์ อัตโนมัติ)</label>
+                  <select id="stockMeterSelect" class="select" style="background: var(--surface);">
+                    <option value="">-- เลือกมิเตอร์คงคลัง หรือพิมพ์รหัส PEA ด้านล่าง --</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-hint" style="color: #1e40af;">💡 เมื่อเลือกมิเตอร์จากรายการคลัง หรือพิมพ์รหัส PEA และคำอธิบายพัสดุที่มีอยู่แล้ว ระบบจะดึงข้อมูล คำอธิบายพัสดุ แอมป์ สภาพคลัง และเลขอ่านล่าสุดเข้ามาให้อัตโนมัติ และตัดสต็อกคลังทันทีเมื่อบันทึก</div>
+            </div>
+
             <div class="two-col-grid" style="margin-top: var(--space-4);">
               <div class="form-group">
-                <label>พนักงานผู้บันทึกระบบ (อิงตามบัญชีล็อกอิน)</label>
+                <label>ผู้บันทึกทำรายการ (ล็อคเฉพาะบัญชีคุณเท่านั้น)</label>
                 <div class="user-profile-highlight">
-                  <div class="user-profile-avatar" id="formAvatarIcon">?</div>
+                  <div class="user-profile-avatar" id="formAvatarIcon">U</div>
                   <div class="user-profile-info">
-                    <div class="user-profile-name" id="formUserName">-</div>
-                    <div class="user-profile-id-phone" id="formUserIdAndPhone">-</div>
+                    <div class="user-profile-name" id="formUserName">สมชาย สายฟ้า</div>
+                    <div class="user-profile-id-phone" id="formUserIdAndPhone">รหัสผู้ใช้: USR-001</div>
                   </div>
                 </div>
 
                 <div class="form-group" style="margin-top: var(--space-4);">
                   <label for="recordParcelDesc">คำอธิบายรหัสพัสดุ (ชื่อสินค้า/รุ่น)</label>
-                  <input type="text" id="recordParcelDesc" class="input" placeholder="เช่น METER SMART 3P 4W GPRS">
-                  <div class="field-hint">รายละเอียดรุ่นมิเตอร์ อิงตามตารางคลังสินค้า</div>
+                  <input type="text" id="recordParcelDesc" class="input" list="knownParcelDescList" placeholder="เช่น METER SMART 3P 4W GPRS (เลือกเพื่อดึงแอมป์อัตโนมัติ)" autocomplete="off">
+                  <datalist id="knownParcelDescList"></datalist>
                 </div>
 
                 <div class="form-group">
                   <label for="recordAmpRatio">แอมป์ / อัตราส่วนระบบ</label>
-                  <input type="text" id="recordAmpRatio" class="input" placeholder="เช่น 5(15) A. หรือ 5 A with CT">
-                  <div class="field-hint">ค่าพิกัดกระแสและขนาดพัสดุ</div>
+                  <input type="text" id="recordAmpRatio" class="input" list="knownAmpRatioList" placeholder="เช่น 5(15) A. หรือ 5 A with CT" autocomplete="off">
+                  <datalist id="knownAmpRatioList"></datalist>
                 </div>
               </div>
 
               <div>
                 <div class="form-group">
-                  <label for="recordMeterCode">หมายเลข PEA มิเตอร์ <span class="req-star">*</span></label>
-                  <input type="text" id="recordMeterCode" class="input" placeholder="ระบุเลขรหัสสินค้ามิเตอร์ เช่น PEA-670001" required>
-                  <div id="errMeterCode" class="field-error">กรุณาระบุหมายเลขรหัส PEA</div>
+                  <label for="recordMeterCode">PEA มิเตอร์ <span class="req-star">*</span></label>
+                  <input type="text" id="recordMeterCode" class="input" list="knownMeterCodeList" placeholder="ระบุหรือเลือกหมายเลข PEA มิเตอร์..." autocomplete="off" required>
+                  <datalist id="knownMeterCodeList"></datalist>
+                  <div id="autoFillMeterNotice" class="field-hint" style="color: var(--new-color); font-weight: 600; display: none;"></div>
+                  <div id="errMeterCode" class="field-error">กรุณากรอกหมายเลข PEA มิเตอร์</div>
                 </div>
 
                 <div class="form-group">
-                  <label for="recordMeterReading">เลขอ่านปัจจุบัน (หน่วย kWH) <span class="req-star">*</span></label>
-                  <input type="text" id="recordMeterReading" class="input" placeholder="ระบุเลขอ่านบนตัวเครื่อง" required>
+                  <label for="recordMeterReading">เลขอ่าน <span class="req-star">*</span></label>
+                  <input type="text" id="recordMeterReading" class="input" placeholder="ระบุเลขอ่านมิเตอร์ (หน่วย kWh)" inputmode="decimal" required>
                   <div id="errMeterReading" class="field-error">กรุณาระบุเลขอ่านของมิเตอร์</div>
                 </div>
 
                 <div class="form-group" id="customerNumberGroup">
                   <label for="recordCustomerNumber" id="recordCustomerNumberLabel">หมายเลขผู้ใช้ไฟ <span class="req-star">*</span></label>
-                  <input type="text" id="recordCustomerNumber" class="input" placeholder="ระบุเลข CA หมายเลขบัญชีผู้ใช้ไฟ" required>
+                  <input type="text" id="recordCustomerNumber" class="input" placeholder="ระบุหมายเลขผู้ใช้ไฟ เช่น CA-0200123456" required>
                   <div id="errCustomerNumber" class="field-error">กรุณาระบุหมายเลขผู้ใช้ไฟ</div>
                 </div>
 
                 <div class="form-group">
-                  <label for="recordDate">วันที่ทำรายการ <span class="req-star">*</span></label>
+                  <label for="recordDate">วันที่ลงบันทึก <span class="req-star">*</span></label>
                   <input type="date" id="recordDate" class="input" required>
+                  <div id="errRecordDate" class="field-error">กรุณาระบุวันที่ลงบันทึก</div>
                 </div>
               </div>
             </div>
 
-            <div class="form-group" style="margin-top: var(--space-3);">
-              <label for="recordNote" id="recordNoteLabel">หมายเหตุเพิ่มเติม / รายงานความชำรุดเสียหาย</label>
-              <textarea id="recordNote" class="textarea" placeholder="เขียนรายละเอียดหมายเหตุ เช่น รื้อถอนสายถาวร, สภาพชำรุดเสียหายเป็นต้น"></textarea>
+            <div class="form-group" style="margin-top: var(--space-4);">
+              <label for="recordNote" id="recordNoteLabel">หมายเหตุ / อาการชำรุด</label>
+              <textarea id="recordNote" class="textarea" placeholder="ระบุอาการชำรุดหรือหมายเหตุเพิ่มเติม..."></textarea>
+              <div id="errRecordNote" class="field-error">กรุณาระบุอาการชำรุด</div>
             </div>
 
             <div class="form-group">
-              <label>แนบรูปภาพมิเตอร์หน้างาน (ถ้ามี)</label>
+              <label for="recordPhoto">รูปภาพมิเตอร์ประกอบ (ถ้ามี)</label>
               <div class="photo-upload-area">
-                <input type="file" id="recordPhoto" accept="image/*" class="input" style="max-width: 320px;">
+                <input type="file" id="recordPhoto" accept="image/*" class="input" style="max-width: 380px;">
                 <div id="photoPreviewWrap" class="photo-preview-wrap">
                   <img id="photoPreviewImg" src="" alt="preview">
-                  <div style="font-size: 13px;" id="photoFileName"></div>
-                  <button type="button" class="btn btn-secondary btn-sm" id="removePhotoBtn">ลบรูปภาพ</button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="removePhotoBtn" style="margin-top: 4px;">ลบรูปภาพ</button>
                 </div>
               </div>
             </div>
 
             <div style="margin-top: var(--space-6); display: flex; gap: var(--space-3);">
-              <button type="submit" class="btn btn-primary" id="submitRecordBtn">💾 ลงบันทึกประวัติติดตั้ง</button>
-              <button type="button" class="btn btn-secondary" id="resetRecordFormBtn">ล้างข้อมูลฟอร์ม</button>
+              <button type="submit" class="btn btn-primary" id="submitRecordBtn">บันทึกข้อมูลมิเตอร์</button>
+              <button type="button" class="btn btn-secondary" id="resetRecordFormBtn">ล้างฟอร์ม</button>
             </div>
+
             <div id="recordFeedback" class="inline-feedback"></div>
           </form>
         </div>
       </section>
 
-      <!-- TAB 4: HISTORICAL RECORDS -->
+      <!-- TAB 5: TRANSACTION RECORDS HISTORY -->
       <section id="view-history" class="view-panel">
         <div class="card">
           <div class="section-header">
             <div>
-              <h2 class="section-title">📜 ประวัติการลงทะเบียนและบันทึกข้อมูลมิเตอร์ทั้งหมด</h2>
-              <p class="section-desc">รวบรวมประวัติการเข้างานเบิกจ่ายคลังและเดินสายติดตั้งของพนักงานทุกคน</p>
+              <h2 class="section-title">ประวัติการลงบันทึกมิเตอร์ทั้งหมด</h2>
+              <p class="section-desc">ตรวจสอบรายการเบิกใช้ นำเข้า และแจ้งชำรุด พร้อมลบรายการซ้ำซ้อน</p>
             </div>
-            <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
-              <button type="button" class="btn btn-danger btn-sm admin-only-col" id="bulkDeleteRecordsBtn" style="display: none;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-danger btn-sm admin-only-btn" id="bulkDeleteRecordsBtn" style="display: none; font-weight: 700; background: var(--damage-color); color: white;">
                 🗑️ ลบรายการที่เลือก
               </button>
-              <button type="button" class="btn btn-secondary btn-sm admin-only-col" id="adminRegisterUserBtn" style="display: none;">
-                👤 ลงทะเบียนให้พนักงาน
+              <button type="button" class="btn btn-secondary btn-sm admin-only-btn" id="adminRegisterUserBtn" style="display: none;">
+                👤 สมัครบัญชีให้พนักงาน
               </button>
             </div>
           </div>
@@ -1272,31 +1312,27 @@
           <!-- Filters -->
           <div class="filter-panel">
             <div class="user-id-search-highlight">
-              <label for="filterUserId">กรองรหัสพนักงานผู้บันทึก</label>
-              <input type="text" id="filterUserId" class="input" list="registeredUserIdList" placeholder="เช่น ADM-01 หรือ USR-001">
+              <label for="filterUserId">ค้นหาเฉพาะรหัสผู้ใช้ (User ID)</label>
+              <input type="text" id="filterUserId" class="input" list="registeredUserIdList" placeholder="ระบุรหัสผู้ใช้ เช่น USR-001" autocomplete="off">
               <datalist id="registeredUserIdList"></datalist>
             </div>
-
             <div>
-              <label for="filterKeyword">ค้นหาคำสำคัญ</label>
-              <input type="text" id="filterKeyword" class="input" placeholder="ค้นหา PEA, CA, ชื่อรุ่น, ชื่อคนบันทึก...">
+              <label for="filterKeyword">ค้นหาทั่วไป</label>
+              <input type="text" id="filterKeyword" class="input" placeholder="พิมพ์ PEA มิเตอร์ เลขอ่าน ผู้ใช้ไฟ..." autocomplete="off">
             </div>
-
             <div>
-              <label for="filterType">ประเภทงานเดินสาย</label>
+              <label for="filterType">ประเภทรายการ</label>
               <select id="filterType" class="select">
                 <option value="all">ทั้งหมด</option>
-                <option value="import">นำเข้าคลัง</option>
-                <option value="withdraw">เบิกใช้งาน</option>
+                <option value="import">นำเข้า</option>
+                <option value="withdraw">เบิกใช้</option>
                 <option value="damage">แจ้งชำรุด</option>
               </select>
             </div>
-
             <div>
-              <label for="filterDate">กรองตามวันที่บันทึก</label>
+              <label for="filterDate">กรองตามวันที่</label>
               <input type="date" id="filterDate" class="input">
             </div>
-
             <div>
               <button type="button" class="btn btn-secondary" id="clearFilterBtn" style="width: 100%;">ล้างตัวกรอง</button>
             </div>
@@ -1307,15 +1343,17 @@
               <thead>
                 <tr>
                   <th class="admin-only-col" style="display: none;"><input type="checkbox" id="selectAllRecords" title="เลือกทั้งหมด"></th>
-                  <th>วันที่ทำรายการ</th>
-                  <th>ประเภทงาน</th>
-                  <th>สภาพเครื่อง</th>
+                  <th>วันที่บันทึก</th>
+                  <th>ประเภทรายการ</th>
+                  <th>สภาพมิเตอร์</th>
                   <th>PEA มิเตอร์</th>
                   <th>คำอธิบายพัสดุ</th>
                   <th>แอมป์/อัตราส่วน</th>
-                  <th>เลขอ่าน kWH</th>
-                  <th>หมายเลขผู้ใช้ไฟ CA</th>
-                  <th>ผู้บันทึกระบบ</th>
+                  <th>เลขอ่าน</th>
+                  <th>หมายเลขผู้ใช้ไฟ</th>
+                  <th>รหัสผู้ใช้</th>
+                  <th>ชื่อผู้บันทึก</th>
+                  <th>หมายเหตุ / อาการชำรุด</th>
                   <th>รูปภาพ</th>
                   <th class="admin-only-col" style="display: none;">การจัดการ (Admin)</th>
                 </tr>
@@ -1326,7 +1364,7 @@
         </div>
       </section>
 
-      <!-- TAB 5: STAFF/EMPLOYEE MANAGEMENT -->
+      <!-- TAB 6: EMPLOYEE MANAGEMENT -->
       <section id="view-employees" class="view-panel">
         <div class="two-col-grid">
           <div class="card">
@@ -1377,36 +1415,35 @@
           </div>
         </div>
       </section>
-
     </main>
   </div>
 
-  <!-- POPUP 1: METER TRANSACTION AUDIT TRAIL MODAL -->
+  <!-- METER DETAILS HISTORY TRAIL MODAL -->
   <div id="meterDetailsModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="meterDetailsTitle">
     <div class="modal-card" style="max-width: 840px; overflow-y: auto; max-height: 90vh;">
       <div class="modal-header">
-        <h3 class="modal-title" id="meterDetailsTitle">📋 รายละเอียดประวัติทั้งหมดรายมิเตอร์</h3>
+        <h3 class="modal-title" id="meterDetailsTitle">📋 ประวัติการทำรายการของมิเตอร์</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeMeterDetailsBtn">ปิด</button>
       </div>
       <div style="padding: var(--space-2) 0;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-4); background: var(--surface-subtle); padding: var(--space-3); border-radius: var(--radius); border: 1px solid var(--border);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-4); background: var(--surface-subtle); padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border);">
           <div><strong>PEA มิเตอร์:</strong> <span id="detailMeterCode" class="code-pill"></span></div>
           <div><strong>สภาพปัจจุบัน:</strong> <span id="detailMeterStatus"></span></div>
           <div><strong>สถานะล่าสุด:</strong> <span id="detailMeterType"></span></div>
           <div><strong>เลขอ่านล่าสุด:</strong> <span id="detailMeterReading" class="code-pill"></span></div>
         </div>
         
-        <h4 style="margin: 0 0 var(--space-2); font-size: 14.5px; font-weight: 800; color: var(--brand);">📜 ประวัติการรื้อถอน/ติดตั้งสายงานทั้งหมด</h4>
+        <h4 style="margin: 0 0 var(--space-2); font-size: 14.5px; font-weight: 700; color: var(--brand);">📜 ประวัติการรื้อถอน/ติดตั้งสายงานทั้งหมด</h4>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>วันที่</th>
+                <th>วันที่ทำรายการ</th>
                 <th>ประเภทรายการ</th>
                 <th>เลขอ่าน</th>
                 <th>คำอธิบายพัสดุ</th>
                 <th>ขนาดแอมป์</th>
-                <th>หมายเลขผู้ใช้ไฟ</th>
+                <th>หมายเลขผู้ใช้ไฟ CA</th>
                 <th>ผู้บันทึก</th>
                 <th>รูปภาพ</th>
                 <th>หมายเหตุ / รายละเอียด</th>
@@ -1419,141 +1456,118 @@
     </div>
   </div>
 
-  <!-- POPUP 2: FIREBASE API CONFIGURATION SETTING MODAL -->
-  <div id="firebaseConfigModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="apiConfigTitle">
-    <div class="modal-card" style="max-width: 480px;">
-      <div class="modal-header">
-        <h3 class="modal-title" id="apiConfigTitle">⚙️ ตั้งค่าสิทธิ์ความปลอดภัย Firebase SDK</h3>
-        <button type="button" class="btn btn-secondary btn-sm" id="closeFirebaseModalBtn">ปิด</button>
-      </div>
-      <form id="firebaseConfigForm">
-        <div style="margin-bottom: var(--space-4); font-size: 13.5px; color: var(--muted); line-height: 1.5;">
-          ระบุ Firebase API Key จริงเพื่อเชื่อมต่อเครือข่าย Firebase Firestore ซิงก์ประวัติมิเตอร์แบบ 2-Way ข้ามอุปกรณ์ทั้งหมด
-        </div>
-
-        <div class="form-group" style="margin-bottom: var(--space-4);">
-          <label for="firebaseApiKeyInput">Firebase API Key <span class="req-star">*</span></label>
-          <input type="text" id="firebaseApiKeyInput" class="input" placeholder="ระบุ API Key เช่น AIzaSy..." required>
-        </div>
-
-        <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
-          <button type="button" class="btn btn-secondary" id="testFirebaseConnectionBtn">⚡ ตรวจสอบการเชื่อมต่อ</button>
-          <button type="submit" class="btn btn-primary" id="saveAndConnectBtn">💾 บันทึกสิทธิ์เชื่อมต่อ</button>
-        </div>
-        <div id="firebaseConnectionFeedback" class="inline-feedback"></div>
-      </form>
-    </div>
-  </div>
-
-  <!-- POPUP 3: ADMIN SECURITY SETTINGS MODAL -->
+  <!-- ADMIN SECURITY SETTINGS MODAL -->
   <div id="securitySettingsModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="securityModalTitle">
     <div class="modal-card" style="max-width: 480px;">
       <div class="modal-header">
-        <h3 class="modal-title" id="securityModalTitle">🔐 ตั้งค่ารหัสผ่านความปลอดภัยผู้ดูแลระบบ</h3>
+        <h3 class="modal-title" id="securityModalTitle">🔐 ตั้งค่าความปลอดภัยผู้ดูแลระบบ</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeSecurityModalBtn">ปิด</button>
       </div>
-      <form id="changePasscodeForm" novalidate>
-        <div style="margin-bottom: var(--space-4); font-size: 13.5px; color: var(--muted); line-height: 1.5;">
-          แก้ไข **รหัสผ่านยืนยันสิทธิ์ผู้ดูแลระบบ (Admin Passcode)** ตัวใหม่ สำหรับควบคุมพนักงานที่ต้องการสิทธิ์ Admin
-        </div>
-
-        <div class="form-group">
-          <label for="currentAdminPasscode">รหัสผ่านปัจจุบัน <span class="req-star">*</span></label>
-          <input type="password" id="currentAdminPasscode" class="input" placeholder="กรอกรหัสผ่านเดิม" required>
-          <div id="errCurrentPasscode" class="field-error">รหัสผ่านปัจจุบันไม่ถูกต้อง</div>
-        </div>
-
-        <div class="form-group">
-          <label for="newAdminPasscode">รหัสผ่านใหม่ <span class="req-star">*</span></label>
-          <input type="text" id="newAdminPasscode" class="input" placeholder="ตั้งรหัสผ่านความปลอดภัยใหม่" required>
-          <div id="errNewPasscode" class="field-error">รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร</div>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="width: 100%;">💾 บันทึกการเปลี่ยนแปลง</button>
-        <div id="passcodeFeedback" class="inline-feedback"></div>
-      </form>
+      <div style="padding: var(--space-2) 0;">
+        <form id="changePasscodeForm" novalidate>
+          <div style="margin-bottom: var(--space-4); font-size: 13.5px; color: var(--muted); line-height: 1.5;">
+            คุณสามารถแก้ไข <strong>รหัสผ่านยืนยันสิทธิ์ผู้ดูแลระบบ (Admin Passcode)</strong> ตัวใหม่ได้ที่นี่ เพื่อความปลอดภัยในการควบคุมระบบ
+          </div>
+          <div class="form-group" style="margin-bottom: var(--space-3);">
+            <label for="currentAdminPasscode">รหัสผ่านปัจจุบัน <span class="req-star">*</span></label>
+            <input type="password" id="currentAdminPasscode" class="input" placeholder="กรอกรหัสผ่านปัจจุบัน" required>
+            <div id="errCurrentPasscode" class="field-error">รหัสผ่านปัจจุบันไม่ถูกต้อง</div>
+          </div>
+          <div class="form-group" style="margin-bottom: var(--space-4);">
+            <label for="newAdminPasscode">รหัสผ่านใหม่ <span class="req-star">*</span></label>
+            <input type="text" id="newAdminPasscode" class="input" placeholder="ตั้งรหัสผ่านใหม่ (อย่างน้อย 4 ตัว)" required>
+            <div id="errNewPasscode" class="field-error">รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร</div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            💾 บันทึกรหัสผ่านใหม่
+          </button>
+          <div id="passcodeFeedback" class="inline-feedback" role="status"></div>
+        </form>
+      </div>
     </div>
   </div>
 
-  <!-- POPUP 4: ADMIN REGISTER USER MODAL -->
+  <!-- ADMIN REGISTER USER MODAL -->
   <div id="adminRegisterUserModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="adminRegModalTitle">
     <div class="modal-card" style="max-width: 480px;">
       <div class="modal-header">
-        <h3 class="modal-title" id="adminRegModalTitle">👤 สมัครบัญชีผู้ใช้งานใหม่ให้พนักงาน</h3>
+        <h3 class="modal-title" id="adminRegModalTitle">👤 สมัครบัญชีผู้ใช้งานใหม่ (สิทธิ์ Admin)</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeAdminRegModalBtn">ปิด</button>
       </div>
-      <form id="adminRegUserForm" novalidate>
-        <div class="form-group">
-          <label for="adminRegUserName">ชื่อ - นามสกุล พนักงาน <span class="req-star">*</span></label>
-          <input type="text" id="adminRegUserName" class="input" placeholder="ระบุ เช่น นายสมหวัง พลังแรง" required>
-          <div id="errAdminRegName" class="field-error">กรุณากรอกชื่อพนักงาน</div>
-        </div>
-
-        <div class="form-group">
-          <label for="adminRegUserPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
-          <input type="tel" id="adminRegUserPhone" class="input" placeholder="เช่น 082-111-2222" required>
-          <div id="errAdminRegPhone" class="field-error">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง</div>
-        </div>
-
-        <div class="form-group">
-          <label for="adminRegUserRole">สิทธิ์ระดับผู้ใช้พนักงาน <span class="req-star">*</span></label>
-          <select id="adminRegUserRole" class="select" required>
-            <option value="staff" selected>ผู้ใช้ทั่วไป (Staff - ลงบันทึกได้อย่างเดียว)</option>
-            <option value="admin">ผู้ดูแลระบบ (Admin - แก้ไขและลบได้)</option>
-          </select>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="width: 100%;">👤 สมัครบัญชีพนักงานและบันทึก</button>
-        <div id="adminRegFeedback" class="inline-feedback"></div>
-      </form>
+      <div style="padding: var(--space-2) 0;">
+        <form id="adminRegUserForm" novalidate>
+          <div style="margin-bottom: var(--space-4); font-size: 13.5px; color: var(--muted); line-height: 1.5;">
+            คุณสามารถเพิ่มและสมัครบัญชีผู้ใช้งานใหม่ให้กับพนักงานคนอื่นๆ เพื่อร่วมลงบันทึกข้อมูลมิเตอร์ได้ที่นี่โดยตรงค่ะ
+          </div>
+          <div class="form-group" style="margin-bottom: var(--space-3);">
+            <label for="adminRegUserName">ชื่อ - นามสกุล พนักงาน <span class="req-star">*</span></label>
+            <input type="text" id="adminRegUserName" class="input" placeholder="เช่น นายสมศักดิ์ รักดี" required>
+            <div id="errAdminRegName" class="field-error">กรุณากรอกชื่อผู้บันทึก</div>
+          </div>
+          <div class="form-group" style="margin-bottom: var(--space-3);">
+            <label for="adminRegUserPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
+            <input type="tel" id="adminRegUserPhone" class="input" placeholder="เช่น 082-111-2222" required>
+            <div id="errAdminRegPhone" class="field-error">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (อย่างน้อย 9 หลัก)</div>
+          </div>
+          <div class="form-group" style="margin-bottom: var(--space-4);">
+            <label for="adminRegUserRole">สิทธิ์การใช้งานของพนักงาน <span class="req-star">*</span></label>
+            <select id="adminRegUserRole" class="select" required>
+              <option value="staff" selected>ผู้ใช้ทั่วไป (Staff - ลงบันทึกได้อย่างเดียว)</option>
+              <option value="admin">ผู้ดูแลระบบ (Admin - สามารถแก้ไข/ลบข้อมูลได้)</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            👤 สมัครบัญชีและสร้างรหัสผู้ใช้ทันที
+          </button>
+          <div id="adminRegFeedback" class="inline-feedback" role="status"></div>
+        </form>
+      </div>
     </div>
   </div>
 
-  <!-- POPUP 5: ADMIN EDIT EMPLOYEE MODAL -->
+  <!-- ADMIN EDIT EMPLOYEE MODAL -->
   <div id="editEmployeeModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="editEmpModalTitle">
     <div class="modal-card" style="max-width: 480px;">
       <div class="modal-header">
-        <h3 class="modal-title" id="editEmpModalTitle">✏️ แก้ไขข้อมูลพนักงาน (Admin Only)</h3>
+        <h3 class="modal-title" id="editEmpModalTitle">✏️ แก้ไขข้อมูลพนักงาน (ผู้ดูแลระบบ)</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeEditEmpModalBtn">ยกเลิก</button>
       </div>
-      <form id="editEmployeeForm" novalidate>
-        <input type="hidden" id="editEmployeeId">
-
-        <div class="form-group">
-          <label for="editEmpName">ชื่อ - นามสกุล พนักงาน <span class="req-star">*</span></label>
-          <input type="text" id="editEmpName" class="input" required>
-        </div>
-
-        <div class="form-group">
-          <label for="editEmpPhone">เบอร์โทรศัพท์ติดต่อ <span class="req-star">*</span></label>
-          <input type="tel" id="editEmpPhone" class="input" required>
-        </div>
-
-        <div class="form-group">
-          <label for="editEmpRole">ระดับสิทธิ์ระดับการเข้างาน <span class="req-star">*</span></label>
-          <select id="editEmpRole" class="select" required>
-            <option value="staff">ผู้ใช้ทั่วไป (Staff)</option>
-            <option value="admin">ผู้ดูแลระบบสูงสุด (Admin)</option>
-          </select>
-        </div>
-
-        <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
-          <button type="button" class="btn btn-secondary" id="cancelEditEmpBtn">ยกเลิก</button>
-          <button type="submit" class="btn btn-primary">💾 ยืนยันบันทึกการแก้ไข</button>
-        </div>
-      </form>
+      <div style="padding: var(--space-2) 0;">
+        <form id="editEmployeeForm" novalidate>
+          <input type="hidden" id="editEmployeeId">
+          <div class="form-group" style="margin-bottom: var(--space-3);">
+            <label for="editEmpName">ชื่อ - นามสกุล พนักงาน <span class="req-star">*</span></label>
+            <input type="text" id="editEmpName" class="input" required>
+          </div>
+          <div class="form-group" style="margin-bottom: var(--space-3);">
+            <label for="editEmpPhone">เบอร์โทรศัพท์ <span class="req-star">*</span></label>
+            <input type="tel" id="editEmpPhone" class="input" required>
+          </div>
+          <div class="form-group" style="margin-bottom: var(--space-4);">
+            <label for="editEmpRole">ระดับสิทธิ์พนักงาน <span class="req-star">*</span></label>
+            <select id="editEmpRole" class="select" required>
+              <option value="staff">ผู้ใช้ทั่วไป (Staff - ลงบันทึกได้อย่างเดียว)</option>
+              <option value="admin">ผู้ดูแลระบบ (Admin - สามารถแก้ไข/ลบข้อมูลได้)</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
+            <button type="button" class="btn btn-secondary" id="cancelEditEmpBtn">ยกเลิก</button>
+            <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
-  <!-- POPUP 6: EXCEL IMPORT PREVIEW MODAL -->
+  <!-- EXCEL IMPORT PREVIEW MODAL -->
   <div id="excelPreviewModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="excelPreviewTitle">
-    <div class="modal-card" style="max-width: 900px; overflow-y: auto; max-height: 90vh;">
+    <div class="modal-card" style="max-width: 860px; overflow-y: auto; max-height: 90vh;">
       <div class="modal-header">
-        <h3 class="modal-title" id="excelPreviewTitle">📋 ตรวจสอบและประมวลผลข้อมูลในไฟล์ Excel ก่อนบันทึกจริง</h3>
+        <h3 class="modal-title" id="excelPreviewTitle">📋 ตรวจสอบข้อมูลก่อนการนำเข้าคลังมิเตอร์</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeExcelPreviewBtn">ยกเลิก</button>
       </div>
       <div style="padding: var(--space-2) 0;">
-        <p style="font-size: 13.5px; color: var(--muted); margin-bottom: var(--space-4);">ระบบตรวจพบพัสดุและมิเตอร์ไฟฟ้าทั้งหมดในคลังสินค้าตามรายงานด้านล่าง ตรวจเช็คข้อมูลทั้งหมดก่อนทำการกดบันทึกเข้าสู่ระบบฐานข้อมูลประวัติคลังส่วนกลาง</p>
+        <p style="font-size: 13.5px; color: var(--muted);">ระบบได้อ่านไฟล์สำเร็จตามที่กำหนดไว้ ตรวจสอบข้อมูลด้านล่างให้ถูกต้องก่อนกดเซฟบันทึกลงสู่ระบบ</p>
         
         <div class="table-wrap" style="max-height: 480px; overflow-y: auto;">
           <table>
@@ -1564,146 +1578,158 @@
                 <th>สภาพมิเตอร์</th>
                 <th>คำอธิบายรหัสพัสดุ</th>
                 <th>แอมป์/อัตราส่วน</th>
-                <th>เลขอ่านถอนคืน</th>
+                <th>เลขอ่านล่าสุด</th>
                 <th>วันที่ติดตั้ง</th>
                 <th>วันที่ถอนคืน</th>
-                <th>สาเหตุรื้อถอน</th>
+                <th>สาเหตุถอนคืน</th>
               </tr>
             </thead>
             <tbody id="excelPreviewTableBody"></tbody>
           </table>
         </div>
 
-        <div style="margin-top: var(--space-4); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3);">
-          <span style="font-size: 15px; font-weight: 800; color: var(--brand);" id="excelParsedCountText">พบข้อมูลมิเตอร์ทั้งหมด: 0 เครื่อง</span>
+        <div style="margin-top: var(--space-4); display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 14.5px; font-weight: 700; color: var(--brand);" id="excelParsedCountText">พบมิเตอร์ทั้งหมด: 0 ลูก</span>
           <div style="display: flex; gap: var(--space-2);">
             <button type="button" class="btn btn-secondary" id="cancelExcelImportBtn">ยกเลิก</button>
-            <button type="button" class="btn btn-primary" id="confirmExcelImportBtn" style="background: var(--import-color);">📥 ยืนยันบันทึกนำเข้าสต็อคทั้งหมด</button>
+            <button type="button" class="btn btn-primary" id="confirmExcelImportBtn" style="background: var(--import-color);">💾 ยืนยันนำเข้าข้อมูลทั้งหมด</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- POPUP 7: METER RECORD EDIT MODAL (ADMIN ONLY) -->
+  <!-- EDIT RECORD MODAL (ADMIN ONLY) -->
   <div id="editRecordModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
     <div class="modal-card" style="max-width: 680px; overflow-y: auto; max-height: 90vh;">
       <div class="modal-header">
-        <h3 class="modal-title" id="editModalTitle">✏️ แก้ไขบันทึกรายละเอียดมิเตอร์ไฟฟ้า (Admin Only)</h3>
+        <h3 class="modal-title" id="editModalTitle">✏️ แก้ไขข้อมูลมิเตอร์ไฟฟ้า (ผู้ดูแลระบบ)</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeEditModalBtn">ยกเลิก</button>
       </div>
-      <form id="editRecordForm" novalidate>
-        <input type="hidden" id="editRecordId">
-        
-        <div class="form-group" style="margin-bottom: var(--space-4);">
-          <label>ประเภทรายการ <span class="req-star">*</span></label>
-          <div class="sign-type-grid">
-            <div class="sign-type-option">
-              <input type="radio" name="editRecordType" id="editTypeWithdraw" value="withdraw">
-              <label class="sign-type-label" for="editTypeWithdraw" style="padding: 8px var(--space-3);">
-                <span class="sign-type-title" style="font-size: 14px;">เบิกใช้</span>
-              </label>
-            </div>
-            <div class="sign-type-option">
-              <input type="radio" name="editRecordType" id="editTypeImport" value="import">
-              <label class="sign-type-label" for="editTypeImport" style="padding: 8px var(--space-3);">
-                <span class="sign-type-title" style="font-size: 14px;">นำเข้า</span>
-              </label>
-            </div>
-            <div class="sign-type-option">
-              <input type="radio" name="editRecordType" id="editTypeDamage" value="damage">
-              <label class="sign-type-label" for="editTypeDamage" style="padding: 8px var(--space-3);">
-                <span class="sign-type-title" style="font-size: 14px;">แจ้งชำรุด</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group" style="margin-bottom: var(--space-4);">
-          <label>สภาพมิเตอร์ <span class="req-star">*</span></label>
-          <div class="sign-type-grid" style="grid-template-columns: 1fr 1fr;">
-            <div class="sign-type-option">
-              <input type="radio" name="editMeterStatus" id="editStatusNew" value="new">
-              <label class="sign-type-label" for="editStatusNew" style="padding: 8px var(--space-3);">
-                <span class="sign-type-title" style="font-size: 14px; color: var(--import-color);">🟢 คงคลัง (ใหม่)</span>
-              </label>
-            </div>
-            <div class="sign-type-option">
-              <input type="radio" name="editMeterStatus" id="editStatusUsed" value="used">
-              <label class="sign-type-label" for="editStatusUsed" style="padding: 8px var(--space-3);">
-                <span class="sign-type-title" style="font-size: 14px; color: var(--used-color);">🟣 คงคลัง (เก่า)</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="two-col-grid">
-          <div>
-            <div class="form-group">
-              <label for="editMeterCode">PEA มิเตอร์ <span class="req-star">*</span></label>
-              <input type="text" id="editMeterCode" class="input" required>
-            </div>
-
-            <div class="form-group">
-              <label for="editMeterReading">เลขอ่านปัจจุบัน <span class="req-star">*</span></label>
-              <input type="text" id="editMeterReading" class="input" required>
-            </div>
-
-            <div class="form-group">
-              <label for="editCustomerNumber" id="editCustomerNumberLabel">หมายเลขผู้ใช้ไฟ CA <span class="req-star">*</span></label>
-              <input type="text" id="editCustomerNumber" class="input" required>
+      <div style="padding: var(--space-3) 0;">
+        <form id="editRecordForm" novalidate>
+          <input type="hidden" id="editRecordId">
+          
+          <div class="form-group" style="margin-bottom: var(--space-4);">
+            <label>ประเภทรายการ <span class="req-star">*</span></label>
+            <div class="sign-type-grid">
+              <div class="sign-type-option">
+                <input type="radio" name="editRecordType" id="editTypeWithdraw" value="withdraw">
+                <label class="sign-type-label" for="editTypeWithdraw" style="padding: 8px var(--space-3);">
+                  <span class="sign-type-title" style="font-size: 14px;">เบิกใช้</span>
+                </label>
+              </div>
+              <div class="sign-type-option">
+                <input type="radio" name="editRecordType" id="editTypeImport" value="import">
+                <label class="sign-type-label" for="editTypeImport" style="padding: 8px var(--space-3);">
+                  <span class="sign-type-title" style="font-size: 14px;">นำเข้า</span>
+                </label>
+              </div>
+              <div class="sign-type-option">
+                <input type="radio" name="editRecordType" id="editTypeDamage" value="damage">
+                <label class="sign-type-label" for="editTypeDamage" style="padding: 8px var(--space-3);">
+                  <span class="sign-type-title" style="font-size: 14px;">แจ้งชำรุด</span>
+                </label>
+              </div>
             </div>
           </div>
 
-          <div>
-            <div class="form-group">
-              <label for="editParcelDesc">คำอธิบายรหัสพัสดุ</label>
-              <input type="text" id="editParcelDesc" class="input">
-            </div>
-
-            <div class="form-group">
-              <label for="editAmpRatio">แอมป์/อัตราส่วน</label>
-              <input type="text" id="editAmpRatio" class="input">
-            </div>
-
-            <div class="form-group">
-              <label for="editDate">วันที่ทำรายการ <span class="req-star">*</span></label>
-              <input type="date" id="editDate" class="input" required>
+          <!-- EDIT METER CONDITION -->
+          <div class="form-group" style="margin-bottom: var(--space-4);">
+            <label>สภาพมิเตอร์ <span class="req-star">*</span></label>
+            <div class="sign-type-grid" style="grid-template-columns: 1fr 1fr;">
+              <div class="sign-type-option">
+                <input type="radio" name="editMeterStatus" id="editStatusNew" value="new">
+                <label class="sign-type-label" for="editStatusNew" style="padding: 8px var(--space-3);">
+                  <span class="sign-type-title" style="font-size: 14px; color: var(--new-color);">🟢 คงคลัง (ใหม่)</span>
+                </label>
+              </div>
+              <div class="sign-type-option">
+                <input type="radio" name="editMeterStatus" id="editStatusUsed" value="used">
+                <label class="sign-type-label" for="editStatusUsed" style="padding: 8px var(--space-3);">
+                  <span class="sign-type-title" style="font-size: 14px; color: var(--used-color);">🟣 คงคลัง (เก่า)</span>
+                </label>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="editNote" id="editNoteLabel">หมายเหตุ / อาการขำรุดเสียหาย</label>
-          <textarea id="editNote" class="textarea"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="editPhoto">ปรับเปลี่ยนภาพถ่ายบันทึกการทำงาน</label>
-          <input type="file" id="editPhoto" accept="image/*" class="input">
-          <div id="editPhotoPreviewWrap" style="margin-top: 10px; display: none; align-items: center; gap: 10px;">
-            <img id="editPhotoPreviewImg" src="" alt="รูปภาพมิเตอร์" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);">
-            <button type="button" class="btn btn-secondary btn-sm" id="removeEditPhotoBtn">ลบรูปภาพปัจจุบัน</button>
+          <div class="two-col-grid">
+            <div>
+              <div class="form-group">
+                <label for="editMeterCode">PEA มิเตอร์ <span class="req-star">*</span></label>
+                <input type="text" id="editMeterCode" class="input" list="knownMeterCodeList" required>
+              </div>
+              <div class="form-group">
+                <label for="editMeterReading">เลขอ่าน <span class="req-star">*</span></label>
+                <input type="text" id="editMeterReading" class="input" required>
+              </div>
+              <div class="form-group">
+                <label for="editCustomerNumber" id="editCustomerNumberLabel">หมายเลขผู้ใช้ไฟ <span class="req-star">*</span></label>
+                <input type="text" id="editCustomerNumber" class="input" required>
+              </div>
+            </div>
+            <div>
+              <div class="form-group">
+                <label for="editParcelDesc">คำอธิบายรหัสพัสดุ</label>
+                <input type="text" id="editParcelDesc" class="input" list="knownParcelDescList">
+              </div>
+              <div class="form-group">
+                <label for="editAmpRatio">แอมป์ / อัตราส่วน</label>
+                <input type="text" id="editAmpRatio" class="input" list="knownAmpRatioList">
+              </div>
+              <div class="form-group">
+                <label for="editDate">วันที่บันทึก <span class="req-star">*</span></label>
+                <input type="date" id="editDate" class="input" required>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
-          <button type="button" class="btn btn-secondary" id="cancelEditBtn">ยกเลิก</button>
-          <button type="submit" class="btn btn-primary">💾 ยืนยันบันทึกการแก้ไข</button>
-        </div>
-      </form>
+          <div class="form-group">
+            <label for="editNote" id="editNoteLabel">หมายเหตุ / รายละเอียดหากมิเตอร์ชำรุด</label>
+            <textarea id="editNote" class="textarea"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="editPhoto">เปลี่ยนรูปภาพมิเตอร์</label>
+            <input type="file" id="editPhoto" accept="image/*" class="input">
+            <div id="editPhotoPreviewWrap" style="margin-top: 10px; display: none; align-items: center; gap: 10px;">
+              <img id="editPhotoPreviewImg" src="" alt="รูปภาพมิเตอร์" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border);">
+              <button type="button" class="btn btn-secondary btn-sm" id="removeEditPhotoBtn">ลบรูปภาพปัจจุบัน</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
+            <button type="button" class="btn btn-secondary" id="cancelEditBtn">ยกเลิก</button>
+            <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
-  <!-- POPUP 8: IMAGE ZOOM MODAL -->
+  <!-- In-page Image Preview Modal -->
   <div id="imageModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 class="modal-title" id="modalTitle">ภาพถ่ายมิเตอร์แบบเต็ม</h3>
+        <h3 class="modal-title" id="modalTitle">รูปภาพมิเตอร์</h3>
         <button type="button" class="btn btn-secondary btn-sm" id="closeModalBtn">ปิดหน้าต่าง</button>
       </div>
       <div class="modal-img-wrap">
-        <img id="modalImageEl" src="" alt="รูปภาพมิเตอร์ไฟฟ้า kWH">
+        <img id="modalImageEl" src="" alt="รูปขยายมิเตอร์ไฟฟ้า">
+      </div>
+    </div>
+  </div>
+
+  <!--In-page Confirmation Modal (Replaces blocked window.confirm)-->
+  <div id="confirmDialogModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="confirmDialogTitle">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="confirmDialogTitle">ยืนยันการทำรายการ</h3>
+      </div>
+      <p id="confirmDialogMessage" style="margin: var(--space-3) 0 var(--space-6); color: var(--ink-secondary); font-size: 14.5px;"></p>
+      <div style="display: flex; gap: var(--space-2); justify-content: flex-end;">
+        <button type="button" class="btn btn-secondary" id="confirmDialogCancelBtn">ยกเลิก</button>
+        <button type="button" class="btn btn-danger" id="confirmDialogOkBtn">ยืนยัน</button>
       </div>
     </div>
   </div>
@@ -1713,9 +1739,8 @@
       
       // 1. FIREBASE CONFIGURATION
       const firebaseConfig = {
-        apiKey: "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0", // Enter actual Key here or via Web UI
+        apiKey: "AIzaSyDLaMbj6geUhOSl58J7Qd0-SXEwdCzeLo0",
         authDomain: "peameternsh-aa9cd.firebaseapp.com",
-        databaseURL: "about:invalid#zPythonSafez",
         projectId: "peameternsh-aa9cd",
         storageBucket: "peameternsh-aa9cd.firebasestorage.app",
         messagingSenderId: "590743438022",
@@ -1736,24 +1761,119 @@
       let currentUser = null; 
       let adminPasscode = '';  
       let systemInitialized = false;
-
       let currentPhotoDataUrl = '';
       let editPhotoDataUrl = '';
       let overviewChartInstance = null;
-
       let db = null;
       let isOnline = false;
       let connectionErrorMsg = '';
-
       let parsedExcelRowsToImport = [];
+
+      // Custom in-page confirm modal helper
+      let pendingConfirmCallback = null;
+      const confirmDialogModal = document.getElementById('confirmDialogModal');
+      const confirmDialogMessage = document.getElementById('confirmDialogMessage');
+      const confirmDialogOkBtn = document.getElementById('confirmDialogOkBtn');
+      const confirmDialogCancelBtn = document.getElementById('confirmDialogCancelBtn');
+
+      function openConfirmDialog(message, onConfirm) {
+        if (!confirmDialogModal || !confirmDialogMessage) {
+          onConfirm();
+          return;
+        }
+        confirmDialogMessage.textContent = message;
+        pendingConfirmCallback = onConfirm;
+        confirmDialogModal.classList.add('open');
+      }
+
+      if (confirmDialogOkBtn) {
+        confirmDialogOkBtn.addEventListener('click', () => {
+          confirmDialogModal.classList.remove('open');
+          if (typeof pendingConfirmCallback === 'function') {
+            const cb = pendingConfirmCallback;
+            pendingConfirmCallback = null;
+            cb();
+          }
+        });
+      }
+
+      if (confirmDialogCancelBtn) {
+        confirmDialogCancelBtn.addEventListener('click', () => {
+          confirmDialogModal.classList.remove('open');
+          pendingConfirmCallback = null;
+        });
+      }
+
+      // Normalize meter code for consistent matching & stock deduction
+      function normalizeMeterKey(code) {
+        return String(code || '')
+          .trim()
+          .toUpperCase()
+          .replace(/^PEA[-\s:]*/i, '')
+          .replace(/\s+/g, '');
+      }
+
+      function generateNextUserId() {
+        const staffCount = users.filter(u => String(u.userId || '').startsWith('USR')).length;
+        return `USR-${String(staffCount + 1).padStart(3, '0')}`;
+      }
+
+      // Sort records so newest transaction is always index 0 for any meter
+      function extractRecTimestamp(id) {
+        if (!id) return 0;
+        const m = String(id).match(/(\d{10,})/);
+        return m ? Number(m[1]) : 0;
+      }
+
+      function sortRecordsLatestFirst(list) {
+        return list.slice().sort((a, b) => {
+          const dateA = String(a.date || '');
+          const dateB = String(b.date || '');
+          if (dateA !== dateB) {
+            return dateB.localeCompare(dateA);
+          }
+          const tsA = Number(a.updatedAt || a.createdAt || extractRecTimestamp(a.id) || 0);
+          const tsB = Number(b.updatedAt || b.createdAt || extractRecTimestamp(b.id) || 0);
+          if (tsB !== tsA) {
+            return tsB - tsA;
+          }
+          return String(b.id || '').localeCompare(String(a.id || ''));
+        });
+      }
+
+      // Build map of latest record per unique meter (plus fallback parcelDesc & ampRatio from earlier records)
+      function getLatestMeterMap() {
+        const sorted = sortRecordsLatestFirst(records);
+        const map = new Map();
+        sorted.forEach((rec) => {
+          const key = normalizeMeterKey(rec.meterCode);
+          if (!key) return;
+          if (!map.has(key)) {
+            map.set(key, {
+              ...rec,
+              parcelDesc: rec.parcelDesc || '',
+              ampRatio: rec.ampRatio || '',
+              meterStatus: rec.meterStatus || 'new'
+            });
+          } else {
+            const entry = map.get(key);
+            if (!entry.parcelDesc && rec.parcelDesc) entry.parcelDesc = rec.parcelDesc;
+            if (!entry.ampRatio && rec.ampRatio) entry.ampRatio = rec.ampRatio;
+            if (!entry.meterStatus && rec.meterStatus) entry.meterStatus = rec.meterStatus;
+          }
+        });
+        return map;
+      }
 
       // INITIALIZE FIREBASE COMPAT SDK SAFE
       function initFirebase() {
-        const savedKey = localStorage.getItem('firebase_api_key_custom') || '';
+        let savedKey = '';
+        try {
+          savedKey = localStorage.getItem('firebase_api_key_custom') || '';
+        } catch (e) {}
         if (savedKey) {
           firebaseConfig.apiKey = savedKey;
         }
-
         const isCustomKeyValid = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY_HERE";
         
         if (isCustomKeyValid) {
@@ -1765,7 +1885,6 @@
               db = firebase.firestore();
               isOnline = true;
               connectionErrorMsg = '';
-              console.log("⚡ Firebase Compat SDK initialized successfully!");
             } else {
               isOnline = false;
               connectionErrorMsg = 'Firebase Library CDN not loaded';
@@ -1773,7 +1892,6 @@
           } catch (err) {
             isOnline = false;
             connectionErrorMsg = err.message;
-            console.error("Firebase init failed:", err);
           }
         } else {
           isOnline = false;
@@ -1798,8 +1916,8 @@
         } else {
           pill.className = 'cloud-status-pill offline';
           icon.textContent = '⚡';
-          text.textContent = 'Local Mode (Offline - คลิกเพื่อตั้งค่า)';
-          pill.setAttribute('title', 'ใช้งานโหมดออฟไลน์บันทึกในเครื่องชั่วคราว | คลิกที่นี่เพื่อใส่ API Key จริงเพื่อออนไลน์');
+          text.textContent = 'Local Mode (Offline)';
+          pill.setAttribute('title', 'ใช้งานโหมดออฟไลน์บันทึกในเครื่อง');
         }
       }
 
@@ -1811,9 +1929,8 @@
           const rawCurrentUser = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
           const rawPasscode = localStorage.getItem(STORAGE_KEYS.ADMIN_PASSCODE);
           const rawInitialized = localStorage.getItem(STORAGE_KEYS.INITIALIZED);
-
           if (rawUsers) users = JSON.parse(rawUsers) || [];
-          if (rawRecords) records = JSON.parse(rawRecords) || [];
+          if (rawRecords) records = sortRecordsLatestFirst(JSON.parse(rawRecords) || []);
           if (rawCurrentUser) currentUser = JSON.parse(rawCurrentUser);
           if (rawPasscode) adminPasscode = rawPasscode;
           if (rawInitialized === 'true') systemInitialized = true;
@@ -1824,6 +1941,7 @@
 
       function saveState() {
         try {
+          records = sortRecordsLatestFirst(records);
           localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
           localStorage.setItem(STORAGE_KEYS.RECORDS, JSON.stringify(records));
           localStorage.setItem(STORAGE_KEYS.ADMIN_PASSCODE, adminPasscode);
@@ -1841,8 +1959,6 @@
       // FIREBASE LIVE SYNC 2-WAY
       function startFirebaseListeners() {
         if (!db || !isOnline) return;
-
-        // 1. Sync System config (Super Admin initial status)
         db.collection('system_config').doc('config').onSnapshot((docSnap) => {
           if (docSnap.exists) {
             const data = docSnap.data();
@@ -1851,7 +1967,6 @@
             saveState();
             checkSystemStatusAndViews();
           } else {
-            // First user setup
             if (!systemInitialized) {
               checkSystemStatusAndViews();
             }
@@ -1860,7 +1975,6 @@
           console.warn("Firestore config listener blocked:", err);
         });
 
-        // 2. Sync Users
         db.collection('users').onSnapshot((snap) => {
           const cloudUsers = [];
           snap.forEach((doc) => {
@@ -1871,7 +1985,6 @@
             saveState();
             renderEmployeesTable();
             
-            // Sync current active user details
             if (currentUser) {
               const matchingSelf = users.find(u => u.userId === currentUser.userId);
               if (matchingSelf) {
@@ -1882,17 +1995,15 @@
           }
         });
 
-        // 3. Sync Meter Records
         db.collection('meter_records').onSnapshot((snap) => {
           const cloudRecords = [];
           snap.forEach((doc) => {
             cloudRecords.push(doc.data());
           });
-          // Sort by id descending (REC-timestamp)
-          cloudRecords.sort((a, b) => b.id.localeCompare(a.id));
-          records = cloudRecords;
+          records = sortRecordsLatestFirst(cloudRecords);
           saveState();
           renderDashboard();
+          populateAutoFillChoices();
         });
       }
 
@@ -1952,12 +2063,10 @@
           if (errSetupName) errSetupName.classList.remove('visible');
           if (errSetupPhone) errSetupPhone.classList.remove('visible');
           if (errSetupPasscode) errSetupPasscode.classList.remove('visible');
-
           const nameVal = setupAdminName.value.trim();
           const phoneVal = setupAdminPhone.value.trim();
           const passcodeVal = setupAdminPasscode.value.trim();
           const digitsOnly = phoneVal.replace(/\D/g, '');
-
           let valid = true;
           if (!nameVal) {
             if (errSetupName) errSetupName.classList.add('visible');
@@ -1972,21 +2081,17 @@
             valid = false;
           }
           if (!valid) return;
-
           const superAdmin = {
             userId: 'ADMIN-01',
             name: nameVal,
             phone: phoneVal,
             role: 'admin'
           };
-
           users = [superAdmin];
           adminPasscode = passcodeVal;
           systemInitialized = true;
           currentUser = superAdmin;
           saveState();
-
-          // Write setup to Cloud if online
           if (isOnline && db) {
             db.collection('system_config').doc('config').set({
               adminPasscode: passcodeVal,
@@ -1994,7 +2099,6 @@
             });
             db.collection('users').doc(superAdmin.userId).set(superAdmin);
           }
-
           if (setupView) setupView.classList.remove('active');
           enterAppView();
         });
@@ -2038,20 +2142,17 @@
           e.preventDefault();
           if (errLoginQuery) errLoginQuery.classList.remove('visible');
           if (authFeedback) authFeedback.className = 'inline-feedback';
-
           const queryVal = loginQuery.value.trim();
           if (!queryVal) {
             if (errLoginQuery) errLoginQuery.classList.add('visible');
             return;
           }
-
           const digitsOnlyQuery = queryVal.replace(/\D/g, '');
           const matchedUser = users.find((u) => {
             if (u.userId.toLowerCase() === queryVal.toLowerCase()) return true;
             if (digitsOnlyQuery && u.phone.replace(/\D/g, '') === digitsOnlyQuery) return true;
             return false;
           });
-
           if (!matchedUser) {
             if (authFeedback) {
               authFeedback.textContent = 'ไม่พบรหัสผู้ใช้หรือเบอร์โทรศัพท์นี้ในระบบ กรุณาตรวจสอบหรือลงทะเบียนใหม่';
@@ -2062,7 +2163,6 @@
             }
             return;
           }
-
           currentUser = matchedUser;
           saveState();
           if (loginQuery) loginQuery.value = '';
@@ -2106,13 +2206,11 @@
           if (errRegPhone) errRegPhone.classList.remove('visible');
           if (errRegAdminPasscode) errRegAdminPasscode.classList.remove('visible');
           if (authFeedback) authFeedback.className = 'inline-feedback';
-
           const nameVal = regUserName.value.trim();
           const phoneVal = regUserPhone.value.trim();
           const roleVal = regUserRole.value;
           const passcodeVal = regAdminPasscode.value.trim();
           const digitsOnly = phoneVal.replace(/\D/g, '');
-
           let valid = true;
           if (!nameVal) {
             if (errRegName) errRegName.classList.add('visible');
@@ -2129,7 +2227,6 @@
             }
           }
           if (!valid) return;
-
           const existingUser = users.find((u) => u.phone.replace(/\D/g, '') === digitsOnly);
           if (existingUser) {
             if (authFeedback) {
@@ -2142,39 +2239,33 @@
               if (regUserName) regUserName.value = '';
               if (regUserPhone) regUserPhone.value = '';
               enterAppView();
-            }, 1200);
+            }, 900);
             return;
           }
-
           const newUser = {
             userId: roleVal === 'admin' ? `ADM-${String(users.filter(u => u.userId.startsWith('ADM')).length + 1).padStart(2, '0')}` : generateNextUserId(),
             name: nameVal,
             phone: phoneVal,
             role: roleVal
           };
-
           users.push(newUser);
           currentUser = newUser;
           saveState();
-
           if (isOnline && db) {
             db.collection('users').doc(newUser.userId).set(newUser);
           }
-
           if (regUserName) regUserName.value = '';
           if (regUserPhone) regUserPhone.value = '';
           if (regUserRole) regUserRole.value = 'staff';
           if (regAdminPasscode) regAdminPasscode.value = '';
           if (regAdminPasscodeGroup) regAdminPasscodeGroup.style.display = 'none';
-
           if (authFeedback) {
             authFeedback.textContent = `ลงทะเบียนสำเร็จ! รหัสประจำตัวคือ ${newUser.userId} สิทธิ์: ${roleVal === 'admin' ? 'ผู้ดูแลระบบ (Admin)' : 'ผู้ใช้ทั่วไป (Staff)'}`;
             authFeedback.className = 'inline-feedback success';
           }
-
           setTimeout(() => {
             enterAppView();
-          }, 1200);
+          }, 900);
         });
       }
 
@@ -2190,11 +2281,9 @@
           exitAppView();
           return;
         }
-
         if (setupView) setupView.classList.remove('active');
         if (authView) authView.classList.remove('active');
         if (appPortal) appPortal.classList.add('active');
-
         if (headerUserText) headerUserText.textContent = `${currentUser.userId} - ${currentUser.name}`;
         
         const isAdmin = currentUser.role === 'admin';
@@ -2203,16 +2292,13 @@
           headerUserRoleBadge.className = `user-role-tag ${isAdmin ? 'admin' : ''}`;
         }
 
-        // Lock Record form Details to currently logged-in user
         const formAvatarIcon = document.getElementById('formAvatarIcon');
         const formUserName = document.getElementById('formUserName');
         const formUserIdAndPhone = document.getElementById('formUserIdAndPhone');
-
         if (formAvatarIcon) formAvatarIcon.textContent = currentUser.name.charAt(0).toUpperCase();
         if (formUserName) formUserName.textContent = currentUser.name;
         if (formUserIdAndPhone) formUserIdAndPhone.textContent = `รหัสผู้ใช้: ${currentUser.userId} | เบอร์โทร: ${currentUser.phone}`;
 
-        // Populate datalist of registered users for dashboard search
         const datalist = document.getElementById('registeredUserIdList');
         if (datalist) {
           datalist.innerHTML = users
@@ -2220,19 +2306,23 @@
             .join('');
         }
 
-        // Show/hide Admin columns dynamically
         const adminCols = document.querySelectorAll('.admin-only-col');
         adminCols.forEach(col => {
           col.style.display = isAdmin ? 'table-cell' : 'none';
         });
 
-        // Show/hide Admin-only tab buttons
+        const adminRegisterUserBtnEl = document.getElementById('adminRegisterUserBtn');
+        if (adminRegisterUserBtnEl) {
+          adminRegisterUserBtnEl.style.display = isAdmin ? 'inline-flex' : 'none';
+        }
+
         const tabBtnEmployees = document.getElementById('tabBtnEmployees');
         if (tabBtnEmployees) {
           tabBtnEmployees.style.display = isAdmin ? 'inline-flex' : 'none';
         }
 
         renderEmployeesTable();
+        populateAutoFillChoices();
         switchTab('dashboard');
       }
 
@@ -2247,90 +2337,6 @@
 
       if (logoutBtn) {
         logoutBtn.addEventListener('click', exitAppView);
-      }
-
-      // FIREBASE CONFIG CONTROLLER
-      const firebaseConfigModal = document.getElementById('firebaseConfigModal');
-      const firebaseConfigForm = document.getElementById('firebaseConfigForm');
-      const firebaseApiKeyInput = document.getElementById('firebaseApiKeyInput');
-      const closeFirebaseModalBtn = document.getElementById('closeFirebaseModalBtn');
-      const testFirebaseConnectionBtn = document.getElementById('testFirebaseConnectionBtn');
-      const saveAndConnectBtn = document.getElementById('saveAndConnectBtn');
-      const firebaseConnectionFeedback = document.getElementById('firebaseConnectionFeedback');
-      const cloudStatusPill = document.getElementById('cloudStatusPill');
-
-      if (cloudStatusPill) {
-        cloudStatusPill.addEventListener('click', () => {
-          const savedKey = localStorage.getItem('firebase_api_key_custom') || '';
-          if (firebaseApiKeyInput) firebaseApiKeyInput.value = savedKey;
-          if (firebaseConnectionFeedback) firebaseConnectionFeedback.className = 'inline-feedback';
-          if (firebaseConfigModal) firebaseConfigModal.classList.add('open');
-        });
-      }
-
-      if (closeFirebaseModalBtn) {
-        closeFirebaseModalBtn.addEventListener('click', () => {
-          if (firebaseConfigModal) firebaseConfigModal.classList.remove('open');
-        });
-      }
-
-      if (testFirebaseConnectionBtn) {
-        testFirebaseConnectionBtn.addEventListener('click', () => {
-          const testKey = firebaseApiKeyInput ? firebaseApiKeyInput.value.trim() : '';
-          if (!firebaseConnectionFeedback) return;
-          firebaseConnectionFeedback.className = 'inline-feedback';
-          
-          if (!testKey) {
-            firebaseConnectionFeedback.textContent = 'กรุณาระบุ API Key ที่ถูกต้องค่ะ';
-            firebaseConnectionFeedback.className = 'inline-feedback success';
-            firebaseConnectionFeedback.style.background = 'var(--damage-bg)';
-            firebaseConnectionFeedback.style.color = 'var(--damage-color)';
-            return;
-          }
-
-          firebaseConnectionFeedback.textContent = 'กำลังทำการเชื่อมต่อทดสอบ...';
-          firebaseConnectionFeedback.className = 'inline-feedback success';
-          firebaseConnectionFeedback.style.background = '#fef3c7';
-          firebaseConnectionFeedback.style.color = '#b45309';
-
-          const testConfig = { ...firebaseConfig, apiKey: testKey };
-          try {
-            const testAppName = 'test_init_' + Date.now();
-            const testApp = firebase.initializeApp(testConfig, testAppName);
-            const testDb = testApp.firestore();
-            
-            testDb.collection('system_config').doc('config').get()
-              .then(() => {
-                firebaseConnectionFeedback.textContent = '✅ เชื่อมต่อ Cloud Firestore สำเร็จสมบูรณ์!';
-                firebaseConnectionFeedback.className = 'inline-feedback success';
-                testApp.delete();
-              })
-              .catch(err => {
-                firebaseConnectionFeedback.textContent = '❌ เชื่อมต่อล้มเหลว: ' + err.message;
-                firebaseConnectionFeedback.className = 'inline-feedback success';
-                firebaseConnectionFeedback.style.background = 'var(--damage-bg)';
-                firebaseConnectionFeedback.style.color = 'var(--damage-color)';
-                testApp.delete();
-              });
-          } catch (err) {
-            firebaseConnectionFeedback.textContent = '❌ ล้มเหลว: ' + err.message;
-            firebaseConnectionFeedback.className = 'inline-feedback success';
-            firebaseConnectionFeedback.style.background = 'var(--damage-bg)';
-            firebaseConnectionFeedback.style.color = 'var(--damage-color)';
-          }
-        });
-      }
-
-      if (firebaseConfigForm) {
-        firebaseConfigForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const finalKey = firebaseApiKeyInput ? firebaseApiKeyInput.value.trim() : '';
-          if (!finalKey) return;
-          
-          localStorage.setItem('firebase_api_key_custom', finalKey);
-          if (firebaseConfigModal) firebaseConfigModal.classList.remove('open');
-          window.location.reload();
-        });
       }
 
       // CHANGE ADMIN PASSCODE MODAL CONTROLLER
@@ -2398,12 +2404,10 @@
           if (errAdminRegName) errAdminRegName.classList.remove('visible');
           if (errAdminRegPhone) errAdminRegPhone.classList.remove('visible');
           if (adminRegFeedback) adminRegFeedback.className = 'inline-feedback';
-
           const nameVal = adminRegUserName ? adminRegUserName.value.trim() : '';
           const phoneVal = adminRegUserPhone ? adminRegUserPhone.value.trim() : '';
           const roleVal = adminRegUserRole ? adminRegUserRole.value : 'staff';
           const digitsOnly = phoneVal.replace(/\D/g, '');
-
           let valid = true;
           if (!nameVal) {
             if (errAdminRegName) errAdminRegName.classList.add('visible');
@@ -2414,7 +2418,6 @@
             valid = false;
           }
           if (!valid) return;
-
           const existingUser = users.find((u) => u.phone.replace(/\D/g, '') === digitsOnly);
           if (existingUser) {
             if (adminRegFeedback) {
@@ -2426,37 +2429,30 @@
             }
             return;
           }
-
           const generatedId = roleVal === 'admin' 
             ? `ADM-${String(users.filter(u => u.userId.startsWith('ADM')).length + 1).padStart(2, '0')}` 
-            : `USR-${String(users.filter(u => u.userId.startsWith('USR')).length + 1).padStart(3, '0')}`;
-
+            : generateNextUserId();
           const newUser = {
             userId: generatedId,
             name: nameVal,
             phone: phoneVal,
             role: roleVal
           };
-
           users.push(newUser);
           saveState();
-
           if (isOnline && db) {
             db.collection('users').doc(newUser.userId).set(newUser);
           }
-
           const datalist = document.getElementById('registeredUserIdList');
           if (datalist) {
             datalist.innerHTML = users
               .map((u) => `<option value="${escapeHtml(u.userId)}">${escapeHtml(u.name)} (${escapeHtml(u.phone)})</option>`)
               .join('');
           }
-
           if (adminRegFeedback) {
             adminRegFeedback.textContent = `สมัครพนักงานสำเร็จ! รหัสผู้ใช้คือ "${generatedId}" (เบอร์โทร: ${phoneVal}) สามารถให้พนักงานใช้เข้าสู่ระบบได้ทันที`;
             adminRegFeedback.className = 'inline-feedback success';
           }
-
           if (adminRegUserName) adminRegUserName.value = '';
           if (adminRegUserPhone) adminRegUserPhone.value = '';
           if (adminRegUserRole) adminRegUserRole.value = 'staff';
@@ -2531,21 +2527,16 @@
         employeesTableBody.querySelectorAll('.delete-emp-btn').forEach((btn) => {
           btn.addEventListener('click', () => {
             const empId = btn.dataset.id;
-            if (currentUser && currentUser.userId === empId) {
-              alert('คุณไม่สามารถลบหลักบัญชีของตนเองที่ใช้งานอยู่ได้ค่ะ');
-              return;
-            }
+            if (currentUser && currentUser.userId === empId) return;
             const emp = users.find((u) => u.userId === empId);
             if (emp) {
-              const confirmed = confirm(`คุณต้องการลบรายชื่อพนักงานคุณ "${emp.name}" (${emp.userId}) ออกจากระบบใช่หรือไม่?`);
-              if (confirmed) {
+              openConfirmDialog(`คุณต้องการลบรายชื่อพนักงานคุณ "${emp.name}" (${emp.userId}) ออกจากระบบใช่หรือไม่?`, () => {
                 users = users.filter((u) => u.userId !== empId);
                 saveState();
                 
                 if (isOnline && db) {
                   db.collection('users').doc(empId).delete();
                 }
-
                 renderEmployeesTable();
                 
                 const datalist = document.getElementById('registeredUserIdList');
@@ -2554,7 +2545,7 @@
                     .map((u) => `<option value="${escapeHtml(u.userId)}">${escapeHtml(u.name)} (${escapeHtml(u.phone)})</option>`)
                     .join('');
                 }
-              }
+              });
             }
           });
         });
@@ -2581,17 +2572,13 @@
           const empId = editEmployeeId ? editEmployeeId.value : '';
           const index = users.findIndex((u) => u.userId === empId);
           if (index === -1) return;
-
           const nameVal = editEmpName ? editEmpName.value.trim() : '';
           const phoneVal = editEmpPhone ? editEmpPhone.value.trim() : '';
           const roleVal = editEmpRole ? editEmpRole.value : 'staff';
-
           if (!nameVal || !phoneVal) return;
-
           users[index].name = nameVal;
           users[index].phone = phoneVal;
           users[index].role = roleVal;
-
           if (currentUser && currentUser.userId === empId) {
             currentUser.name = nameVal;
             currentUser.phone = phoneVal;
@@ -2604,16 +2591,12 @@
               headerUserRoleBadge.className = `user-role-tag ${isAdmin ? 'admin' : ''}`;
             }
           }
-
           saveState();
-
           if (isOnline && db) {
             db.collection('users').doc(empId).set(users[index]);
           }
-
           closeEditEmployeeModal();
           renderEmployeesTable();
-
           const datalist = document.getElementById('registeredUserIdList');
           if (datalist) {
             datalist.innerHTML = users
@@ -2623,19 +2606,16 @@
         });
       }
 
-      // Add employee inside tab
       if (employeesAddForm) {
         employeesAddForm.addEventListener('submit', (e) => {
           e.preventDefault();
           if (errEmpAddName) errEmpAddName.classList.remove('visible');
           if (errEmpAddPhone) errEmpAddPhone.classList.remove('visible');
           if (employeesAddFeedback) employeesAddFeedback.className = 'inline-feedback';
-
           const nameVal = empAddName ? empAddName.value.trim() : '';
           const phoneVal = empAddPhone ? empAddPhone.value.trim() : '';
           const roleVal = empAddRole ? empAddRole.value : 'staff';
           const digitsOnly = phoneVal.replace(/\D/g, '');
-
           let valid = true;
           if (!nameVal) {
             if (errEmpAddName) errEmpAddName.classList.add('visible');
@@ -2646,7 +2626,6 @@
             valid = false;
           }
           if (!valid) return;
-
           const existingUser = users.find((u) => u.phone.replace(/\D/g, '') === digitsOnly);
           if (existingUser) {
             if (employeesAddFeedback) {
@@ -2658,36 +2637,28 @@
             }
             return;
           }
-
           const generatedId = roleVal === 'admin' 
             ? `ADM-${String(users.filter(u => u.userId.startsWith('ADM')).length + 1).padStart(2, '0')}` 
-            : `USR-${String(users.filter(u => u.userId.startsWith('USR')).length + 1).padStart(3, '0')}`;
-
+            : generateNextUserId();
           const newUser = {
             userId: generatedId,
             name: nameVal,
             phone: phoneVal,
             role: roleVal
           };
-
           users.push(newUser);
           saveState();
-
           if (isOnline && db) {
             db.collection('users').doc(newUser.userId).set(newUser);
           }
-
           if (employeesAddFeedback) {
             employeesAddFeedback.textContent = `สมัครและเพิ่มพนักงานสำเร็จ! รหัสคือ "${generatedId}"`;
             employeesAddFeedback.className = 'inline-feedback success';
           }
-
           if (empAddName) empAddName.value = '';
           if (empAddPhone) empAddPhone.value = '';
           if (empAddRole) empAddRole.value = 'staff';
-
           renderEmployeesTable();
-
           const datalist = document.getElementById('registeredUserIdList');
           if (datalist) {
             datalist.innerHTML = users
@@ -2703,10 +2674,8 @@
           if (errCurrentPasscode) errCurrentPasscode.classList.remove('visible');
           if (errNewPasscode) errNewPasscode.classList.remove('visible');
           if (passcodeFeedback) passcodeFeedback.className = 'inline-feedback';
-
           const currentVal = currentAdminPasscode ? currentAdminPasscode.value.trim() : '';
           const newVal = newAdminPasscode ? newAdminPasscode.value.trim() : '';
-
           let valid = true;
           if (currentVal !== adminPasscode) {
             if (errCurrentPasscode) errCurrentPasscode.classList.add('visible');
@@ -2717,25 +2686,20 @@
             valid = false;
           }
           if (!valid) return;
-
           adminPasscode = newVal;
           saveState();
-
           if (isOnline && db) {
             db.collection('system_config').doc('config').set({
               adminPasscode: newVal,
               initialized: true
             });
           }
-
           if (currentAdminPasscode) currentAdminPasscode.value = '';
           if (newAdminPasscode) newAdminPasscode.value = '';
-
           if (passcodeFeedback) {
             passcodeFeedback.textContent = `เปลี่ยนรหัสผ่านยืนยันสิทธิ์ผู้ดูแลระบบสำเร็จ! รหัสผ่านใหม่คือ: ${newVal}`;
             passcodeFeedback.classList.add('success');
           }
-
           setTimeout(() => {
             if (securitySettingsModal) securitySettingsModal.classList.remove('open');
           }, 1800);
@@ -2765,6 +2729,8 @@
           renderDashboard();
         } else if (tabKey === 'inventory') {
           renderStockMeterTable();
+        } else if (tabKey === 'record') {
+          populateAutoFillChoices();
         } else if (tabKey === 'history') {
           renderRecordsTable();
         }
@@ -2776,24 +2742,229 @@
         });
       });
 
-      const goToRecordBtn = document.getElementById('goToRecordBtn');
-      if (goToRecordBtn) {
-        goToRecordBtn.addEventListener('click', () => {
-          switchTab('record');
-        });
-      }
-
-      // Update Customer Number / Note labels based on Record type selection
+      // AUTO-FILL & STOCK PICKER LOGIC (Supports both New & Used warehouse stock and auto-fills Parcel Desc & Amp)
       const recordTypeRadios = document.querySelectorAll('input[name="recordType"]');
+      const meterStatusRadios = document.querySelectorAll('input[name="meterStatus"]');
       const recordNoteLabel = document.getElementById('recordNoteLabel');
       const recordCustomerNumber = document.getElementById('recordCustomerNumber');
       const recordCustomerNumberLabel = document.getElementById('recordCustomerNumberLabel');
       const errCustomerNumber = document.getElementById('errCustomerNumber');
+      const stockPickerGroup = document.getElementById('stockPickerGroup');
+      const withdrawSourceFilter = document.getElementById('withdrawSourceFilter');
+      const stockMeterSelect = document.getElementById('stockMeterSelect');
+      const recordMeterCode = document.getElementById('recordMeterCode');
+      const recordMeterReading = document.getElementById('recordMeterReading');
+      const recordParcelDesc = document.getElementById('recordParcelDesc');
+      const recordAmpRatio = document.getElementById('recordAmpRatio');
+      const autoFillMeterNotice = document.getElementById('autoFillMeterNotice');
+
+      function populateAutoFillChoices() {
+        const latestMap = getLatestMeterMap();
+        const allLatest = Array.from(latestMap.values());
+
+        // 1. Populate Stock Meter Select (for Withdrawals from both New and Used stock)
+        if (stockMeterSelect) {
+          const sourceFilterVal = withdrawSourceFilter ? withdrawSourceFilter.value : 'all';
+          const inStockList = allLatest.filter((rec) => {
+            if (rec.type !== 'import') return false;
+            const st = rec.meterStatus || 'new';
+            if (sourceFilterVal !== 'all' && st !== sourceFilterVal) return false;
+            return true;
+          });
+
+          const currentSelected = stockMeterSelect.value;
+          const optionsHtml = [
+            `<option value="">-- เลือกมิเตอร์ในคลังพร้อมเบิก (${inStockList.length} เครื่อง) หรือพิมพ์รหัส PEA ด้านล่าง --</option>`
+          ];
+
+          inStockList.forEach((rec) => {
+            const condLabel = (rec.meterStatus || 'new') === 'new' ? '🟢 คลังใหม่' : '🟣 คลังเก่า';
+            const descPart = rec.parcelDesc ? ` | ${rec.parcelDesc}` : '';
+            const ampPart = rec.ampRatio ? ` (${rec.ampRatio})` : '';
+            optionsHtml.push(
+              `<option value="${escapeHtml(rec.meterCode)}">[${condLabel}] ${escapeHtml(rec.meterCode)}${escapeHtml(descPart)}${escapeHtml(ampPart)} — เลขอ่าน: ${escapeHtml(rec.meterReading || '0')}</option>`
+            );
+          });
+
+          stockMeterSelect.innerHTML = optionsHtml.join('');
+          if (currentSelected && inStockList.some(r => normalizeMeterKey(r.meterCode) === normalizeMeterKey(currentSelected))) {
+            stockMeterSelect.value = currentSelected;
+          }
+        }
+
+        // 2. Populate Datalist for PEA Meter Code
+        const knownMeterCodeList = document.getElementById('knownMeterCodeList');
+        if (knownMeterCodeList) {
+          const checkedType = document.querySelector('input[name="recordType"]:checked');
+          const mode = checkedType ? checkedType.value : 'withdraw';
+          const sourceFilterVal = withdrawSourceFilter ? withdrawSourceFilter.value : 'all';
+
+          let meterPool = allLatest;
+          if (mode === 'withdraw') {
+            meterPool = allLatest.filter((rec) => {
+              if (rec.type !== 'import') return false;
+              const st = rec.meterStatus || 'new';
+              if (sourceFilterVal !== 'all' && st !== sourceFilterVal) return false;
+              return true;
+            });
+          }
+
+          knownMeterCodeList.innerHTML = meterPool.map((rec) => {
+            const condLabel = (rec.meterStatus || 'new') === 'new' ? 'คลังใหม่' : 'คลังเก่า';
+            const statusLabel = getSignTypeLabel(rec.type);
+            const descText = [rec.parcelDesc, rec.ampRatio].filter(Boolean).join(' • ');
+            return `<option value="${escapeHtml(rec.meterCode)}">[${condLabel} - ${statusLabel}] ${escapeHtml(descText || 'ไม่มีคำอธิบายพัสดุ')}</option>`;
+          }).join('');
+        }
+
+        // 3. Populate Datalist for Parcel Descriptions & Amp Ratios
+        const knownParcelDescList = document.getElementById('knownParcelDescList');
+        const knownAmpRatioList = document.getElementById('knownAmpRatioList');
+
+        const parcelToAmpMap = new Map();
+        const uniqueAmps = new Set();
+
+        records.forEach((rec) => {
+          const p = (rec.parcelDesc || '').trim();
+          const a = (rec.ampRatio || '').trim();
+          if (p && !parcelToAmpMap.has(p)) {
+            parcelToAmpMap.set(p, a);
+          } else if (p && a && !parcelToAmpMap.get(p)) {
+            parcelToAmpMap.set(p, a);
+          }
+          if (a) uniqueAmps.add(a);
+        });
+
+        if (knownParcelDescList) {
+          knownParcelDescList.innerHTML = Array.from(parcelToAmpMap.entries())
+            .map(([desc, amp]) => `<option value="${escapeHtml(desc)}">${amp ? `แอมป์: ${escapeHtml(amp)}` : ''}</option>`)
+            .join('');
+        }
+
+        if (knownAmpRatioList) {
+          knownAmpRatioList.innerHTML = Array.from(uniqueAmps)
+            .map((amp) => `<option value="${escapeHtml(amp)}"></option>`)
+            .join('');
+        }
+      }
+
+      // Apply auto-fill when user picks or types a PEA meter code that already has info
+      function autoFillFromMeterCode(rawCode, fromStockDropdown) {
+        const key = normalizeMeterKey(rawCode);
+        if (!key) {
+          if (autoFillMeterNotice) autoFillMeterNotice.style.display = 'none';
+          return null;
+        }
+
+        const latestMap = getLatestMeterMap();
+        const matched = latestMap.get(key);
+        if (!matched) {
+          if (autoFillMeterNotice) autoFillMeterNotice.style.display = 'none';
+          return null;
+        }
+
+        // Auto-fill Parcel Description and Amp Ratio if available
+        if (matched.parcelDesc && recordParcelDesc) {
+          recordParcelDesc.value = matched.parcelDesc;
+        }
+        if (matched.ampRatio && recordAmpRatio) {
+          recordAmpRatio.value = matched.ampRatio;
+        }
+
+        // Auto-select meter condition (New / Used warehouse)
+        const cond = matched.meterStatus || 'new';
+        const statusRadio = document.getElementById('status' + cond.charAt(0).toUpperCase() + cond.slice(1));
+        if (statusRadio) {
+          statusRadio.checked = true;
+        }
+
+        // Pre-fill reading if withdrawing and reading input is empty or triggered from stock dropdown
+        const checkedType = document.querySelector('input[name="recordType"]:checked');
+        const mode = checkedType ? checkedType.value : 'withdraw';
+        if (recordMeterReading && matched.meterReading !== undefined && matched.meterReading !== '') {
+          if (fromStockDropdown || !recordMeterReading.value.trim()) {
+            recordMeterReading.value = matched.meterReading;
+          }
+          recordMeterReading.placeholder = `เลขอ่านล่าสุดในระบบคือ ${matched.meterReading}`;
+        }
+
+        if (autoFillMeterNotice) {
+          const condText = cond === 'new' ? '🟢 คลังใหม่' : '🟣 คลังเก่า';
+          const stateText = getSignTypeLabel(matched.type);
+          autoFillMeterNotice.textContent = `✓ ดึงข้อมูลอัตโนมัติจาก ${condText} (สถานะล่าสุด: ${stateText}) | พัสดุ: ${matched.parcelDesc || '-'} | แอมป์: ${matched.ampRatio || '-'}`;
+          autoFillMeterNotice.style.display = 'block';
+        }
+
+        return matched;
+      }
+
+      // Apply auto-fill when user selects/types an existing Parcel Description
+      function autoFillFromParcelDesc(descVal) {
+        const cleanDesc = String(descVal || '').trim().toLowerCase();
+        if (!cleanDesc) return;
+        const matchedRec = records.find(
+          (r) => (r.parcelDesc || '').trim().toLowerCase() === cleanDesc && (r.ampRatio || '').trim()
+        );
+        if (matchedRec && recordAmpRatio && !recordAmpRatio.value.trim()) {
+          recordAmpRatio.value = matchedRec.ampRatio;
+        }
+      }
+
+      if (withdrawSourceFilter) {
+        withdrawSourceFilter.addEventListener('change', () => {
+          const val = withdrawSourceFilter.value;
+          if (val === 'new' || val === 'used') {
+            const statusRadio = document.getElementById('status' + val.charAt(0).toUpperCase() + val.slice(1));
+            if (statusRadio) statusRadio.checked = true;
+          }
+          populateAutoFillChoices();
+        });
+      }
+
+      meterStatusRadios.forEach((radio) => {
+        radio.addEventListener('change', () => {
+          if (withdrawSourceFilter && withdrawSourceFilter.value !== 'all') {
+            withdrawSourceFilter.value = radio.value;
+            populateAutoFillChoices();
+          }
+        });
+      });
+
+      if (stockMeterSelect) {
+        stockMeterSelect.addEventListener('change', () => {
+          const selectedCode = stockMeterSelect.value;
+          if (!selectedCode) return;
+          if (recordMeterCode) {
+            recordMeterCode.value = selectedCode;
+          }
+          autoFillFromMeterCode(selectedCode, true);
+        });
+      }
+
+      if (recordMeterCode) {
+        recordMeterCode.addEventListener('input', () => {
+          autoFillFromMeterCode(recordMeterCode.value, false);
+        });
+        recordMeterCode.addEventListener('change', () => {
+          autoFillFromMeterCode(recordMeterCode.value, false);
+        });
+      }
+
+      if (recordParcelDesc) {
+        recordParcelDesc.addEventListener('input', () => {
+          autoFillFromParcelDesc(recordParcelDesc.value);
+        });
+        recordParcelDesc.addEventListener('change', () => {
+          autoFillFromParcelDesc(recordParcelDesc.value);
+        });
+      }
 
       function updateNoteLabelRequirement() {
         const checked = document.querySelector('input[name="recordType"]:checked');
         const mode = checked ? checked.value : 'withdraw';
-
+        if (stockPickerGroup) {
+          stockPickerGroup.style.display = mode === 'withdraw' ? 'block' : 'none';
+        }
         if (recordNoteLabel) {
           if (mode === 'damage') {
             recordNoteLabel.innerHTML = 'หมายเหตุ / อาการมิเตอร์ชำรุด <span class="req-star">*</span>';
@@ -2801,23 +2972,23 @@
             recordNoteLabel.innerHTML = 'หมายเหตุ / รายละเอียดหากมิเตอร์ชำรุด';
           }
         }
-
         if (recordCustomerNumberLabel && recordCustomerNumber) {
           if (mode === 'withdraw') {
-            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (นำไปติดตั้งให้ผู้ใช้ไฟหมายเลข) <span class="req-star">*</span>';
-            recordCustomerNumber.placeholder = 'ระบุหมายเลขผู้ใช้ไฟที่นำมิเตอร์ไปติดตั้ง เช่น CA-0200123456';
-            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลขผู้ใช้ไฟที่นำมิเตอร์ไปติดตั้ง';
+            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ติดตั้งให้ CA) <span class="req-star">*</span>';
+            recordCustomerNumber.placeholder = 'ระบุหมายเลข CA สำหรับเบิกไปติดตั้ง';
+            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลข CA สำหรับติดตั้ง';
           } else if (mode === 'import') {
-            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถอดมาจากผู้ใช้ไฟหมายเลข) <span class="req-star">*</span>';
-            recordCustomerNumber.placeholder = 'ระบุหมายเลขผู้ใช้ไฟที่ถอดมิเตอร์มา เช่น CA-0200123456';
-            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลขผู้ใช้ไฟที่ถอดมิเตอร์มา';
+            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถอดมาจาก CA / หรือคลัง)';
+            recordCustomerNumber.placeholder = 'ระบุหมายเลข CA ที่ถอดมิเตอร์คืนมา (ถ้าเป็นมิเตอร์ใหม่เว้นว่างได้)';
+            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลข CA ที่ถอดคืนมา';
           } else {
-            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถ้ามี)';
-            recordCustomerNumber.placeholder = 'ระบุหมายเลขผู้ใช้ไฟที่เกี่ยวข้อง (ถ้ามี)';
-            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลขผู้ใช้ไฟ';
+            recordCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ CA';
+            recordCustomerNumber.placeholder = 'ระบุหมายเลข CA ที่เกี่ยวข้อง (ถ้ามี)';
+            if (errCustomerNumber) errCustomerNumber.textContent = 'กรุณาระบุหมายเลขผู้ใช้ไฟ CA';
           }
         }
         if (errCustomerNumber) errCustomerNumber.classList.remove('visible');
+        populateAutoFillChoices();
       }
 
       recordTypeRadios.forEach((radio) => {
@@ -2828,7 +2999,6 @@
       const recordPhotoInput = document.getElementById('recordPhoto');
       const photoPreviewWrap = document.getElementById('photoPreviewWrap');
       const photoPreviewImg = document.getElementById('photoPreviewImg');
-      const photoFileName = document.getElementById('photoFileName');
       const removePhotoBtn = document.getElementById('removePhotoBtn');
 
       if (recordPhotoInput) {
@@ -2842,7 +3012,6 @@
           reader.onload = function (ev) {
             currentPhotoDataUrl = String(ev.target.result || '');
             if (photoPreviewImg) photoPreviewImg.src = currentPhotoDataUrl;
-            if (photoFileName) photoFileName.textContent = file.name;
             if (photoPreviewWrap) photoPreviewWrap.classList.add('visible');
           };
           reader.readAsDataURL(file);
@@ -2860,10 +3029,31 @@
         removePhotoBtn.addEventListener('click', clearPhotoAttachment);
       }
 
-      // Record Form submission (Locked automatically to currentUser!)
+      // Reset form button
+      const resetRecordFormBtn = document.getElementById('resetRecordFormBtn');
+      if (resetRecordFormBtn) {
+        resetRecordFormBtn.addEventListener('click', () => {
+          if (recordMeterCode) recordMeterCode.value = '';
+          if (recordMeterReading) {
+            recordMeterReading.value = '';
+            recordMeterReading.placeholder = 'ระบุเลขอ่านมิเตอร์ (หน่วย kWh)';
+          }
+          if (recordCustomerNumber) recordCustomerNumber.value = '';
+          if (recordNote) recordNote.value = '';
+          if (recordParcelDesc) recordParcelDesc.value = '';
+          if (recordAmpRatio) recordAmpRatio.value = '';
+          if (stockMeterSelect) stockMeterSelect.value = '';
+          if (autoFillMeterNotice) autoFillMeterNotice.style.display = 'none';
+          if (recordDate) recordDate.value = getTodayIso();
+          clearPhotoAttachment();
+          if (errMeterCode) errMeterCode.classList.remove('visible');
+          if (errMeterReading) errMeterReading.classList.remove('visible');
+          if (errCustomerNumber) errCustomerNumber.classList.remove('visible');
+        });
+      }
+
+      // Record Form submission (Properly deducts from New or Used stock & inherits ParcelDesc/AmpRatio)
       const meterRecordForm = document.getElementById('meterRecordForm');
-      const recordMeterCode = document.getElementById('recordMeterCode');
-      const recordMeterReading = document.getElementById('recordMeterReading');
       const recordDate = document.getElementById('recordDate');
       const recordNote = document.getElementById('recordNote');
       const errMeterCode = document.getElementById('errMeterCode');
@@ -2886,17 +3076,17 @@
 
           const selectedTypeEl = document.querySelector('input[name="recordType"]:checked');
           const typeVal = selectedTypeEl ? selectedTypeEl.value : 'withdraw';
-          const meterCodeVal = recordMeterCode ? recordMeterCode.value.trim() : '';
+
+          let meterCodeVal = recordMeterCode ? recordMeterCode.value.trim() : '';
           const meterReadingVal = recordMeterReading ? recordMeterReading.value.trim() : '';
           const customerNumberVal = recordCustomerNumber ? recordCustomerNumber.value.trim() : '';
           const dateVal = recordDate ? recordDate.value : '';
           const noteVal = recordNote ? recordNote.value.trim() : '';
           
           const selectedStatusEl = document.querySelector('input[name="meterStatus"]:checked');
-          const meterStatusVal = selectedStatusEl ? selectedStatusEl.value : 'new';
-
-          const parcelDescVal = document.getElementById('recordParcelDesc').value.trim();
-          const ampRatioVal = document.getElementById('recordAmpRatio').value.trim();
+          let meterStatusVal = selectedStatusEl ? selectedStatusEl.value : 'new';
+          let parcelDescVal = recordParcelDesc ? recordParcelDesc.value.trim() : '';
+          let ampRatioVal = recordAmpRatio ? recordAmpRatio.value.trim() : '';
 
           let valid = true;
           if (!currentUser) {
@@ -2909,8 +3099,9 @@
             return;
           }
           
-          // Find latest transaction of this meter
-          const latestTx = records.find((r) => r.meterCode.trim().toUpperCase() === meterCodeVal.trim().toUpperCase());
+          const latestMap = getLatestMeterMap();
+          const normalizedInputKey = normalizeMeterKey(meterCodeVal);
+          const latestTx = normalizedInputKey ? latestMap.get(normalizedInputKey) : null;
 
           if (!meterCodeVal) {
             if (errMeterCode) {
@@ -2919,19 +3110,31 @@
             }
             valid = false;
           } else {
-            // Validation: Block duplicate transaction type if already has the exact same status!
+            // Canonicalize meterCode to match existing inventory item so stock count decreases properly
+            if (latestTx) {
+              meterCodeVal = latestTx.meterCode;
+              // Inherit condition (new or used warehouse), parcelDesc, and ampRatio from stock if withdrawing
+              if (typeVal === 'withdraw') {
+                meterStatusVal = latestTx.meterStatus || meterStatusVal;
+              }
+              if (!parcelDescVal && latestTx.parcelDesc) {
+                parcelDescVal = latestTx.parcelDesc;
+              }
+              if (!ampRatioVal && latestTx.ampRatio) {
+                ampRatioVal = latestTx.ampRatio;
+              }
+            }
+
             if (latestTx && latestTx.type === typeVal) {
               if (errMeterCode) {
-                errMeterCode.textContent = `❌ ไม่สามารถบันทึกได้ เนื่องจากรหัสมิเตอร์นี้มีสถานะล่าสุดเป็น "${getSignTypeLabel(typeVal)}" อยู่แล้วในระบบ (เพื่อป้องกันทำรายการซ้ำซ้อน)`;
+                errMeterCode.textContent = `❌ ไม่สามารถบันทึกได้ เนื่องจากรหัสมิเตอร์นี้มีสถานะล่าสุดเป็น "${getSignTypeLabel(typeVal)}" อยู่แล้วในระบบ`;
                 errMeterCode.classList.add('visible');
               }
               valid = false;
-            }
-            // Stock verification for withdrawals
-            else if (typeVal === 'withdraw') {
+            } else if (typeVal === 'withdraw') {
               if (!latestTx || latestTx.type !== 'import') {
                 if (errMeterCode) {
-                  errMeterCode.textContent = `ไม่สามารถเบิกใช้ได้ เนื่องจากไม่มีมิเตอร์รหัส "${meterCodeVal}" ในคลังพร้อมใช้ (สถานะล่าสุด: ${latestTx ? getSignTypeLabel(latestTx.type) : 'ไม่พบข้อมูลการนำเข้า'} - กรุณาลงบันทึกนำเข้ามิเตอร์ก่อน)`;
+                  errMeterCode.textContent = `ไม่สามารถเบิกใช้ได้ เนื่องจากไม่มีมิเตอร์รหัส "${meterCodeVal}" ในคลังพร้อมใช้ (สถานะล่าสุด: ${latestTx ? getSignTypeLabel(latestTx.type) : 'ไม่พบในคลัง'} — กรุณานำเข้าคลังก่อน)`;
                   errMeterCode.classList.add('visible');
                 }
                 valid = false;
@@ -2943,7 +3146,7 @@
             if (errMeterReading) errMeterReading.classList.add('visible');
             valid = false;
           }
-          if ((typeVal === 'withdraw' || typeVal === 'import') && !customerNumberVal) {
+          if (typeVal === 'withdraw' && !customerNumberVal) {
             if (errCustomerNumber) errCustomerNumber.classList.add('visible');
             valid = false;
           }
@@ -2955,18 +3158,27 @@
             if (errRecordNote) errRecordNote.classList.add('visible');
             valid = false;
           }
+
           if (!valid) return;
 
+          // Ensure withdrawn record date is never older than the stock import date so stock status updates to 'withdraw' immediately
+          let effectiveDate = dateVal;
+          if (latestTx && latestTx.date && effectiveDate < latestTx.date) {
+            effectiveDate = latestTx.date;
+          }
+
+          const nowTs = Date.now();
           const newRecord = {
-            id: 'REC-' + Date.now(),
+            id: 'REC-' + nowTs,
+            createdAt: nowTs,
             type: typeVal,
             meterCode: meterCodeVal,
             meterReading: meterReadingVal,
-            customerNumber: customerNumberVal,
+            customerNumber: customerNumberVal || (typeVal === 'import' ? 'คลังมิเตอร์' : ''),
             userId: currentUser.userId,
             userName: currentUser.name,
             userPhone: currentUser.phone,
-            date: dateVal,
+            date: effectiveDate,
             note: noteVal,
             photo: currentPhotoDataUrl,
             meterStatus: meterStatusVal, // 'new' or 'used'
@@ -2982,27 +3194,42 @@
           }
 
           if (recordMeterCode) recordMeterCode.value = '';
-          if (recordMeterReading) recordMeterReading.value = '';
+          if (recordMeterReading) {
+            recordMeterReading.value = '';
+            recordMeterReading.placeholder = 'ระบุเลขอ่านมิเตอร์ (หน่วย kWh)';
+          }
           if (recordCustomerNumber) recordCustomerNumber.value = '';
           if (recordNote) recordNote.value = '';
-          document.getElementById('recordParcelDesc').value = '';
-          document.getElementById('recordAmpRatio').value = '';
+          if (recordParcelDesc) recordParcelDesc.value = '';
+          if (recordAmpRatio) recordAmpRatio.value = '';
+          if (stockMeterSelect) stockMeterSelect.value = '';
+          if (autoFillMeterNotice) autoFillMeterNotice.style.display = 'none';
           clearPhotoAttachment();
 
           const customerActionText = typeVal === 'withdraw'
-            ? ` | ผู้ใช้ไฟ (ติดตั้งให้): ${newRecord.customerNumber}`
-            : typeVal === 'import'
-              ? ` | ผู้ใช้ไฟ (ถอดจาก): ${newRecord.customerNumber}`
+            ? ` | ติดตั้งให้ผู้ใช้ไฟ: ${newRecord.customerNumber}`
+            : typeVal === 'import' && newRecord.customerNumber
+              ? ` | ถอดจาก/แหล่งที่มา: ${newRecord.customerNumber}`
               : newRecord.customerNumber
                 ? ` | ผู้ใช้ไฟ: ${newRecord.customerNumber}`
                 : '';
 
+          const stockEffectText = typeVal === 'withdraw'
+            ? ` (ตัดสต็อกจาก${newRecord.meterStatus === 'new' ? 'คลังใหม่' : 'คลังเก่า'}เรียบร้อยแล้ว)`
+            : typeVal === 'import'
+              ? ` (เพิ่มเข้า${newRecord.meterStatus === 'new' ? 'คลังใหม่' : 'คลังเก่า'}เรียบร้อยแล้ว)`
+              : '';
+
           if (recordFeedback) {
-            recordFeedback.textContent = `บันทึก "${getSignTypeLabel(typeVal)}" — PEA มิเตอร์: ${newRecord.meterCode} | สภาพ: ${newRecord.meterStatus === 'new' ? 'ใหม่' : 'เก่า'} | เลขอ่าน: ${newRecord.meterReading}${customerActionText} โดยคุณเรียบร้อยแล้ว`;
+            recordFeedback.textContent = `✅ บันทึก "${getSignTypeLabel(typeVal)}"${stockEffectText} — PEA มิเตอร์: ${newRecord.meterCode} | พัสดุ: ${newRecord.parcelDesc || '-'} | แอมป์: ${newRecord.ampRatio || '-'} | เลขอ่าน: ${newRecord.meterReading}${customerActionText}`;
             recordFeedback.className = 'inline-feedback success';
+            recordFeedback.style.background = '';
+            recordFeedback.style.color = '';
+            recordFeedback.style.borderColor = '';
           }
 
           renderDashboard();
+          populateAutoFillChoices();
         });
       }
 
@@ -3031,8 +3258,7 @@
           let extractedReading = '';
           let extractedCustomer = '';
           let extractedNote = '';
-
-          const separators = /[,\\/|]/;
+          const separators = /[,\/|]/;
           if (separators.test(text)) {
             const segments = text.split(separators).map(s => s.trim());
             if (segments[0]) extractedPEA = segments[0];
@@ -3040,7 +3266,7 @@
             if (segments[2]) extractedCustomer = segments[2];
             if (segments[3]) extractedNote = segments[3];
           } else {
-            const lines = text.split('\\n');
+            const lines = text.split('\n');
             lines.forEach(line => {
               const lower = line.toLowerCase();
               if (lower.includes('pea') || lower.includes('มิเตอร์')) {
@@ -3053,9 +3279,8 @@
                 extractedNote = line.replace(/.*[:：]/, '').trim();
               }
             });
-
             if (!extractedPEA && !extractedReading) {
-              const spaces = text.split(/\\s+/);
+              const spaces = text.split(/\s+/);
               if (spaces[0]) extractedPEA = spaces[0];
               if (spaces[1]) extractedReading = spaces[1];
               if (spaces[2]) extractedCustomer = spaces[2];
@@ -3065,13 +3290,16 @@
 
           extractedPEA = extractedPEA.replace(/pea/gi, '').replace(/มิเตอร์/g, '').replace(/[:：]/g, '').trim();
           extractedReading = extractedReading.replace(/เลขอ่าน/g, '').replace(/หน่วย/g, '').replace(/kWh/gi, '').replace(/[:：]/g, '').trim();
-          extractedCustomer = extractedCustomer.replace(/ผู้ใช้ไฟ/g, '').replace(/[:::]/g, '').trim();
-          extractedNote = extractedNote.replace(/หมายเหตุ/g, '').replace(/[:::]/g, '').trim();
+          extractedCustomer = extractedCustomer.replace(/ผู้ใช้ไฟ/g, '').replace(/[:：]/g, '').trim();
+          extractedNote = extractedNote.replace(/หมายเหตุ/g, '').replace(/[:：]/g, '').trim();
 
-          if (extractedPEA) document.getElementById('recordMeterCode').value = extractedPEA;
-          if (extractedReading) document.getElementById('recordMeterReading').value = extractedReading;
-          if (extractedCustomer) document.getElementById('recordCustomerNumber').value = extractedCustomer;
-          if (extractedNote) document.getElementById('recordNote').value = extractedNote;
+          if (extractedPEA && recordMeterCode) {
+            recordMeterCode.value = extractedPEA;
+            autoFillFromMeterCode(extractedPEA, false);
+          }
+          if (extractedReading && recordMeterReading) recordMeterReading.value = extractedReading;
+          if (extractedCustomer && recordCustomerNumber) recordCustomerNumber.value = extractedCustomer;
+          if (extractedNote && recordNote) recordNote.value = extractedNote;
 
           const lowerText = text.toLowerCase();
           let detectedType = '';
@@ -3097,6 +3325,7 @@
           } else if (lowerText.includes('เก่า') || lowerText.includes('ถอดคืน') || lowerText.includes('รื้อถอน') || lowerText.includes(',r,') || lowerText.endsWith(',r')) {
             detectedStatus = 'used';
           }
+
           if (detectedStatus) {
             const statusRadio = document.getElementById('status' + detectedStatus.charAt(0).toUpperCase() + detectedStatus.slice(1));
             if (statusRadio) statusRadio.checked = true;
@@ -3177,24 +3406,20 @@
 
       function parseBuddhistDateToIso(dateStr) {
         if (!dateStr) return '';
-        const cleaned = dateStr.replace(/[-\\s]/g, '/');
+        const cleaned = dateStr.replace(/[-\s]/g, '/');
         const parts = cleaned.split('/');
         if (parts.length !== 3) return '';
-
         const day = String(parts[0]).padStart(2, '0');
         const month = String(parts[1]).padStart(2, '0');
         let year = Number(parts[2]);
-
         if (year > 2400) {
           year = year - 543;
         }
-
         return `${year}-${month}-${day}`;
       }
 
       function processExcelRows(rows) {
         parsedExcelRowsToImport = [];
-
         let headerRowIndex = 0;
         for (let i = 0; i < Math.min(5, rows.length); i++) {
           if (rows[i] && rows[i].some(cell => String(cell).includes('หมายเลข PEA'))) {
@@ -3307,13 +3532,14 @@
       if (confirmExcelImportBtn) {
         confirmExcelImportBtn.addEventListener('click', () => {
           if (!currentUser) return;
-
           confirmExcelImportBtn.disabled = true;
           confirmExcelImportBtn.textContent = 'กำลังทำการบันทึก...';
 
+          const baseTs = Date.now();
           parsedExcelRowsToImport.forEach((m, idx) => {
             const newRec = {
-              id: `REC-EXCEL-${Date.now()}-${idx}`,
+              id: `REC-EXCEL-${baseTs + idx}-${idx}`,
+              createdAt: baseTs + idx,
               type: 'import',
               meterCode: m.meterCode,
               meterReading: m.meterReading,
@@ -3328,7 +3554,6 @@
               meterStatus: m.meterStatus,
               photo: ''
             };
-
             records.unshift(newRec);
 
             if (isOnline && db) {
@@ -3339,16 +3564,17 @@
           saveState();
           closeExcelPreview();
           renderDashboard();
+          populateAutoFillChoices();
           
           if (excelImportFeedback) {
             excelImportFeedback.textContent = `✅ นำเข้าข้อมูลมิเตอร์ทั้ง ${parsedExcelRowsToImport.length} ลูกเข้าสู่ระบบเรียบร้อยสมบูรณ์แล้วค่ะ!`;
             excelImportFeedback.className = 'inline-feedback success';
           }
+
           confirmExcelImportBtn.disabled = false;
           confirmExcelImportBtn.textContent = '💾 ยืนยันนำเข้าข้อมูลทั้งหมด';
         });
       }
-
 
       // Dashboard Search, Filters & Render
       const filterUserId = document.getElementById('filterUserId');
@@ -3363,6 +3589,7 @@
       [filterUserId, filterKeyword].forEach((inp) => {
         if (inp) inp.addEventListener('input', renderRecordsTable);
       });
+
       [filterType, filterDate].forEach((sel) => {
         if (sel) sel.addEventListener('change', renderRecordsTable);
       });
@@ -3370,9 +3597,11 @@
       if (searchStockMeter) {
         searchStockMeter.addEventListener('input', renderStockMeterTable);
       }
+
       if (filterStockType) {
         filterStockType.addEventListener('change', renderStockMeterTable);
       }
+
       if (searchLatestMeter) {
         searchLatestMeter.addEventListener('input', renderLatestMeterStatusTable);
       }
@@ -3394,8 +3623,7 @@
           const checkedCbs = document.querySelectorAll('.record-select-checkbox:checked');
           if (checkedCbs.length === 0) return;
 
-          const confirmed = confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบรายการที่เลือกทั้งหมด ${checkedCbs.length} รายการจากระบบ? (การลบจะลบข้อมูลออกจากระบบคลาวด์และเครื่องทันที)`);
-          if (confirmed) {
+          openConfirmDialog(`คุณแน่ใจหรือไม่ว่าต้องการลบรายการที่เลือกทั้งหมด ${checkedCbs.length} รายการจากระบบ?`, () => {
             const idsToDelete = Array.from(checkedCbs).map(cb => cb.dataset.id);
             
             records = records.filter(r => !idsToDelete.includes(r.id));
@@ -3407,15 +3635,14 @@
                 const docRef = db.collection('meter_records').doc(id);
                 batch.delete(docRef);
               });
-              batch.commit().then(() => {
-                console.log("Successfully bulk deleted from Cloud");
-              }).catch(err => {
+              batch.commit().catch(err => {
                 console.warn("Bulk delete on Cloud failed:", err);
               });
             }
 
             renderDashboard();
-          }
+            populateAutoFillChoices();
+          });
         });
       }
 
@@ -3425,13 +3652,7 @@
         const withdrawCount = records.filter((r) => r.type === 'withdraw').length;
         const damageCount = records.filter((r) => r.type === 'damage').length;
 
-        const seenMeters = new Map();
-        records.forEach((rec) => {
-          const key = rec.meterCode.toUpperCase();
-          if (!seenMeters.has(key)) {
-            seenMeters.set(key, rec);
-          }
-        });
+        const seenMeters = getLatestMeterMap();
         
         let stockNewCount = 0;
         let stockUsedCount = 0;
@@ -3540,7 +3761,7 @@
         if (records.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="8">
+              <td colspan="9">
                 <div class="empty-state" style="padding: 20px;">
                   <p class="empty-state-title">ยังไม่มีรายการมิเตอร์</p>
                   <p class="empty-state-sub" style="margin-bottom: 0;">เมื่อบันทึกข้อมูลมิเตอร์ สถานะล่าสุดของแต่ละรหัสจะแสดงที่นี่</p>
@@ -3552,24 +3773,20 @@
         }
 
         const query = searchLatestMeter ? searchLatestMeter.value.trim().toLowerCase() : '';
-
-        const seenMeters = new Map();
-        records.forEach((rec) => {
-          const key = rec.meterCode.toUpperCase();
-          if (!seenMeters.has(key)) {
-            seenMeters.set(key, rec);
-          }
-        });
-
+        const seenMeters = getLatestMeterMap();
         let list = Array.from(seenMeters.values());
+
         if (query) {
-          list = list.filter(rec => rec.meterCode.toLowerCase().includes(query));
+          list = list.filter(rec =>
+            rec.meterCode.toLowerCase().includes(query) ||
+            (rec.parcelDesc || '').toLowerCase().includes(query)
+          );
         }
 
         if (list.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="8">
+              <td colspan="9">
                 <div class="empty-state" style="padding: 16px;">
                   <p class="empty-state-title">ไม่พบรหัสมิเตอร์ที่ค้นหา</p>
                 </div>
@@ -3584,6 +3801,7 @@
             ? `<span class="code-pill">${escapeHtml(rec.meterReading)}</span>`
             : '<span style="color: var(--muted);">-</span>';
           const cond = rec.meterStatus || 'new';
+
           return `
           <tr>
             <td><span class="code-pill" style="font-weight:700; color:var(--brand);">${escapeHtml(rec.meterCode)}</span></td>
@@ -3628,8 +3846,8 @@
 
       function openMeterHistoryTrailModal(mCode) {
         if (!meterDetailsModal || !meterHistoryTableBody) return;
-
-        const history = records.filter(r => r.meterCode.trim().toUpperCase() === mCode.trim().toUpperCase());
+        const targetKey = normalizeMeterKey(mCode);
+        const history = sortRecordsLatestFirst(records.filter(r => normalizeMeterKey(r.meterCode) === targetKey));
         if (history.length === 0) return;
 
         const latest = history[0]; 
@@ -3694,14 +3912,7 @@
         const query = searchStockMeter ? searchStockMeter.value.trim().toLowerCase() : '';
         const stockType = filterStockType ? filterStockType.value : 'all';
 
-        const seenMeters = new Map();
-        records.forEach((rec) => {
-          const key = rec.meterCode.toUpperCase();
-          if (!seenMeters.has(key)) {
-            seenMeters.set(key, rec);
-          }
-        });
-
+        const seenMeters = getLatestMeterMap();
         let inStockMeters = Array.from(seenMeters.values()).filter((rec) => rec.type === 'import');
 
         if (stockType !== 'all') {
@@ -3709,7 +3920,11 @@
         }
 
         if (query) {
-          inStockMeters = inStockMeters.filter((rec) => rec.meterCode.toLowerCase().includes(query));
+          inStockMeters = inStockMeters.filter((rec) =>
+            rec.meterCode.toLowerCase().includes(query) ||
+            (rec.parcelDesc || '').toLowerCase().includes(query) ||
+            (rec.ampRatio || '').toLowerCase().includes(query)
+          );
         }
 
         if (inStockMeters.length === 0) {
@@ -3744,7 +3959,13 @@
                 <span style="margin-left: 4px;">${escapeHtml(rec.userName)}</span>
               </td>
               <td>
-                <button type="button" class="btn btn-primary btn-sm quick-withdraw-action-btn" data-meter="${escapeHtml(rec.meterCode)}" data-reading="${escapeHtml(rec.meterReading)}" data-status="${escapeHtml(cond)}" style="background: var(--withdraw-color); padding: 4px 10px; font-size: 12.5px;">
+                <button type="button" class="btn btn-primary btn-sm quick-withdraw-action-btn"
+                  data-meter="${escapeHtml(rec.meterCode)}"
+                  data-reading="${escapeHtml(rec.meterReading || '0')}"
+                  data-status="${escapeHtml(cond)}"
+                  data-parcel="${escapeHtml(rec.parcelDesc || '')}"
+                  data-amp="${escapeHtml(rec.ampRatio || '')}"
+                  style="background: var(--withdraw-color); padding: 4px 10px; font-size: 12.5px;">
                   ⚡ เบิกใช้ด่วน
                 </button>
               </td>
@@ -3756,7 +3977,9 @@
           btn.addEventListener('click', () => {
             const meterCode = btn.dataset.meter;
             const lastReading = btn.dataset.reading;
-            const status = btn.dataset.status;
+            const status = btn.dataset.status || 'new';
+            const parcel = btn.dataset.parcel || '';
+            const amp = btn.dataset.amp || '';
 
             switchTab('record');
 
@@ -3766,30 +3989,42 @@
               updateNoteLabelRequirement();
             }
 
-            const recordMeterCodeInput = document.getElementById('recordMeterCode');
-            const recordMeterReadingInput = document.getElementById('recordMeterReading');
-            const recordCustomerNumberInput = document.getElementById('recordCustomerNumber');
+            if (withdrawSourceFilter) {
+              withdrawSourceFilter.value = 'all';
+            }
+            populateAutoFillChoices();
 
             const statusRadio = document.getElementById('status' + status.charAt(0).toUpperCase() + status.slice(1));
             if (statusRadio) {
               statusRadio.checked = true;
             }
 
-            if (recordMeterCodeInput) {
-              recordMeterCodeInput.value = meterCode;
-              if (recordMeterReadingInput) {
-                recordMeterReadingInput.value = '';
-                recordMeterReadingInput.placeholder = `เลขอ่านล่าสุดตอนนำเข้าคือ ${lastReading}`;
-                recordMeterReadingInput.focus();
-              }
-              if (recordCustomerNumberInput) {
-                recordCustomerNumberInput.value = '';
-              }
+            if (stockMeterSelect) {
+              stockMeterSelect.value = meterCode;
             }
 
-            const recordFeedback = document.getElementById('recordFeedback');
+            if (recordMeterCode) {
+              recordMeterCode.value = meterCode;
+            }
+            if (recordParcelDesc) {
+              recordParcelDesc.value = parcel;
+            }
+            if (recordAmpRatio) {
+              recordAmpRatio.value = amp;
+            }
+            if (recordMeterReading) {
+              recordMeterReading.value = lastReading || '0';
+              recordMeterReading.placeholder = `เลขอ่านล่าสุดตอนนำเข้าคือ ${lastReading}`;
+            }
+            if (recordCustomerNumber) {
+              recordCustomerNumber.value = '';
+              recordCustomerNumber.focus();
+            }
+
+            autoFillFromMeterCode(meterCode, true);
+
             if (recordFeedback) {
-              recordFeedback.textContent = `ระบบเลือกมิเตอร์ "${meterCode}" ให้แล้วโดยอัตโนมัติ กรุณากรอกเลขอ่านและหมายเลขผู้ใช้ไฟ CA เพื่อเสร็จสิ้นการเบิกใช้`;
+              recordFeedback.textContent = `ระบบเลือกมิเตอร์ "${meterCode}" (${status === 'new' ? 'คลังใหม่' : 'คลังเก่า'}) พร้อมดึงคำอธิบายพัสดุ "${parcel || '-'}" และแอมป์ "${amp || '-'}" ให้เรียบร้อยแล้ว กรุณาระบุหมายเลขผู้ใช้ไฟ CA เพื่อบันทึกเบิกใช้`;
               recordFeedback.className = 'inline-feedback success';
               recordFeedback.style.background = 'var(--withdraw-bg)';
               recordFeedback.style.color = 'var(--withdraw-color)';
@@ -3809,13 +4044,13 @@
         const dateFilter = filterDate ? filterDate.value : '';
 
         const isAdmin = currentUser && currentUser.role === 'admin';
-
         const adminCols = document.querySelectorAll('.admin-only-col');
         adminCols.forEach(col => {
           col.style.display = isAdmin ? 'table-cell' : 'none';
         });
 
-        const filtered = records.filter((rec) => {
+        const sortedRecords = sortRecordsLatestFirst(records);
+        const filtered = sortedRecords.filter((rec) => {
           if (userIdQuery && !rec.userId.toLowerCase().includes(userIdQuery)) {
             return false;
           }
@@ -3836,7 +4071,7 @@
           const hasAnyRecords = records.length > 0;
           tbody.innerHTML = `
             <tr>
-              <td colspan="${isAdmin ? 13 : 12}">
+              <td colspan="${isAdmin ? 14 : 13}">
                 <div class="empty-state">
                   <p class="empty-state-title">${hasAnyRecords ? 'ไม่พบรายการที่ตรงกับเงื่อนไขการค้นหา' : 'ยังไม่มีประวัติการลงบันทึกมิเตอร์ไฟฟ้า'}</p>
                 </div>
@@ -3874,7 +4109,7 @@
           const adminCheckboxCell = isAdmin
             ? `<td class="admin-only-col"><input type="checkbox" class="record-select-checkbox" data-id="${escapeHtml(rec.id)}"></td>`
             : '';
-          
+
           const cond = rec.meterStatus || 'new';
 
           return `
@@ -3927,17 +4162,16 @@
             btn.addEventListener('click', () => {
               const rec = records.find((r) => r.id === btn.dataset.id);
               if (rec) {
-                const confirmed = confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบรายการของมิเตอร์ ${rec.meterCode} (${getSignTypeLabel(rec.type)})?`);
-                if (confirmed) {
+                openConfirmDialog(`คุณแน่ใจหรือไม่ว่าต้องการลบรายการของมิเตอร์ ${rec.meterCode} (${getSignTypeLabel(rec.type)})?`, () => {
                   records = records.filter(r => r.id !== rec.id);
                   saveState();
                   
                   if (isOnline && db) {
                     db.collection('meter_records').doc(rec.id).delete();
                   }
-
                   renderDashboard();
-                }
+                  populateAutoFillChoices();
+                });
               }
             });
           });
@@ -3945,13 +4179,13 @@
           const selectAllInp = document.getElementById('selectAllRecords');
           if (selectAllInp) {
             selectAllInp.checked = false; 
-            selectAllInp.addEventListener('change', () => {
+            selectAllInp.onchange = () => {
               const isChecked = selectAllInp.checked;
               tbody.querySelectorAll('.record-select-checkbox').forEach((cb) => {
                 cb.checked = isChecked;
               });
               toggleBulkDeleteButtonVisibility();
-            });
+            };
           }
 
           tbody.querySelectorAll('.record-select-checkbox').forEach((cb) => {
@@ -3974,7 +4208,7 @@
         }
       }
 
-      // Admin Edit Modal Logic
+      // Admin Edit Modal Logic (With auto-fill for PEA & ParcelDesc and proper stock reduction when changed to withdraw)
       const editRecordModal = document.getElementById('editRecordModal');
       const editRecordForm = document.getElementById('editRecordForm');
       const editRecordId = document.getElementById('editRecordId');
@@ -3991,9 +4225,36 @@
       const removeEditPhotoBtn = document.getElementById('removeEditPhotoBtn');
       const closeEditModalBtn = document.getElementById('closeEditModalBtn');
       const cancelEditBtn = document.getElementById('cancelEditBtn');
-
       const editParcelDesc = document.getElementById('editParcelDesc');
       const editAmpRatio = document.getElementById('editAmpRatio');
+
+      if (editMeterCode) {
+        editMeterCode.addEventListener('change', () => {
+          const key = normalizeMeterKey(editMeterCode.value);
+          const matched = getLatestMeterMap().get(key);
+          if (matched) {
+            if (editParcelDesc && !editParcelDesc.value.trim() && matched.parcelDesc) {
+              editParcelDesc.value = matched.parcelDesc;
+            }
+            if (editAmpRatio && !editAmpRatio.value.trim() && matched.ampRatio) {
+              editAmpRatio.value = matched.ampRatio;
+            }
+          }
+        });
+      }
+
+      if (editParcelDesc) {
+        editParcelDesc.addEventListener('change', () => {
+          const cleanDesc = editParcelDesc.value.trim().toLowerCase();
+          if (!cleanDesc) return;
+          const matchedRec = records.find(
+            (r) => (r.parcelDesc || '').trim().toLowerCase() === cleanDesc && (r.ampRatio || '').trim()
+          );
+          if (matchedRec && editAmpRatio && !editAmpRatio.value.trim()) {
+            editAmpRatio.value = matchedRec.ampRatio;
+          }
+        });
+      }
 
       function openEditRecordModal(rec) {
         if (editRecordId) editRecordId.value = rec.id;
@@ -4002,7 +4263,6 @@
         if (editCustomerNumber) editCustomerNumber.value = rec.customerNumber || '';
         if (editDate) editDate.value = rec.date;
         if (editNote) editNote.value = rec.note || '';
-
         if (editParcelDesc) editParcelDesc.value = rec.parcelDesc || '';
         if (editAmpRatio) editAmpRatio.value = rec.ampRatio || '';
 
@@ -4034,7 +4294,6 @@
       function updateEditLabels() {
         const checked = document.querySelector('input[name="editRecordType"]:checked');
         const mode = checked ? checked.value : 'withdraw';
-
         if (editNoteLabel) {
           if (mode === 'damage') {
             editNoteLabel.innerHTML = 'หมายเหตุ / อาการมิเตอร์ชำรุด <span class="req-star">*</span>';
@@ -4042,12 +4301,11 @@
             editNoteLabel.innerHTML = 'หมายเหตุ / รายละเอียดหากมิเตอร์ชำรุด';
           }
         }
-
         if (editCustomerNumberLabel) {
           if (mode === 'withdraw') {
             editCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ติดตั้งให้ CA) <span class="req-star">*</span>';
           } else if (mode === 'import') {
-            editCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถอดมาจาก CA) <span class="req-star">*</span>';
+            editCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ (ถอดมาจาก CA / คลัง)';
           } else {
             editCustomerNumberLabel.innerHTML = 'หมายเลขผู้ใช้ไฟ CA';
           }
@@ -4108,7 +4366,7 @@
           const ampRatioVal = editAmpRatio ? editAmpRatio.value.trim() : '';
 
           if (!meterCodeVal || !meterReadingVal || !dateVal) return;
-          if ((typeVal === 'withdraw' || typeVal === 'import') && !customerNumberVal) return;
+          if (typeVal === 'withdraw' && !customerNumberVal) return;
           if (typeVal === 'damage' && !noteVal) return;
 
           records[index].type = typeVal;
@@ -4121,6 +4379,7 @@
           records[index].photo = editPhotoDataUrl;
           records[index].parcelDesc = parcelDescVal;
           records[index].ampRatio = ampRatioVal;
+          records[index].updatedAt = Date.now();
 
           saveState();
 
@@ -4130,6 +4389,7 @@
 
           closeEditModal();
           renderDashboard();
+          populateAutoFillChoices();
         });
       }
 
@@ -4151,6 +4411,7 @@
       }
 
       if (closeModalBtn) closeModalBtn.addEventListener('click', closePhotoModal);
+
       if (imageModal) {
         imageModal.addEventListener('click', (e) => {
           if (e.target === imageModal) closePhotoModal();
@@ -4166,7 +4427,9 @@
           db.collection('system_config').doc('config').get().then((docSnapshot) => {
             if (docSnapshot.exists) {
               systemInitialized = true;
-              localStorage.setItem(STORAGE_KEYS.INITIALIZED, 'true');
+              try {
+                localStorage.setItem(STORAGE_KEYS.INITIALIZED, 'true');
+              } catch (e) {}
               const data = docSnapshot.data();
               adminPasscode = data.adminPasscode || adminPasscode;
               saveState();
@@ -4203,11 +4466,11 @@
       }
 
       checkSystemStatusAndViews();
+      updateNoteLabelRequirement();
       
       if (isOnline) {
         startFirebaseListeners();
       }
-
     })();
   </script>
 </body>
